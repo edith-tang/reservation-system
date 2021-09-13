@@ -9,8 +9,8 @@ namespace ReservationSystem.Models
 {
     public class SittingModel: Sitting
     {
-        public List<SCTimeslot> Timeslots { get => SittingCategory.SCTimeslots; }
-        public List<SCTable> Tables { get => SittingCategory.SCTables; }
+        //public List<SCTimeslot> Timeslots { get => SittingCategory.SCTimeslots; }
+        //public List<SCTable> Tables { get => SittingCategory.SCTables; }
         public int Capacity { get => SittingCategory.Capacity; }
         public int UsedCapacity
         {

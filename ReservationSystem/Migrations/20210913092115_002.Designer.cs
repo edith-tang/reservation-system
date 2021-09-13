@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReservationSystem.Data;
 
 namespace ReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210913092115_002")]
+    partial class _002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -692,7 +694,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SCTable", b =>
                 {
                     b.HasOne("ReservationSystem.Data.SittingCategory", "SittingCategory")
-                        .WithMany()
+                        .WithMany("SCTables")
                         .HasForeignKey("SittingCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -711,7 +713,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SCTimeslot", b =>
                 {
                     b.HasOne("ReservationSystem.Data.SittingCategory", "SittingCategory")
-                        .WithMany()
+                        .WithMany("SCTimeslots")
                         .HasForeignKey("SittingCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -762,6 +764,13 @@ namespace ReservationSystem.Migrations
                     b.Navigation("Reservations");
 
                     b.Navigation("SittingUnits");
+                });
+
+            modelBuilder.Entity("ReservationSystem.Data.SittingCategory", b =>
+                {
+                    b.Navigation("SCTables");
+
+                    b.Navigation("SCTimeslots");
                 });
 #pragma warning restore 612, 618
         }

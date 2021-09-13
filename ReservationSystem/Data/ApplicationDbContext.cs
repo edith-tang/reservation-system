@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using ReservationSystem.Data.Users;
 using ReservationSystem.Data.Enums;
+using ReservationSystem.Models.SittingCategory;
 
 namespace ReservationSystem.Data
 {
@@ -123,5 +124,7 @@ namespace ReservationSystem.Data
               );
             #endregion
         }
+
+
     }
 }

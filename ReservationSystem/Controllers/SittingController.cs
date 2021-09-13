@@ -21,6 +21,12 @@ namespace ReservationSystem.Controllers
             return View();
         }
 
+        public IActionResult Create()
+        {
+
+            return View();
+        }
+
         #region SITTING METHODS
         //add a new sitting to database
         public async Task CreateSitting(int sittingCategoryId)
@@ -32,22 +38,22 @@ namespace ReservationSystem.Controllers
         }
 
         //add sitting units for a sitting to database
-        public async Task CreateSittingUnits(SittingModel sittingModel)
-        {
-            var sUnits = new List<SittingUnit>();
-            var sUnit = new SittingUnit(sittingModel.Id);
-            foreach (var ts in sittingModel.Timeslots)
-            {
-                sUnit.TimeslotId = ts.Id;
-                foreach (var tb in sittingModel.Tables)
-                {
-                    sUnit.TableId = tb.Id;
-                    sUnits.Add(sUnit);
-                }
-            }
-            await _cxt.SittingUnits.AddRangeAsync(sUnits);
-            await _cxt.SaveChangesAsync();
-        }
+        //public async Task CreateSittingUnits(SittingModel sittingModel)
+        //{
+        //    var sUnits = new List<SittingUnit>();
+        //    var sUnit = new SittingUnit(sittingModel.Id);
+        //    foreach (var ts in sittingModel.Timeslots)
+        //    {
+        //        sUnit.TimeslotId = ts.Id;
+        //        foreach (var tb in sittingModel.Tables)
+        //        {
+        //            sUnit.TableId = tb.Id;
+        //            sUnits.Add(sUnit);
+        //        }
+        //    }
+        //    await _cxt.SittingUnits.AddRangeAsync(sUnits);
+        //    await _cxt.SaveChangesAsync();
+        //}
 
         //find a sitting from database
         public async Task<Sitting> FindSitting(DateTime date)
