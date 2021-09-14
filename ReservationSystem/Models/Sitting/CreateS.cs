@@ -3,6 +3,7 @@ using ReservationSystem.Data;
 using ReservationSystem.Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +11,12 @@ namespace ReservationSystem.Models.Sitting
 {
     public class CreateS
     {
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime StartDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime EndDate { get; set; }
 
         public int SittingCategoryId { get; set; }

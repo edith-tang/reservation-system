@@ -24,7 +24,7 @@ namespace ReservationSystem.Controllers
             
         }
 
-        public IActionResult CreateS(int? id)
+        public async Task<IActionResult> CreateS(int? id)
         {
             var m = new Models.Sitting.CreateS
             {
@@ -33,7 +33,7 @@ namespace ReservationSystem.Controllers
             ;
             if (id.HasValue) 
             {
-                var sittingCategory = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == id);
+                var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == id);
                 m.SittingCategoryId = sittingCategory.Id;
                 m.SittingCategory = sittingCategory;
             }
@@ -41,9 +41,18 @@ namespace ReservationSystem.Controllers
             return View(m);
         }
 
-        #region SITTING METHODS
-        //load all exisitng Sittings
-        public async Task<List<Sitting>> GetSittings()
+        //[HttpPost]
+        //public async Task<IActionResult> CreateS(Models.Sitting.CreateS m)
+        //{ 
+        
+        //}
+
+
+
+
+            #region SITTING METHODS
+            //load all exisitng Sittings
+            public async Task<List<Sitting>> GetSittings()
         {
             return await _cxt.Sittings.ToListAsync();
         }
