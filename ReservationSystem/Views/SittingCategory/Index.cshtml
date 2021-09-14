@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ReservationSystem.Data.SittingCategory>
+
+@{
+    ViewData["Title"] = "Index - Sitting Category";
+}
+
+<h1>All Sitting Categories</h1>
+
+@* subpage for search sc by name *@
+
+<a class="btn btn-info" role="button" asp-action="CreateSC">Create New</a>
+<p></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Capacity)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <th scope="row">
+                @Html.DisplayFor(modelItem => item.Id)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                <a class="btn btn-info" role="button"  asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

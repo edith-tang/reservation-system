@@ -16,10 +16,6 @@ namespace ReservationSystem.Controllers
         {
             _cxt = cxt;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         //find a sitting from database
         public Sitting FindSitting()

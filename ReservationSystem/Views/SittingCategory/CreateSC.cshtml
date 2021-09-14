@@ -1,13 +1,14 @@
 ﻿@model ReservationSystem.Models.SittingCategory.CreateSC
 
 @{
-    ViewData["Title"] = "CreateSC";
+    ViewData["Title"] = "Create a Sitting Category";
 }
 
 <h1>CreateSC</h1>
 
-<h4>CreateSC</h4>
-<hr />
+<a class="btn btn-info" role="button" asp-action="Index">Back to List</a>
+
+<br />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateSC">
@@ -53,10 +54,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

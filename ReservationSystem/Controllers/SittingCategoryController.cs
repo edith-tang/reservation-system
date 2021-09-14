@@ -20,6 +20,20 @@ namespace ReservationSystem.Controllers
             _mapper = mapper;
         }
 
+        public async Task<ActionResult> Index()
+        {
+            var sittingCategories = await GetSittingCategories();
+            return View(sittingCategories);
+        }
+
+        public async Task<ActionResult> DetailsSC(int id)
+        {
+            ViewBag.SCTimeslots = await GetSCTimeslots(id);
+            ViewBag.SCTables = await GetSCTables(id);
+            ViewBag.SCSittings = await GetSCSittings(id);
+            return View(ViewBag);
+        }
+
         [HttpGet]
         public ActionResult CreateSC()
         {
@@ -42,10 +56,13 @@ namespace ReservationSystem.Controllers
                 var id = GetId();
                 await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes,0), id);
                 await CreateSCTables(id, m.TablesId);
-                
+                return RedirectToAction(nameof(Index));
             }
-            m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
-            return View(m);
+            else
+            {
+                m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
+                return View(m);
+            }            
         }
 
         #region METHODS
@@ -77,7 +94,6 @@ namespace ReservationSystem.Controllers
             {
                 throw new Exception("not permitted for non-interger number");
             }
-            
         }
 
         //create a list of tables for a sitting category
@@ -89,25 +105,41 @@ namespace ReservationSystem.Controllers
             {
                 tList.Add(new SCTable(sittingCategoryId,ti));
             }
-            //for (int i = 0; i < tablesId.Length; i++)
-            //{
-            //    _cxt.SCTables.Add(new SCTable(sittingCategoryId, tablesId[i]));
-            //}
-            
             _cxt.SCTables.AddRange(tList);
             await _cxt.SaveChangesAsync();
         }
 
-        //load a list of timeslots from database
+        //load all exisitng SCs
+        public async Task<List<SittingCategory>> GetSittingCategories()
+        {
+            return await _cxt.SittingCategories.ToListAsync();
+        }
+
+        public async Task<SittingCategory> GetSittingCategoryById(int sittingCategoryId)
+        {
+            return await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Id == sittingCategoryId);
+        }
+        public async Task<SittingCategory> GetSittingCategoryByName(string name)
+        {
+            return await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Name == name);
+        }
+
+        //load a list of timeslots
         public async Task<List<SCTimeslot>> GetSCTimeslots(int sittingCategoryId)
         {
             return await _cxt.SCTimeslots.Where(s => s.SittingCategoryId == sittingCategoryId).ToListAsync();
         }
 
-        //load a list of tables from database
+        //load a list of tables
         public async Task<List<SCTable>> GetSCTables(int sittingCategoryId)
         {
-            return await _cxt.SCTables.Where(s => s.SittingCategoryId == sittingCategoryId).ToListAsync();
+            return await _cxt.SCTables.Where(s => s.SittingCategoryId == sittingCategoryId).Include(s => s.Table).OrderBy(s => s.TableId).ToListAsync();
+        }
+
+        //load a list of sittings
+        public async Task<List<Sitting>> GetSCSittings(int sittingCategoryId)
+        {
+            return await _cxt.Sittings.Where(s => s.SittingCategoryId == sittingCategoryId).ToListAsync();
         }
         #endregion
     }
