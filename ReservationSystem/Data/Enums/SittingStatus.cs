@@ -9,6 +9,6 @@ namespace ReservationSystem.Data.Enums
     {
         Open = 0,
         Closed = 1,
-        Archived = 2
+        Past = 2
     }
 }

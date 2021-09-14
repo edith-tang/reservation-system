@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data;
 using System;
@@ -17,12 +18,29 @@ namespace ReservationSystem.Controllers
             _cxt = cxt;
         }
 
-        //find a sitting from database
-        public Sitting FindSitting()
+        [HttpGet]
+        public async Task<ActionResult> CreateReservation()
         {
-            var sitting = new Sitting();
-            return sitting;
+            var allSittings = await GetAllFutureSittings();
+            var dates = new List<DateTime>();
+            foreach(var s in allSittings)
+            {
+                dates.Add(s.Date);
+            }
+            var m = new Models.Reservation.CreateReservation
+            {
+                AllSittings = new SelectList(allSittings),
+                Dates = new SelectList(dates), 
+            };
+            return View(m);
         }
+
+        //find all active sittings and dates
+        public async Task<List<Sitting>> GetAllFutureSittings()
+        {
+            return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past).OrderBy(s => s.Date).ToListAsync();
+        }
+
 
         public Customer FindCust()
         {
@@ -34,7 +52,7 @@ namespace ReservationSystem.Controllers
         //check reservations for a sitting
         public async Task<List<Reservation>> CheckReservationBySitting()
         {
-            var sitting = FindSitting();
+            var sitting = new Sitting();
             return await _cxt.Reservations.Include(r => r.Sitting).Where(r => r.Sitting == sitting).ToListAsync();
         }
 

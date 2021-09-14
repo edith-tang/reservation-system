@@ -25,7 +25,7 @@ namespace ReservationSystem.Data
         #region RELATIONSHIPS
         public Customer Customer { get; private set; }
         public Sitting Sitting { get; set; }
-        public List<SittingUnit> SeatAllocations { get; set; }
+        //public List<SittingUnit> SeatAllocations { get; set; }
         #endregion
 
         //#region CONSTRUCTOR
