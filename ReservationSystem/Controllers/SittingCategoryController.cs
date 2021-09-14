@@ -68,7 +68,7 @@ namespace ReservationSystem.Controllers
                 _cxt.SittingCategories.Add(s);
                 await _cxt.SaveChangesAsync();
 
-                var id = GetId();
+                var id = GetSittingCategoryId();
                 await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes,0), id);
                 await CreateSCTables(id, m.TablesId);
                 return RedirectToAction(nameof(Index));
@@ -82,7 +82,7 @@ namespace ReservationSystem.Controllers
 
         #region METHODS
         //generate id for a new sitting category
-        public int GetId()
+        public int GetSittingCategoryId()
         {
             return _cxt.SittingCategories.Max(s => s.Id) ;
         }

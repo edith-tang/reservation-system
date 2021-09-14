@@ -14,6 +14,6 @@ namespace ReservationSystem.Models.SittingCategory
         public Data.SittingCategory SittingCategory { get; set; }
         public List<SCTimeslot> SCTimeslots { get; set; }
         public List<SCTable> SCTables { get; set; }
-        public List<Sitting> SCSittings { get; set; }
+        public List<Data.Sitting> SCSittings { get; set; }
     }
 }

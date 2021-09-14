@@ -1,0 +1,83 @@
+﻿@model ReservationSystem.Models.Sitting.CreateS
+
+@{
+    ViewData["Title"] = "CreateS";
+}
+
+<h1>CreateS</h1>
+
+<h4>Sitting</h4>
+<hr />
+<div class="row">
+    <
+        <form asp-action="CreateS">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+
+            @if (Model.SittingCategoryId > 0)
+            {
+
+                <div>
+                    <h4>Current SittingCategory</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.SittingCategory.Name)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.SittingCategory.Name)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.SittingCategory.Capacity)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.SittingCategory.Capacity)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.SittingCategory.StartTime)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.SittingCategory.StartTime)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.SittingCategory.Duration)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.SittingCategory.Duration)
+                        </dd>
+                    </dl>
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-4">
+                    <label asp-for="SittingCategoryId" class="control-label"></label>
+                    <select asp-for="SittingCategoryId"asp-items="Model.SittingCategories" class="form-control"></select>
+                    <span asp-validation-for="SittingCategoryId" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group col-md-4">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

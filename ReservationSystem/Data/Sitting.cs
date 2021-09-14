@@ -16,8 +16,8 @@ namespace ReservationSystem.Data
 
         #region RELATIONSHIPS        
         public SittingCategory SittingCategory { get; protected set; }
-        public List<Reservation> Reservations { get; protected set; }
-        public List<SittingUnit> SittingUnits { get; protected set; }
+        //public List<Reservation> Reservations { get; protected set; }
+        //public List<SittingUnit> SittingUnits { get; protected set; }
         #endregion
     }
 }

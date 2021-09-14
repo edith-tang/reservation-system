@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data;
 using ReservationSystem.Models;
@@ -16,18 +17,38 @@ namespace ReservationSystem.Controllers
         {
             _cxt = cxt;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var sittings = await GetSittings();
+            return View(sittings);
+            
         }
 
-        public IActionResult Create()
+        public IActionResult CreateS(int? id)
         {
-
-            return View();
+            var m = new Models.Sitting.CreateS
+            {
+                SittingCategories = new SelectList(_cxt.SittingCategories.ToArray(), nameof(SittingCategory.Id), nameof(SittingCategory.Name))
+            }
+            ;
+            if (id.HasValue) 
+            {
+                var sittingCategory = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == id);
+                m.SittingCategoryId = sittingCategory.Id;
+                m.SittingCategory = sittingCategory;
+            }
+            
+            return View(m);
         }
 
         #region SITTING METHODS
+        //load all exisitng Sittings
+        public async Task<List<Sitting>> GetSittings()
+        {
+            return await _cxt.Sittings.ToListAsync();
+        }
+
+
         //add a new sitting to database
         public async Task CreateSitting(int sittingCategoryId)
         {
