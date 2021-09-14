@@ -1,11 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Sitting Category Details";
-    var SCTimeslots = ViewBag.SCTimeslots;
-    var SCTables = ViewBag.SCTables;
-    var SCSittings = ViewBag.SCSittings;
+﻿@model ReservationSystem.Models.SittingCategory.DetailsSC
+
+@{
+    ViewData["Title"] = "DetailsSC";
 }
 
 <h1>Sitting Category Details</h1>
+
+<div>
+    <h4>SittingCategory</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SittingCategory.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SittingCategory.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SittingCategory.Capacity)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SittingCategory.Capacity)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SittingCategory.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SittingCategory.StartTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SittingCategory.Duration)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SittingCategory.Duration)
+        </dd>
+    </dl>
+</div>
 
 <h3>Timeslots</h3>
 <table class="table">
@@ -20,16 +50,16 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in SCTimeslots)
+        @foreach (var item in Model.SCTimeslots)
         {
-            <tr>
-                <td>
-                    @item.StartTime
-                </td>
-                <td>
-                    @item.EndTime
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.StartTime
+            </td>
+            <td>
+                @item.EndTime
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -47,16 +77,16 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in SCTables)
+        @foreach (var item in Model.SCTables)
         {
-            <tr>
-                <td>
-                    @item.Table.Area
-                </td>
-                <td>
-                    @item.Table.Name
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.Table.Area
+            </td>
+            <td>
+                @item.Table.Name
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -64,7 +94,7 @@
 <h3>DetailsSCSittings</h3>
 
 <p>
-    <a class="btn btn-info" role="button"  asp-action="Create">Create New</a>
+    <a class="btn btn-info" role="button" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -79,21 +109,27 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in SCSittings)
+        @foreach (var item in Model.SCSittings)
         {
-            <tr>
-                <td>
-                    @item.Date
-                </td>
-                <td>
-                    @item.Status
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.Date
+            </td>
+            <td>
+                @item.Status
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
+
+
+<div>
+    
+    <a asp-action="Index">Back to List</a>
+</div>

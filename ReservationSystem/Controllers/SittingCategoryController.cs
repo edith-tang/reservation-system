@@ -26,12 +26,27 @@ namespace ReservationSystem.Controllers
             return View(sittingCategories);
         }
 
+        //public async Task<ActionResult> DetailsSC_old(int id)
+        //{
+
+        //    ViewBag.SCTimeslots = await GetSCTimeslots(id);
+        //    ViewBag.SCTables = await GetSCTables(id);
+        //    ViewBag.SCSittings = await GetSCSittings(id);
+        //    return View(ViewBag);
+        //}
+
         public async Task<ActionResult> DetailsSC(int id)
         {
-            ViewBag.SCTimeslots = await GetSCTimeslots(id);
-            ViewBag.SCTables = await GetSCTables(id);
-            ViewBag.SCSittings = await GetSCSittings(id);
-            return View(ViewBag);
+            
+            var m = new Models.SittingCategory.DetailsSC
+            {
+                SittingCategory= await GetSittingCategoryById(id),
+                SCTimeslots = await GetSCTimeslots(id),
+                SCTables = await GetSCTables(id),
+                SCSittings = await GetSCSittings(id),
+        };
+
+            return View(m);
         }
 
         [HttpGet]
