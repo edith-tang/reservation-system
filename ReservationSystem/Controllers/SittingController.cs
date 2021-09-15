@@ -59,6 +59,8 @@ namespace ReservationSystem.Controllers
                         Date = date,
                         Status = SittingStatus.Open,
                     });
+
+                    //CreateSittingUnits();
                 }
                 else { nonValidDates.Add(date.ToString(("MM/dd/yyyy"))); }
                 
@@ -84,6 +86,7 @@ namespace ReservationSystem.Controllers
         {
             var sittings = _cxt.Sittings.Where(s => s.Date == date).Include(s => s.SittingCategory).ToList();
             var sittingCategory = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == sittingCategoryId);
+            if (sittings == null) { return true; }
             foreach (var sitting in sittings)
             {
                 if (!(
@@ -96,22 +99,22 @@ namespace ReservationSystem.Controllers
         }
 
         //add sitting units for a sitting to database
-        //public async Task CreateSittingUnits(SittingModel sittingModel)
-        //{
-        //    var sUnits = new List<SittingUnit>();
-        //    var sUnit = new SittingUnit(sittingModel.Id);
-        //    foreach (var ts in sittingModel.Timeslots)
-        //    {
-        //        sUnit.TimeslotId = ts.Id;
-        //        foreach (var tb in sittingModel.Tables)
-        //        {
-        //            sUnit.TableId = tb.Id;
-        //            sUnits.Add(sUnit);
-        //        }
-        //    }
-        //    await _cxt.SittingUnits.AddRangeAsync(sUnits);
-        //    await _cxt.SaveChangesAsync();
-        //}
+        public async Task CreateSittingUnits(SittingModel sittingModel)
+        {
+            //    var sUnits = new List<SittingUnit>();
+            //    var sUnit = new SittingUnit(sittingModel.Id);
+            //    foreach (var ts in sittingModel.Timeslots)
+            //    {
+            //        sUnit.TimeslotId = ts.Id;
+            //        foreach (var tb in sittingModel.Tables)
+            //        {
+            //            sUnit.TableId = tb.Id;
+            //            sUnits.Add(sUnit);
+            //        }
+            //    }
+            //    await _cxt.SittingUnits.AddRangeAsync(sUnits);
+            await _cxt.SaveChangesAsync();
+        }
 
         //find a sitting from database
         public async Task<Sitting> FindSitting(DateTime date)
