@@ -21,9 +21,11 @@ namespace ReservationSystem.Data
         #endregion
 
         #region CONSTRUCTOR
-        public SittingUnit(int sittingId)
+        public SittingUnit(int sittingId,int timeslotId, int tableId)
         {
             SittingId = sittingId;
+            TimeslotId = timeslotId;
+            TableId = tableId;
             Status = SittingUnitStatus.Available;
         }
 

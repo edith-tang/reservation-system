@@ -47,8 +47,8 @@ namespace ReservationSystem.Controllers
             var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == m.SittingCategoryId);
             int days = (m.EndDate - m.StartDate).Days + 1;
             DateTime date = m.StartDate;
-            var nonValidDates= new List<String>();
-            
+            var nonValidDates = new List<String>();
+
             for (int i = 0; i < days; i++)
             {
                 if (IsCurrentSittingCategorySelectionValid(date, m.SittingCategoryId))
@@ -60,17 +60,28 @@ namespace ReservationSystem.Controllers
                         Status = SittingStatus.Open,
                     });
 
-                    //CreateSittingUnits();
+                    
                 }
                 else { nonValidDates.Add(date.ToString(("MM/dd/yyyy"))); }
-                
+
                 date = date.AddDays(1);
 
             }
-            if (nonValidDates.Count != 0) { TempData["Message"] = String.Format("Selected Sitting Catagory {0} is not created for date {1} because of overlapping with existing sittings.", sittingCategory.Name,String.Join(",", nonValidDates)); }
+            if (nonValidDates.Count != 0) { TempData["Message"] = String.Format("Selected Sitting Catagory {0} is not created for date {1} because of overlapping with existing sittings.", sittingCategory.Name, String.Join(",", nonValidDates)); }
 
             _cxt.Sittings.AddRange(sittings);
+
             await _cxt.SaveChangesAsync();
+
+            //CreateSittingUnits();
+            int sittingId = await _cxt.Sittings.MaxAsync(s => s.Id)-sittings.Count;
+            
+            for (int i = 0; i < sittings.Count; i++)
+            {
+                await CreateSittingUnits(sittingId, m.SittingCategoryId);
+                sittingId++;
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -99,20 +110,21 @@ namespace ReservationSystem.Controllers
         }
 
         //add sitting units for a sitting to database
-        public async Task CreateSittingUnits(SittingModel sittingModel)
+        public async Task CreateSittingUnits(int sittingId,int sittingCategoryId)
         {
-            //    var sUnits = new List<SittingUnit>();
-            //    var sUnit = new SittingUnit(sittingModel.Id);
-            //    foreach (var ts in sittingModel.Timeslots)
-            //    {
-            //        sUnit.TimeslotId = ts.Id;
-            //        foreach (var tb in sittingModel.Tables)
-            //        {
-            //            sUnit.TableId = tb.Id;
-            //            sUnits.Add(sUnit);
-            //        }
-            //    }
-            //    await _cxt.SittingUnits.AddRangeAsync(sUnits);
+            var sUnits = new List<SittingUnit>();
+            var scTables = _cxt.SCTables.Where(t=>t.SittingCategoryId== sittingCategoryId).ToList();
+            var scTimeslots = _cxt.SCTimeslots.Where(t => t.SittingCategoryId == sittingCategoryId).ToList();
+
+            foreach (var scTable in scTables)
+            {
+                foreach (var scTimeslot in scTimeslots)
+                {
+                    sUnits.Add(new SittingUnit(sittingId,scTimeslot.Id,scTable.Id));
+                }
+            }
+            _cxt.SittingUnits.AddRange(sUnits);
+                        
             await _cxt.SaveChangesAsync();
         }
 
