@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data;
+using ReservationSystem.Models.Reservation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,17 +23,17 @@ namespace ReservationSystem.Controllers
         [HttpGet]
         public async Task<ActionResult> CreateReservation()
         {
-            var allSittings = await GetAllFutureSittings();
-            var dates = new List<DateTime>();
-            foreach(var s in allSittings)
-            {
-                dates.Add(s.Date);
-            }
+            var sittings = await GetAllFutureSittings();
             var m = new Models.Reservation.CreateReservation
             {
-                AllSittings = new SelectList(allSittings),
-                Dates = new SelectList(dates), 
+                SysDateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToUpper(),
+                MaxDate = sittings.Max(s => s.Date),
+                AvailableSittings = new List<AvailableSitting>()
             };
+            foreach (var s in sittings)
+            {
+                m.AvailableSittings.Add(new AvailableSitting { Id = s.Id, Date = s.Date.ToShortDateString() });
+            }
             return View(m);
         }
 
@@ -42,8 +44,7 @@ namespace ReservationSystem.Controllers
             return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past).OrderBy(s => s.Date).ToListAsync();
         }
 
-
-        public Customer FindCust()
+        public Customer FindCustomer()
         {
             var cust = new Customer();
             return cust;
@@ -60,7 +61,7 @@ namespace ReservationSystem.Controllers
         //check reservations for a customer
         public async Task<List<Reservation>> CheckReservationByCust()
         {
-            var cust = FindCust();
+            var cust = FindCustomer();
             return await _cxt.Reservations.Include(r => r.Customer).Where(r => r.Customer == cust).ToListAsync();
         }
         #endregion
