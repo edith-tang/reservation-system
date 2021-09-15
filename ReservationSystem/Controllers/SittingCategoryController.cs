@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace ReservationSystem.Controllers
-{    
+{
     public class SittingCategoryController : Controller
     {
         private readonly ApplicationDbContext _cxt;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public SittingCategoryController(ApplicationDbContext cxt, IMapper mapper)
         {
             _cxt = cxt;
@@ -37,14 +37,13 @@ namespace ReservationSystem.Controllers
 
         public async Task<ActionResult> DetailsSC(int id)
         {
-            
             var m = new Models.SittingCategory.DetailsSC
             {
-                SittingCategory= await GetSittingCategoryById(id),
+                SittingCategory = await GetSittingCategoryById(id),
                 SCTimeslots = await GetSCTimeslots(id),
                 SCTables = await GetSCTables(id),
                 SCSittings = await GetSCSittings(id),
-        };
+            };
 
             return View(m);
         }
@@ -69,7 +68,7 @@ namespace ReservationSystem.Controllers
                 await _cxt.SaveChangesAsync();
 
                 var id = GetSittingCategoryId();
-                await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes,0), id);
+                await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes, 0), id);
                 await CreateSCTables(id, m.TablesId);
                 return RedirectToAction(nameof(Index));
             }
@@ -77,14 +76,14 @@ namespace ReservationSystem.Controllers
             {
                 m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
                 return View(m);
-            }            
+            }
         }
 
-        #region METHODS
+        #region SC METHODS
         //generate id for a new sitting category
         public int GetSittingCategoryId()
         {
-            return _cxt.SittingCategories.Max(s => s.Id) ;
+            return _cxt.SittingCategories.Max(s => s.Id);
         }
 
         //create a list of timeslots for a sitting category
@@ -98,12 +97,11 @@ namespace ReservationSystem.Controllers
                 for (int i = 0; i < duration.TotalMinutes / interval.TotalMinutes; i++)
                 {
                     tList.Add(new SCTimeslot(sittingCategoryId, tStartTime, tEndTime));
-                    tStartTime=tStartTime.Add(interval);
-                    tEndTime=tEndTime.Add(interval);
+                    tStartTime = tStartTime.Add(interval);
+                    tEndTime = tEndTime.Add(interval);
                 }
                 _cxt.SCTimeslots.AddRange(tList);
                 await _cxt.SaveChangesAsync();
-
             }
             else
             {
@@ -118,7 +116,7 @@ namespace ReservationSystem.Controllers
             var tList = new List<SCTable>();
             foreach (var ti in tablesId)
             {
-                tList.Add(new SCTable(sittingCategoryId,ti));
+                tList.Add(new SCTable(sittingCategoryId, ti));
             }
             _cxt.SCTables.AddRange(tList);
             await _cxt.SaveChangesAsync();

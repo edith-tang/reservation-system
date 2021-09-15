@@ -35,6 +35,7 @@ namespace ReservationSystem.Controllers
             return View(m);
         }
 
+        #region RESERVATION METHODS
         //find all active sittings and dates
         public async Task<List<Sitting>> GetAllFutureSittings()
         {
@@ -62,5 +63,6 @@ namespace ReservationSystem.Controllers
             var cust = FindCust();
             return await _cxt.Reservations.Include(r => r.Customer).Where(r => r.Customer == cust).ToListAsync();
         }
+        #endregion
     }
 }
