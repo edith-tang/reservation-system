@@ -9,13 +9,13 @@ namespace ReservationSystem.Data
 {
     public class Sitting
     {
-        public int Id { get; protected set; }
-        public int SittingCategoryId { get; protected set; }
-        public DateTime Date { get; protected set; }
-        public SittingStatus Status { get; protected set; }
+        public int Id { get; set; }
+        public int SittingCategoryId { get; set; }
+        public DateTime Date { get; set; }
+        public SittingStatus Status { get; set; }
 
         #region RELATIONSHIPS        
-        public SittingCategory SittingCategory { get; protected set; }
+        public SittingCategory SittingCategory { get; set; }
         //public List<Reservation> Reservations { get; protected set; }
         //public List<SittingUnit> SittingUnits { get; protected set; }
         #endregion

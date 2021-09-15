@@ -11,6 +11,8 @@ namespace ReservationSystem.Data
         public int Id { get; private set; }
         public int SittingCategoryId { get; private set; }
         public TimeSpan StartTime { get; private set; }
+
+        public TimeSpan Duration { get=>EndTime-StartTime;  }
         public TimeSpan EndTime { get; private set; }
         
         #region RELATIONSHIPS        

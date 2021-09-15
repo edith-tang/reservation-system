@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Models.Sitting
 {
-    public class CreateS
+    public class CreateSitting
     {
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
