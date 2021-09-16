@@ -14,14 +14,11 @@ namespace ReservationSystem.Models.Reservation
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
-
-        public int SittingsListId { get; set; }
-        public SelectList SittingsList { get; set; }
-
         public DateTime MaxDate { get; set; }
         public string SysDateFormat { get; set; }
-
-        public List<AvailableSitting> AvailableSittings { get; set; }
+        public List<FutureSitting> FutureSittings { get; set; }
+        public int SelectedSittingId { get; set; }
+        public FutureSitting SelectedSitting { get; set; }
 
         public int NumOfGuests { get; set; }
         public TimeSpan StartTime { get; set; }
@@ -29,14 +26,17 @@ namespace ReservationSystem.Models.Reservation
         public TimeSpan EndTime { get => StartTime + Duration; }
         public string Notes { get; set; }
 
-        public DateTime TimeOfBooking { get; set; }
-        public WayOfBooking WayOfBooking { get; set; }
-        public ReservationStatus Status { get; set; }
+        //public DateTime TimeOfBooking { get; set; }
+        //public WayOfBooking WayOfBooking { get; set; }
+        //public ReservationStatus Status { get; set; }
     }
 
-    public class AvailableSitting
+    public class FutureSitting
     {
         public int Id { get; set; }
         public string Date { get; set; }
+        public string SCName { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }
