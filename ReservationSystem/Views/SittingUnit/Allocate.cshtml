@@ -89,6 +89,34 @@
     </div>
 </div>
 
+<table>
+    <thead>
+        <tr>
+            <td></td>
+            @foreach (var ts in Model.SCTimeslots)
+            {
+                <td>@ts.StartTime</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.SCTables)
+        {
+        <tr>
+            <td>@t.Table.Name</td>
+            @foreach (var ts in Model.SCTimeslots)
+            {
+
+            <td><button>@ts.Id @t.Id @Model.AvailableSittingUnits.FirstOrDefault(asu=>asu.TimeslotId==ts.Id&&asu.TableId==t.Id).Id</button></td>
+
+            }
+        </tr>
+
+    }
+        </tbody>
+    </table>
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

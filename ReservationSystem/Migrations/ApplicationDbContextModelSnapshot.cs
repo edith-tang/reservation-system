@@ -414,6 +414,10 @@ namespace ReservationSystem.Migrations
 
                     b.HasIndex("SittingId");
 
+                    b.HasIndex("TableId");
+
+                    b.HasIndex("TimeslotId");
+
                     b.ToTable("SittingUnits");
                 });
 
@@ -742,9 +746,25 @@ namespace ReservationSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ReservationSystem.Data.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReservationSystem.Data.SCTimeslot", "Timeslot")
+                        .WithMany()
+                        .HasForeignKey("TimeslotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Reservation");
 
                     b.Navigation("Sitting");
+
+                    b.Navigation("Table");
+
+                    b.Navigation("Timeslot");
                 });
 
             modelBuilder.Entity("ReservationSystem.Data.Customer", b =>

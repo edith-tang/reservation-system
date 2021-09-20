@@ -20,8 +20,8 @@ namespace ReservationSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var sittingUnits = await _cxt.SittingUnits
-                .Include(su=>su.Reservation)
-                .Include(su => su.Sitting).OrderBy(su=>su.Sitting.Date)
+                .Include(su => su.Reservation)
+                .Include(su => su.Sitting).OrderBy(su => su.Sitting.Date)
                 .ToListAsync();
             return View(sittingUnits);
         }
@@ -34,10 +34,36 @@ namespace ReservationSystem.Controllers
 
             if (id.HasValue)
             {
-                m.Reservation = await _cxt.Reservations.Include(r=>r.Sitting).ThenInclude(s=>s.SittingCategory).FirstOrDefaultAsync();
-                m.SittingUnits = new MultiSelectList(_cxt.SittingUnits.Where(su => su.SittingId == m.Reservation.SittingId).ToArray(), nameof(SittingUnit.Id), nameof(SittingUnit.TableId));
+                m.Reservation = await _cxt.Reservations
+                    .Include(r => r.Sitting.SittingCategory).ThenInclude(sc => sc.SCTables.OrderBy(t=>t.Table.Id)).ThenInclude(sct=>sct.Table)
+                    .Include(r => r.Sitting.SittingCategory).ThenInclude(sc => sc.SCTimeslots.OrderBy(t=>t.StartTime))
+                    .Include(r=>r.Sitting.SittingUnits)
+                    .FirstOrDefaultAsync(r=>r.Id==id);
+
+                //get row and colomns
+                m.SCTimeslots = m.Reservation.Sitting.SittingCategory.SCTimeslots;
+                m.SCTables = m.Reservation.Sitting.SittingCategory.SCTables;
+                m.AvailableSittingUnits= m.Reservation.Sitting.SittingUnits;
+
+                var availableSittingUnits = _cxt.SittingUnits
+                    .Where(su => su.SittingId == m.Reservation.SittingId)
+                    .Select(su => new
+                    {
+                        Id = su.Id,
+                        Description = $"{ su.TableId}-- {su.TimeslotId}"
+                    }).ToList();
+
+                m.SittingUnits = new MultiSelectList(availableSittingUnits, "Id", "Description");
             }
 
+            return View(m);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Allocate(Models.SittingUnit.Allocate m)
+        {
+
+            await _cxt.SaveChangesAsync();
             return View(m);
         }
     }
