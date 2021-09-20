@@ -22,7 +22,7 @@ namespace ReservationSystem.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var reservations = await _cxt.Reservations.Include(r => r.Customer).ToListAsync();
+            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ToListAsync();
             return View(reservations);
         }
 
@@ -31,7 +31,14 @@ namespace ReservationSystem.Controllers
             return View();
         }
 
-        [HttpGet]
+        public async Task<ActionResult> Details(int id)
+        {
+            var reservation = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ThenInclude(s => s.SittingCategory)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            return View(reservation);
+        }
+
+            [HttpGet]
         public async Task<ActionResult> CreateReservation()
         {
             var sittings = await GetAllFutureSittings();
@@ -43,13 +50,14 @@ namespace ReservationSystem.Controllers
             };
             foreach (var s in sittings)
             {
-                m.FutureSittings.Add(new FutureSitting { 
-                    Id = s.Id, 
+                m.FutureSittings.Add(new FutureSitting
+                {
+                    Id = s.Id,
                     Date = s.Date.ToShortDateString(),
                     SCName = s.SittingCategory.Name,
                     StartTime = s.SittingCategory.StartTime.ToString(@"hh\:mm\:ss"),
                     EndTime = s.SittingCategory.EndTime.ToString(@"hh\:mm\:ss"),
-                });;
+                }); ;
             }
             return View(m);
         }
@@ -68,15 +76,15 @@ namespace ReservationSystem.Controllers
                 TimeOfBooking = DateTime.Now,
                 Status = Data.Enums.ReservationStatus.Pending,
             };
-                _cxt.Reservations.Add(reservation);
+            _cxt.Reservations.Add(reservation);
             await _cxt.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-            #region RESERVATION METHODS
-            //find all active sittings and dates
-            public async Task<List<Sitting>> GetAllFutureSittings()
+        #region RESERVATION METHODS
+        //find all active sittings and dates
+        public async Task<List<Sitting>> GetAllFutureSittings()
         {
             return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past).Include(s => s.SittingCategory).ToListAsync();
         }

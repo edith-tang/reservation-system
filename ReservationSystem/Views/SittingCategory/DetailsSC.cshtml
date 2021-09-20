@@ -39,24 +39,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">
-                Start Time
-            </th>
-            <th scope="col">
-                End Time
-            </th>
+            <th scope="col">Start Time</th>
+            <th scope="col">End Time</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.SCTimeslots)
         {
         <tr>
-            <td>
-                @item.StartTime
-            </td>
-            <td>
-                @item.EndTime
-            </td>
+            <td>@item.StartTime</td>
+            <td>@item.EndTime</td>
         </tr>
         }
     </tbody>
@@ -66,24 +58,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">
-                Area
-            </th>
-            <th scope="col">
-                Name
-            </th>
+            <th scope="col">Area</th>
+            <th scope="col">Name</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.SCTables)
         {
         <tr>
-            <td>
-                @item.Table.Area
-            </td>
-            <td>
-                @item.Table.Name
-            </td>
+            <td>@item.Table.Area</td>
+            <td>@item.Table.Name</td>
         </tr>
         }
     </tbody>
@@ -106,12 +90,8 @@
         @foreach (var item in Model.SCSittings)
         {
         <tr>
-            <td>
-                @item.Date
-            </td>
-            <td>
-                @item.Status
-            </td>
+            <td>@item.Date</td>
+            <td>@item.Status</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
