@@ -1,54 +1,54 @@
-﻿@model IEnumerable<ReservationSystem.Data.Sitting>
+﻿@model IEnumerable<ReservationSystem.Models.Sitting.QuerySitting>
 
 @{
-    ViewData["Title"] = "Index -Sitting";
+    ViewData["Title"] = "Index -Sittings";
 }
 
-<h1>Index</h1>
+<h3>All Sittings</h3>
 
 <p>
-    <a asp-action="CreateSitting">Create New</a>
+    <a asp-action="CreateSitting">Create</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SittingCategory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SittingCategory.Capacity)
-            </th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>@* make this clickable *@Sitting Category</th>
+            <th>Capacity</th>
+            <th>Used Capacity</th>
+            <th>Remaining Capacity</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SittingCategory.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SittingCategory.Capacity)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SittingCategory.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsedCapacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RemainingCapacity)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

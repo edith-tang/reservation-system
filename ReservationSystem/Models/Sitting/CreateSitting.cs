@@ -24,23 +24,6 @@ namespace ReservationSystem.Models.Sitting
 
         public Data.SittingCategory SittingCategory { get; set; }
 
-        //public List<Reservation> Reservations { get; protected set; }
         //public List<SittingUnit> SittingUnits { get; protected set; }
-
-
-        //public int Capacity { get => SittingCategory.Capacity; }
-        //public int UsedCapacity
-        //{
-        //    get
-        //    {
-        //        int usedCapacity = 0;
-        //        foreach (var r in Reservations)
-        //        {
-        //            usedCapacity += r.NumOfGuests;
-        //        }
-        //        return usedCapacity;
-        //    }
-        //}
-        //public int RemainingCapacity { get => SittingCategory.Capacity - UsedCapacity; }
     }
 }

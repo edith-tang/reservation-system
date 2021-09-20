@@ -4,55 +4,71 @@
     ViewData["Title"] = "Create a Sitting Category";
 }
 
-<h1>CreateSC</h1>
+<h3>Create a New Sitting Category</h3>
+<p></p>
 
-<a class="btn btn-info" role="button" asp-action="Index">Back to List</a>
-
-<br />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-12">
+
         <form asp-action="CreateSC">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Capacity" class="control-label"></label>
+                    <input asp-for="Capacity" class="form-control" />
+                    <span asp-validation-for="Capacity" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" />
-                <span asp-validation-for="Capacity" class="text-danger"></span>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="StartTime" class="control-label"></label>
+                    <input asp-for="StartTime" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Duration" class="control-label"></label>
+                    <input asp-for="Duration" class="form-control" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="IntervalHours" class="control-label"></label>
+                    <input asp-for="IntervalHours" class="form-control" />
+                    <span asp-validation-for="IntervalHours" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="IntervalMinutes" class="control-label"></label>
+                    <input asp-for="IntervalMinutes" class="form-control" />
+                    <span asp-validation-for="IntervalMinutes" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
+
+            <div class="row">
+                <div class="form-group  col-12">
+                    <label asp-for="TablesId" class="control-label"></label>
+                    <select asp-for="TablesId" asp-items="Model.Tables" class="form-control" multiple="multiple">
+                    </select>
+                    <span asp-validation-for="TablesId" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IntervalHours" class="control-label"></label>
-                <input asp-for="IntervalHours" class="form-control" />
-                <span asp-validation-for="IntervalHours" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IntervalMinutes" class="control-label"></label>
-                <input asp-for="IntervalMinutes" class="form-control" />
-                <span asp-validation-for="IntervalMinutes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TablesId" class="control-label"></label>
-                <select asp-for="TablesId" asp-items="Model.Tables" class="form-control" multiple="multiple">
-                </select>
-                <span asp-validation-for="TablesId" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
         </form>
+
+        <a class="btn btn-info" role="button" asp-action="Index">Back to List</a>
+
     </div>
 </div>
 

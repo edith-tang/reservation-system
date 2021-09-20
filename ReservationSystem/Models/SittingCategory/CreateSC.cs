@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace ReservationSystem.Models.SittingCategory
 {
     public class CreateSC
-    {
-        
+    {       
         public string Name { get;  set; }
         public int Capacity { get;  set; }
         public TimeSpan StartTime { get;  set; }
@@ -19,12 +18,7 @@ namespace ReservationSystem.Models.SittingCategory
         public int IntervalHours { get;  set; }
         public int IntervalMinutes { get;  set; }
 
-
-
         public int[] TablesId { get; set; }
         public MultiSelectList Tables { get; set; }
-
-        
-
     }
 }

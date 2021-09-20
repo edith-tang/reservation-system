@@ -14,10 +14,10 @@ namespace ReservationSystem.Data
         public DateTime Date { get; set; }
         public SittingStatus Status { get; set; }
 
-        #region RELATIONSHIPS        
+        #region RELATIONSHIPS
         public SittingCategory SittingCategory { get; set; }
-        //public List<Reservation> Reservations { get; protected set; }
-        //public List<SittingUnit> SittingUnits { get; protected set; }
+        public List<Reservation> Reservations { get; set; }
+        public List<SittingUnit> SittingUnits { get; set; }
         #endregion
     }
 }

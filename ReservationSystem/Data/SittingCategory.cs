@@ -15,10 +15,11 @@ namespace ReservationSystem.Data
         public TimeSpan StartTime { get; private set; }
         public TimeSpan Duration { get; private set; }
         public TimeSpan EndTime { get => StartTime + Duration; }
-                
+
         #region RELATIONSHIPS        
-        //public List<SCTimeslot> SCTimeslots { get; private set; }
-        //public List<SCTable> SCTables { get; private set; }
+        public List<SCTimeslot> SCTimeslots { get; private set; }
+        public List<SCTable> SCTables { get; private set; }
+        public List<Sitting> SCSittings { get; private set; }
         #endregion
     }
 }

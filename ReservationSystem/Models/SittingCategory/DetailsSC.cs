@@ -9,8 +9,6 @@ namespace ReservationSystem.Models.SittingCategory
 {
     public class DetailsSC
     {
-
-
         public Data.SittingCategory SittingCategory { get; set; }
         public List<SCTimeslot> SCTimeslots { get; set; }
         public List<SCTable> SCTables { get; set; }

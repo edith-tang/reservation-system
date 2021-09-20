@@ -18,7 +18,7 @@ namespace ReservationSystem.Data
         public TimeSpan Duration { get; set; }
         public TimeSpan EndTime { get => StartTime + Duration; }
         public string Notes { get; set; }
-
+        
         public DateTime TimeOfBooking { get; set; }
         public WayOfBooking WayOfBooking { get; set; }
         public ReservationStatus Status { get; set; }
@@ -26,7 +26,6 @@ namespace ReservationSystem.Data
         #region RELATIONSHIPS
         public Customer Customer { get; private set; }
         public Sitting Sitting { get; set; }
-        //public List<SittingUnit> SeatAllocations { get; set; }
         #endregion
 
         //#region CONSTRUCTOR

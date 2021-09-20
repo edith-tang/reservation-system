@@ -10,8 +10,8 @@ using ReservationSystem.Data;
 namespace ReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210913111859_003")]
-    partial class _003
+    [Migration("20210920073140_001")]
+    partial class _001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -694,7 +694,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SCTable", b =>
                 {
                     b.HasOne("ReservationSystem.Data.SittingCategory", "SittingCategory")
-                        .WithMany()
+                        .WithMany("SCTables")
                         .HasForeignKey("SittingCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -713,7 +713,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SCTimeslot", b =>
                 {
                     b.HasOne("ReservationSystem.Data.SittingCategory", "SittingCategory")
-                        .WithMany()
+                        .WithMany("SCTimeslots")
                         .HasForeignKey("SittingCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -724,7 +724,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.Sitting", b =>
                 {
                     b.HasOne("ReservationSystem.Data.SittingCategory", "SittingCategory")
-                        .WithMany()
+                        .WithMany("SCSittings")
                         .HasForeignKey("SittingCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -735,7 +735,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SittingUnit", b =>
                 {
                     b.HasOne("ReservationSystem.Data.Reservation", "Reservation")
-                        .WithMany("SeatAllocations")
+                        .WithMany()
                         .HasForeignKey("ReservationId");
 
                     b.HasOne("ReservationSystem.Data.Sitting", "Sitting")
@@ -754,16 +754,20 @@ namespace ReservationSystem.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("ReservationSystem.Data.Reservation", b =>
-                {
-                    b.Navigation("SeatAllocations");
-                });
-
             modelBuilder.Entity("ReservationSystem.Data.Sitting", b =>
                 {
                     b.Navigation("Reservations");
 
                     b.Navigation("SittingUnits");
+                });
+
+            modelBuilder.Entity("ReservationSystem.Data.SittingCategory", b =>
+                {
+                    b.Navigation("SCSittings");
+
+                    b.Navigation("SCTables");
+
+                    b.Navigation("SCTimeslots");
                 });
 #pragma warning restore 612, 618
         }

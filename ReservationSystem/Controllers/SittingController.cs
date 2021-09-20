@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data;
 using ReservationSystem.Data.Enums;
 using ReservationSystem.Models;
+using ReservationSystem.Models.Sitting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +16,22 @@ namespace ReservationSystem.Controllers
     public class SittingController : Controller
     {
         private readonly ApplicationDbContext _cxt;
-        public SittingController(ApplicationDbContext cxt)
+        private readonly IMapper _mapper;
+        public SittingController(ApplicationDbContext cxt, IMapper mapper)
         {
             _cxt = cxt;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
             var sittings = await GetSittings();
-            return View(sittings);
+            var qSittings = new List<QuerySitting>();
+            foreach (var s in sittings)
+            {
+                QuerySitting qs = _mapper.Map<QuerySitting>(s);
+                qSittings.Add(qs);
+            }
+            return View(qSittings);
         }
 
         public async Task<IActionResult> CreateSitting(int? id)
@@ -36,7 +46,6 @@ namespace ReservationSystem.Controllers
                 m.SittingCategoryId = sittingCategory.Id;
                 m.SittingCategory = sittingCategory;
             }
-
             return View(m);
         }
 
@@ -51,7 +60,7 @@ namespace ReservationSystem.Controllers
 
             for (int i = 0; i < days; i++)
             {
-                if (IsCurrentSittingCategorySelectionValid(date, m.SittingCategoryId))
+                if (SCSelectionValidation(date, m.SittingCategoryId))
                 {
                     sittings.Add(new Sitting
                     {
@@ -59,23 +68,19 @@ namespace ReservationSystem.Controllers
                         Date = date,
                         Status = SittingStatus.Open,
                     });
-
-                    
                 }
                 else { nonValidDates.Add(date.ToString(("MM/dd/yyyy"))); }
 
                 date = date.AddDays(1);
-
             }
+
             if (nonValidDates.Count != 0) { TempData["Message"] = String.Format("Selected Sitting Catagory {0} is not created for date {1} because of overlapping with existing sittings.", sittingCategory.Name, String.Join(",", nonValidDates)); }
 
             _cxt.Sittings.AddRange(sittings);
-
             await _cxt.SaveChangesAsync();
 
             //CreateSittingUnits();
-            int sittingId = await _cxt.Sittings.MaxAsync(s => s.Id)-sittings.Count;
-            
+            int sittingId = await _cxt.Sittings.MaxAsync(s => s.Id) - sittings.Count + 1;
             for (int i = 0; i < sittings.Count; i++)
             {
                 await CreateSittingUnits(sittingId, m.SittingCategoryId);
@@ -89,11 +94,15 @@ namespace ReservationSystem.Controllers
         //load all exisitng Sittings
         public async Task<List<Sitting>> GetSittings()
         {
-            return await _cxt.Sittings.Include(s => s.SittingCategory).ToListAsync();
+            return await _cxt.Sittings
+                .Include(s => s.SittingCategory)
+                .Include(s => s.Reservations)
+                .Include(s => s.SittingUnits)
+                .ToListAsync();
         }
 
         //check whether the selected sittingcategory for a new sitting is overlapped with other sittings for the same date
-        public bool IsCurrentSittingCategorySelectionValid(DateTime date, int sittingCategoryId)
+        public bool SCSelectionValidation(DateTime date, int sittingCategoryId)
         {
             var sittings = _cxt.Sittings.Where(s => s.Date == date).Include(s => s.SittingCategory).ToList();
             var sittingCategory = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == sittingCategoryId);

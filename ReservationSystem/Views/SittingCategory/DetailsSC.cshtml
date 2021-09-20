@@ -1,4 +1,4 @@
-﻿@model ReservationSystem.Models.SittingCategory.DetailsSC
+﻿@model ReservationSystem.Data.SittingCategory
 
 @{
     ViewData["Title"] = "DetailsSC";
@@ -7,32 +7,30 @@
 <h1>Sitting Category Details</h1>
 
 <div>
-    <h4>SittingCategory</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SittingCategory.Name)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SittingCategory.Name)
+            @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SittingCategory.Capacity)
+            @Html.DisplayNameFor(model => model.Capacity)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SittingCategory.Capacity)
+            @Html.DisplayFor(model => model.Capacity)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SittingCategory.StartTime)
+            @Html.DisplayNameFor(model => model.StartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SittingCategory.StartTime)
+            @Html.DisplayFor(model => model.StartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SittingCategory.Duration)
+            @Html.DisplayNameFor(model => model.Duration)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SittingCategory.Duration)
+            @Html.DisplayFor(model => model.Duration)
         </dd>
     </dl>
 </div>
@@ -91,20 +89,16 @@
     </tbody>
 </table>
 
-<h3>DetailsSCSittings</h3>
+<h3>Sittings</h3>
 
 <p>
-    <a class="btn btn-info" role="button" asp-controller="Sitting" asp-action="CreateSitting" asp-route-id="@Model.SittingCategory.Id">Create New</a>
+    <a class="btn btn-info" role="button" asp-controller="Sitting" asp-action="CreateSitting" asp-route-id="@Model.Id">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">
-                Date
-            </th>
-            <th scope="col">
-                Status
-            </th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
             <th></th>
         </tr>
     </thead>
@@ -129,7 +123,6 @@
 </table>
 
 
-<div>
-    
+<div>    
     <a asp-action="Index">Back to List</a>
 </div>
