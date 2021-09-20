@@ -65,6 +65,7 @@ namespace ReservationSystem.Controllers
                 StartTime = m.StartTime,
                 Duration = m.Duration,
                 Notes = m.Notes,
+                TimeOfBooking = DateTime.Now,
                 Status = Data.Enums.ReservationStatus.Pending,
             };
                 _cxt.Reservations.Add(reservation);

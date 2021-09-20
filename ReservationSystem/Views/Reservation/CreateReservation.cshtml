@@ -52,6 +52,7 @@
                     <span asp-validation-for="Notes" class="text-danger"></span>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="form-group col-lg-6">
                     <input type="submit" value="Create" class="btn btn-primary" />
@@ -130,6 +131,12 @@
         });
     });
     </script>
+
+<script>
+    function recordTime() {
+        $('#timeOfSubmit').val = new Date();
+    }
+</script>
 
     @*<script>
             var sittings = @Json.Serialize(Model.FutureSittings);

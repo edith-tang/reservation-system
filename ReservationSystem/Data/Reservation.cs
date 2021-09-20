@@ -18,6 +18,7 @@ namespace ReservationSystem.Data
         public TimeSpan Duration { get; set; }
         public TimeSpan EndTime { get => StartTime + Duration; }
         public string Notes { get; set; }
+
         public DateTime TimeOfBooking { get; set; }
         public WayOfBooking WayOfBooking { get; set; }
         public ReservationStatus Status { get; set; }
