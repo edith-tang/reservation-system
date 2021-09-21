@@ -89,34 +89,47 @@
     </div>
 </div>
 
-<table>
+<table style="border: 2px solid black">
     <thead>
         <tr>
             <td></td>
-            @foreach (var ts in Model.SCTimeslots)
+            @foreach (var t in Model.SCTables)
             {
-                <td>@ts.StartTime</td>
+                <td>@t.Table.Name</td>
             }
         </tr>
     </thead>
     <tbody>
-        @foreach (var t in Model.SCTables)
+        @foreach (var ts in Model.SCTimeslots)
         {
-        <tr>
-            <td>@t.Table.Name</td>
-            @foreach (var ts in Model.SCTimeslots)
-            {
+            <tr>
+                <td>@ts.StartTime</td>
+                @foreach (var t in Model.SCTables)
+                {
 
-            <td><button>@ts.Id @t.Id @Model.AvailableSittingUnits.FirstOrDefault(asu=>asu.TimeslotId==ts.Id&&asu.TableId==t.Id).Id</button></td>
+                    <td><a>@ts.Id @t.Id @Model.AvailableSittingUnits.FirstOrDefault(asu => asu.TimeslotId == ts.Id && asu.TableId == t.Id).Id</a></td>
 
-            }
-        </tr>
+                }
+            </tr>
 
-    }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
+
+<div id="scheduler" style="padding-top: 50px;"></div>
+
+
+
+@section Styles{
+    
+    <link href="~/scheduler/scheduler.css" rel="stylesheet" />
+}
 
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/scheduler/scheduler.js"></script>
+    <script>$("#scheduler").scheduler()</script>
+
 }
