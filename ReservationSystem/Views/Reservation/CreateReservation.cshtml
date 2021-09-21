@@ -19,32 +19,63 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="row">
+            <div class="row" id="CustInfo">
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustFName" class="control-label">First Name</label>
+                    <input asp-for="Customer.CustFName" class="form-control" />
+                    <span asp-validation-for="Customer.CustFName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustLName" class="control-label">Last Name</label>
+                    <input asp-for="Customer.CustLName" class="form-control" />
+                    <span asp-validation-for="Customer.CustLName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustEmail" class="control-label">Email</label>
+                    <input asp-for="Customer.CustEmail" class="form-control" />
+                    <span asp-validation-for="Customer.CustEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustPhone" class="control-label">Phone</label>
+                    <input asp-for="Customer.CustPhone" class="form-control" />
+                    <span asp-validation-for="Customer.CustPhone" class="text-danger"></span>
+                </div>
+            </div>
+
+            @*<div class="row">
                 <div class="form-group col-6">
                     <label class="control-label">Selecte a date:</label>
-                    <input type="text" id="demo" class="form-control" />
+                    <input type="text" id="datepicker" class="form-control" autocomplete="off" />
+                </div>
+            </div>*@
+
+            <div class="row" id="SelectSitting">
+                <div class="form-group col-6">
+                    <label class="control-label">Selecte a date:</label>
+                    <input type="text" class="form-control" id="Calendar" />
                 </div>
                 <div class="form-group col-6">
                     <label class="control-label">Select a Sitting:</label>
-                    <select asp-for="SelectedSittingId" id="sittings" class="form-control"></select>
+                    <select asp-for="SelectedSittingOptionId" class="form-control" id="Sittings" ></select>
+                </div>
+            </div>
+
+            <div class="row" id="SelectTime">
+                @* in line with sc timeslot start time *@
+                <div class="form-group col-6">
+                    <label class="control-label">Expected Arrival</label>
+                    <select type="text" class="form-control" id="StartTimes"></select>
+                </div>
+                @* in line with sc timeslot duration *@
+                <div class="form-group col-6">
+                    <label class="control-label">Expected Leave</label>
+                    <select type="text" class="form-control" id="EndTimes"></select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="form-group col-6">
-                    <label asp-for="StartTime" class="control-label">Expected Arrival</label>
-                    <input asp-for="StartTime" class="form-control" />
-                    <span asp-validation-for="StartTime" class="text-danger"></span>
-                </div>
-                <div class="form-group col-6">
-                    <label asp-for="Duration" class="control-label">Expected Duration</label>
-                    <input asp-for="Duration" class="form-control" />
-                    <span asp-validation-for="Duration" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group col-6">
+                    @* can't exceed remaining capacity' *@
                     <label asp-for="NumOfGuests" class="control-label">Number of Guests</label>
                     <input asp-for="NumOfGuests" class="form-control" min="1" />
                     <span asp-validation-for="NumOfGuests" class="text-danger"></span>
@@ -55,7 +86,7 @@
                     <span asp-validation-for="Notes" class="text-danger"></span>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="form-group col-6">
                     <input type="submit" value="Create" class="btn btn-primary" />
@@ -72,76 +103,111 @@
 </div>
 
 @section Scripts {
-
+    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
-        $('#demo').daterangepicker({
-            "singleDatePicker": true,
-            "showCustomRangeLabel": false,
-            "locale": {
-                "format": "@Model.SysDateFormat",
-                "separator": " - ",
-                "applyLabel": "Apply",
-                "cancelLabel": "Cancel",
-                "fromLabel": "From",
-                "toLabel": "To",
-                "customRangeLabel": "Custom",
-                "weekLabel": "W",
-                "daysOfWeek": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu",
-                    "Fri",
-                    "Sat"
-                ],
-                "monthNames": [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December"
-                ],
-                "firstDay": 1
-            },
-            "minDate": "@minDay",
-            "maxDate": "@maxDay"
-        }, function () { });
+        $('#Calendar').daterangepicker({
+                "singleDatePicker": true,
+                "showCustomRangeLabel": false,
+                "locale": {
+                    "format": "@Model.SysDateFormat",
+                    "separator": " - ",
+                    "applyLabel": "Apply",
+                    "cancelLabel": "Cancel",
+                    "fromLabel": "From",
+                    "toLabel": "To",
+                    "customRangeLabel": "Custom",
+                    "weekLabel": "W",
+                    "daysOfWeek": [
+                        "Sun",
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat"
+                    ],
+                    "monthNames": [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                    ],
+                    "firstDay": 1
+                },
+                "minDate": "@minDay",
+                "maxDate": "@maxDay"
+            }, function () { });
     </script>
 
-    <script>
-        var sittings = @Json.Serialize(Model.FutureSittings);
-        var filter;
-        var filteredSittings;
-        $('#demo').on('change', function () {
-        filter = this.value;
-        filteredSittings = sittings.filter(s => s.date == filter);
-        $('#sittings').empty();
-        $.each(filteredSittings, function (i, item) {
-            $('#sittings').append($('<option>', {
-                value: item.id,
-                text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
-            }));
-        });
-    });
-
-    </script>
+    @*<script>
+            var reserveddates = ['21-09-30', '21-10-31'];
+            $('#datepicker').datepicker({
+                beforeShowDay: function (date) {
+                    var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                    return [reserveddates.indexOf(string) == -1]
+                }
+            });
+        </script>*@
 
 <script>
-    function recordTime() {
-        $('#timeOfSubmit').val = new Date();
-    }
-</script>
+    var sittingOptions = @Json.Serialize(Model.SittingOptions);
+    var filter;
+    var filteredSittings;
+
+    $('#Calendar').on('change', function () {
+        //when a different date is selected, empty all other dropdown lists
+        $('#Sittings').empty();
+        $('#StartTimes').empty();
+        $('#EndTimes').empty();
+
+        //find all sittings for the selected date, if exist, create a dropdown list for the sittings
+        filter = this.value;
+        filteredSittings = sittingOptions.filter(s => s.date == filter);
+        if (filteredSittings.length > 0) {
+            $('#Sittings').append($('<option>', {
+                value: "none", text: '-- Select a Sitting --', selected: true, disabled: true,
+            }));
+            $.each(filteredSittings, function (i, item) {
+                $('#Sittings').append($('<option>', {
+                    value: item.id, text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
+                }));
+            });
+        }
+    });
+
+    //get all start times for the selected sitting from server
+    $('#Sittings').on('change', function () {
+        $.ajax({
+            type: "GET",
+            url: '/Reservation/GetTimeslots',
+            data: { sittingId: this.value },
+            dataType: "json",
+            success: function (response) {
+                $('#StartTimes').empty();
+                $('#StartTimes').append($('<option>', {
+                    value: "none", text: '-- Select a Start Time --', selected: true, disabled: true,
+                }));
+                $.each(response, function (i, item) {
+                    $('#StartTimes').append($('<option>', {
+                        text: item
+                    }));
+                });
+            },
+        });
+    })
+    
+    </script>
 
     @*<script>
             var sittings = @Json.Serialize(Model.FutureSittings);

@@ -16,24 +16,24 @@
 
             <div class="row">
                 <div class="form-group col-6">
-                    <label asp-for="StartDate" class="control-label"></label>
+                    <label asp-for="StartDate" class="control-label">Start Date</label>
                     <input asp-for="StartDate" class="form-control" />
                     <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-6">
-                    <label asp-for="EndDate" class="control-label"></label>
+                    <label asp-for="EndDate" class="control-label">End Date</label>
                     <input asp-for="EndDate" class="form-control" />
                     <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
             </div>
 
+
             @if (Model.SittingCategoryId > 0)
             {
                 <input type="hidden" asp-for="SittingCategoryId" />
                 <div>
-                    <h4>Current SittingCategory</h4>
-                    <hr />
+                    <h4>Sitting Category Info</h4>
                     <dl class="row">
                         <dt class="col-sm-2">
                             @Html.DisplayNameFor(model => model.SittingCategory.Name)
@@ -54,20 +54,46 @@
                             @Html.DisplayFor(model => model.SittingCategory.StartTime)
                         </dd>
                         <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.SittingCategory.Duration)
+                            @Html.DisplayNameFor(model => model.SittingCategory.EndTime)
                         </dt>
                         <dd class="col-sm-10">
-                            @Html.DisplayFor(model => model.SittingCategory.Duration)
+                            @Html.DisplayFor(model => model.SittingCategory.EndTime)
                         </dd>
                     </dl>
                 </div>
             }
             else
             {
-                <div class="form-group col-6">
-                    <label asp-for="SittingCategoryId" class="control-label"></label>
-                    <select asp-for="SittingCategoryId" asp-items="Model.SittingCategories" class="form-control"></select>
-                    <span asp-validation-for="SittingCategoryId" class="text-danger"></span>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label asp-for="SittingCategoryId" class="control-label">Sitting Category</label>
+                        <select id="select" asp-for="SittingCategoryId" asp-items="@Model.SittingCategories" class="form-control">
+                            <option value="none" selected disabled hidden>-- Select a Sitting Category --</option>
+                        </select>
+                        <span asp-validation-for="SittingCategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Sitting Category Info</h4>
+                    <dl class="row">
+                        <dt class="col-sm-2">Category</dt>
+                        <dd class="col-sm-10">
+
+                        </dd>
+                        <dt class="col-sm-2">Capacity</dt>
+                        <dd class="col-sm-10">
+
+                        </dd>
+                        <dt class="col-sm-2">Start Time</dt>
+                        <dd class="col-sm-10">
+
+                        </dd>
+                        <dt class="col-sm-2">End Time</dt>
+                        <dd class="col-sm-10">
+
+                        </dd>
+                    </dl>
                 </div>
             }
 
@@ -85,5 +111,17 @@
 </div>
 
 @section Scripts {
+    <script>
+        var allSC = @Json.Serialize(Model.SittingCategories);
+
+        $('#select').on('change', function () {
+            var scId = this.value;
+            var sc = allSC.find(s => s.id == scId);
+            alert(sc.text);
+        });
+    </script>
+
+
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

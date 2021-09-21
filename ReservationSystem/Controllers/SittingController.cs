@@ -15,6 +15,7 @@ namespace ReservationSystem.Controllers
 {
     public class SittingController : Controller
     {
+        #region DI
         private readonly ApplicationDbContext _cxt;
         private readonly IMapper _mapper;
         public SittingController(ApplicationDbContext cxt, IMapper mapper)
@@ -22,21 +23,25 @@ namespace ReservationSystem.Controllers
             _cxt = cxt;
             _mapper = mapper;
         }
-        public async Task<IActionResult> Index()
+        #endregion
+
+        #region ACTION METHODS
+        public async Task<IActionResult> IndexSitting()
         {
-            var sittings = await GetSittings();
-            var qSittings = new List<QuerySitting>();
-            foreach (var s in sittings)
-            {
-                QuerySitting qs = _mapper.Map<QuerySitting>(s);
-                qSittings.Add(qs);
-            }
-            return View(qSittings);
+            var sittings = await GetSittings();            
+            return View(sittings);
         }
 
+        public async Task<IActionResult> DetailsSitting(int id)
+        {
+            var sitting = await GetSittingById(id);
+            return View(sitting);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> CreateSitting(int? id)
         {
-            var m = new Models.Sitting.CreateSitting();
+            var m = new CreateSitting();
             if (id.HasValue)
             {
                 var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == id);
@@ -91,8 +96,9 @@ namespace ReservationSystem.Controllers
                 sittingId++;
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexSitting));
         }
+        #endregion
 
         #region SITTING METHODS
         //load all exisitng Sittings
@@ -103,6 +109,13 @@ namespace ReservationSystem.Controllers
                 .Include(s => s.Reservations)
                 .Include(s => s.SittingUnits)
                 .ToListAsync();
+        }
+
+        //find a sitting by id
+        public async Task<Sitting> GetSittingById(int id)
+        {
+            var allSittings = await GetSittings();
+            return allSittings.FirstOrDefault(s => s.Id == id);
         }
 
         //check if the sitting to be created overlaps with existing sittings
@@ -142,16 +155,6 @@ namespace ReservationSystem.Controllers
             _cxt.SittingUnits.AddRange(sUnits);
                         
             await _cxt.SaveChangesAsync();
-        }
-
-        //find a sitting from database
-        public async Task<Sitting> FindSitting(DateTime date)
-        {
-            //filter sittings by date
-            var sittings = await _cxt.Sittings.Where(s => s.Date == date).ToListAsync();
-            //add filter for sittings to locate the sitting
-            var sitting = new SittingModel();
-            return sitting;
         }
         #endregion
     }

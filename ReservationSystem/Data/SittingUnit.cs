@@ -28,15 +28,6 @@ namespace ReservationSystem.Data
             TableId = tableId;
             Status = SittingUnitStatus.Available;
         }
-
-        //public SittingUnit(int sittingId, int? reservationId, int status, int timeslotId, int tableId)
-        //{
-        //    SittingId = sittingId;
-        //    if (reservationId.HasValue) { ReservationId = reservationId.Value; }
-        //    Status = (SittingUnitStatus)status;
-        //    TimeslotId = timeslotId;
-        //    TableId = tableId;
-        //}
         #endregion
     }
 }

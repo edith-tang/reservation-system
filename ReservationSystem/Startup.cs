@@ -31,7 +31,6 @@ namespace ReservationSystem
             services.AddAutoMapper(cfg =>
             {
                 cfg.CreateMap<Models.SittingCategory.CreateSC, Data.SittingCategory>();
-                cfg.CreateMap<Data.Sitting, Models.Sitting.QuerySitting>();
             });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

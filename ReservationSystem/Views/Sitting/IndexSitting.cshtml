@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReservationSystem.Models.Sitting.QuerySitting>
+﻿@model IEnumerable<ReservationSystem.Data.Sitting>
 
 @{
     ViewData["Title"] = "Index -Sittings";
@@ -7,14 +7,14 @@
 <h3>All Sittings</h3>
 
 <p>
-    <a asp-action="CreateSitting">Create</a>
+    <a class="btn btn-info" role="button" asp-action="CreateSitting">Create</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>Date</th>
             <th>Status</th>
-            <th>@* make this clickable *@Sitting Category</th>
+            <th>Sitting Category</th>
             <th>Capacity</th>
             <th>Used Capacity</th>
             <th>Remaining Capacity</th>
@@ -44,9 +44,7 @@
                 @Html.DisplayFor(modelItem => item.RemainingCapacity)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-info" role="button" asp-action="DetailsSitting" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
         }

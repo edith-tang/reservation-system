@@ -414,10 +414,6 @@ namespace ReservationSystem.Migrations
 
                     b.HasIndex("SittingId");
 
-                    b.HasIndex("TableId");
-
-                    b.HasIndex("TimeslotId");
-
                     b.ToTable("SittingUnits");
                 });
 
@@ -737,7 +733,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SittingUnit", b =>
                 {
                     b.HasOne("ReservationSystem.Data.Reservation", "Reservation")
-                        .WithMany()
+                        .WithMany("AllocatedSUs")
                         .HasForeignKey("ReservationId");
 
                     b.HasOne("ReservationSystem.Data.Sitting", "Sitting")
@@ -746,30 +742,19 @@ namespace ReservationSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ReservationSystem.Data.Table", "Table")
-                        .WithMany()
-                        .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReservationSystem.Data.SCTimeslot", "Timeslot")
-                        .WithMany()
-                        .HasForeignKey("TimeslotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Reservation");
 
                     b.Navigation("Sitting");
-
-                    b.Navigation("Table");
-
-                    b.Navigation("Timeslot");
                 });
 
             modelBuilder.Entity("ReservationSystem.Data.Customer", b =>
                 {
                     b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("ReservationSystem.Data.Reservation", b =>
+                {
+                    b.Navigation("AllocatedSUs");
                 });
 
             modelBuilder.Entity("ReservationSystem.Data.Sitting", b =>

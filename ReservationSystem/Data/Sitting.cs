@@ -19,5 +19,19 @@ namespace ReservationSystem.Data
         public List<Reservation> Reservations { get; set; }
         public List<SittingUnit> SittingUnits { get; set; }
         #endregion
+
+        #region GETONLY PROPERTIES
+        public int Capacity { get => SittingCategory.Capacity; }
+        public int UsedCapacity
+        {
+            get
+            {
+                if (Reservations.Count > 0)
+                { return Reservations.Sum(r => r.NumOfGuests); }
+                else { return 0; }
+            }
+        }
+        public int RemainingCapacity { get => Capacity - UsedCapacity; }
+        #endregion
     }
 }

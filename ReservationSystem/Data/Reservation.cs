@@ -18,30 +18,15 @@ namespace ReservationSystem.Data
         public TimeSpan Duration { get; set; }
         public TimeSpan EndTime { get => StartTime + Duration; }
         public string Notes { get; set; }
-        
+
         public DateTime TimeOfBooking { get; set; }
         public WayOfBooking WayOfBooking { get; set; }
         public ReservationStatus Status { get; set; }
 
         #region RELATIONSHIPS
-        public Customer Customer { get; private set; }
+        public Customer Customer { get; set; }
         public Sitting Sitting { get; set; }
+        public List<SittingUnit> AllocatedSUs { get; set; }
         #endregion
-
-        //#region CONSTRUCTOR
-        //public Reservation(int customerId, int sittingId, int numOfGuests, TimeSpan startTime, TimeSpan duration, 
-        //    string notes, DateTime timeOfBooking, int wayOfBooking, int status)
-        //{
-        //    CustomerId = customerId;
-        //    SittingId = sittingId;
-        //    NumOfGuests = numOfGuests;
-        //    StartTime = startTime;
-        //    Duration = duration;
-        //    Notes = notes;
-        //    TimeOfBooking = timeOfBooking;
-        //    WayOfBooking = (WayOfBooking)wayOfBooking;
-        //    Status = (ReservationStatus)status;
-        //}
-        //#endregion
     }
 }

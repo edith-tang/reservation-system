@@ -10,8 +10,8 @@ using ReservationSystem.Data;
 namespace ReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210920073140_001")]
-    partial class _001
+    [Migration("20210921071818_m01")]
+    partial class m01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -735,7 +735,7 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.SittingUnit", b =>
                 {
                     b.HasOne("ReservationSystem.Data.Reservation", "Reservation")
-                        .WithMany()
+                        .WithMany("AllocatedSUs")
                         .HasForeignKey("ReservationId");
 
                     b.HasOne("ReservationSystem.Data.Sitting", "Sitting")
@@ -752,6 +752,11 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.Customer", b =>
                 {
                     b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("ReservationSystem.Data.Reservation", b =>
+                {
+                    b.Navigation("AllocatedSUs");
                 });
 
             modelBuilder.Entity("ReservationSystem.Data.Sitting", b =>
