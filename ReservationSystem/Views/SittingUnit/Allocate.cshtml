@@ -74,7 +74,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateSC">
+        <form asp-action="Allocate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="SittingUnitsId" class="control-label"></label>
@@ -83,13 +83,13 @@
                 <span asp-validation-for="SittingUnitsId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input id="allocate" type="submit" value="Allocate" class="btn btn-primary" />
+                <input id="allocate" type="submit" value="Allocate" class="btn btn-primary" hidden />
             </div>
         </form>
     </div>
 </div>
 
-<input id="allocate1" type="submit" value="Allocate1" class="btn btn-primary" />
+<input id="allocate1" asp-action="Allocate" type="submit" value="Allocate1" class="btn btn-primary" />
 
 <table style="border: 2px solid black">
     <thead>
@@ -141,7 +141,7 @@
         var timeslots =@Json.Serialize(Model.SCTimeslotsDTO);
         var sittingUnits =@Json.Serialize(Model.SittingUnitsDTO);
 
-
+        var reservationId = @Model.Reservation.Id;
         var selectedSittingUnitId = [];
 
         $("#scheduler").scheduler(
@@ -162,6 +162,16 @@
 
             console.log(selectedSittingUnitId);
 
+            //Post back selected ids
+            $.ajax({
+                type: "POST",
+                url: '/SittingUnit/Allocate',
+                data: { reservationId: reservationId, selectedSittingUnitId: selectedSittingUnitId },
+                dataType: "json",
+                success: function (data) {
+                    window.location.href = data;
+                },
+            });
         });
 
     </script>

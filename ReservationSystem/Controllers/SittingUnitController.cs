@@ -97,11 +97,15 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Allocate(Models.SittingUnit.Allocate m)
+        public async Task<IActionResult> Allocate(int reservationId, int[] selectedSittingUnitId)
         {
+            var previousSittingUnits =_cxt.SittingUnits.Where(su => su.ReservationId== reservationId).ToList();
+            previousSittingUnits.ForEach(su => { su.ReservationId = null; su.Status = Data.Enums.SittingUnitStatus.Available; });
 
+            var currentSittingUnits=_cxt.SittingUnits.Where(su => selectedSittingUnitId.Contains(su.Id)).ToList();
+            currentSittingUnits.ForEach(su => { su.ReservationId = reservationId; su.Status = Data.Enums.SittingUnitStatus.Reserved; });
             await _cxt.SaveChangesAsync();
-            return View(m);
+            return Json(Url.Action("Index"));
         }
     }
 }
