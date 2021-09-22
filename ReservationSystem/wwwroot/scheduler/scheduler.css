@@ -3,11 +3,11 @@
 }
 
 #scheduler {
-  display: inline-flex;
-  flex-direction: column;
-  background: white;
-  font-family: Verdana, sans-serif;
-  cursor: default;
+    display: inline-flex;
+    flex-direction: column;
+    background: white;
+    font-family: Verdana, sans-serif;
+    cursor: default;
 }
 
     #scheduler .header {
@@ -68,6 +68,7 @@
         border-left: 1px solid #d9d9d9;
         padding: 4px 0px;
         color: #595959;
+        text-align: center;
     }
 
     #scheduler .rsvn-container {
@@ -77,11 +78,14 @@
     #scheduler .row {
         display: flex;
         flex-direction: row;
+        margin-left: 0px;
+        margin-right: 0px;
     }
 
     #scheduler .cell {
         border-left: 1px solid #d9d9d9;
         border-top: 1px solid #d9d9d9;
+        text-align: center;
     }
 
     #scheduler .reservation {
@@ -107,4 +111,12 @@
     #scheduler .reservation-error {
         background: #ff944d;
         background: linear-gradient(#ff944d, #ff8533);
+    }
+
+    #scheduler .occupied {
+        background-color: grey;
+    }
+
+    #scheduler .booked {
+        background-color: greenyellow;
     }

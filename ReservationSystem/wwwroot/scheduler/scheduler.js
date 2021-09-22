@@ -2,17 +2,20 @@
 (function ($) {
 
     var defaults = {
+        timeslotHeight: 40,
+        timeslotWidth: 75,
         sittingDate: '2019-01-01',
         sittingName: 'Breakfast',
-        timeslots: [{ id: 1, startTime: "8:00:00", endTime: "9:00:00" }, { id: 2, startTime: "9:00:00", endTime: "10:00:00" },  { id: 3, startTime: "10:00:00", endTime: "11:00:00" }],
-        tables: [{ id: 1, Name: "A1" }, { id: 2, Name: "A2" }],
-        sittingunits: [
-            {id:1, timeslotid:1,tableid:1 },
-            { id: 2, timeslotid: 1, tableid: 2},
-            { id: 3, timeslotid: 2, tableid: 1},
-            { id: 4, timeslotid: 2, tableid: 2},
-            { id: 5, timeslotid: 3, tableid: 1},
-            { id: 6, timeslotid: 3, tableid: 2}]
+        timeslots: [{ id: 1, startTime: "8:00:00", endTime: "9:00:00" }, { id: 2, startTime: "9:00:00", endTime: "10:00:00" }, { id: 3, startTime: "10:00:00", endTime: "11:00:00" }],
+        tables: [{ id: 1, name: "A1" }, { id: 2, name: "A2" }],
+        sittingUnits: [
+            { id: 1, timeslotId: 1, tableId: 1, reserved: false, belongsToCurrentReservation: false},
+            { id: 2, timeslotId: 1, tableId: 2, reserved: false, belongsToCurrentReservation: false},
+            { id: 3, timeslotId: 2, tableId: 1, reserved: true, belongsToCurrentReservation: true},
+            { id: 4, timeslotId: 2, tableId: 2, reserved: true, belongsToCurrentReservation: false},
+            { id: 5, timeslotId: 3, tableId: 1, reserved: false, belongsToCurrentReservation: false},
+            { id: 6, timeslotId: 3, tableId: 2, reserved: false, belongsToCurrentReservation: false}],
+
     }
 
     $.fn.scheduler = function (options) {
@@ -24,8 +27,9 @@
         return this.each(function () {
 
             render.calender($(this), settings);
-            setSize(40,90);
-            
+            setSize(settings.timeslotHeight, settings.timeslotWidth);
+            attachEventListeners(settings);
+
 
         });
 
@@ -78,7 +82,7 @@
             rowHeaderContainer.append("<div class='hour-header hour'>Schedule</div>");
             var i;
             for (i = 0; i < settings.tables.length; i++) {
-                var header = $("<div></div>").addClass("row-header cell").text(settings.tables[i].Name);
+                var header = $("<div></div>").addClass("row-header cell").text(settings.tables[i].name);
                 rowHeaderContainer.append(header);
             }
 
@@ -104,23 +108,46 @@
                 var row = $("<div></div>").addClass("row");
                 rowContainer.append(row);
 
-                
+
                 for (var j = 0; j < settings.timeslots.length; j++) {
+
+                    var currentSittingUnit = settings.sittingUnits.find(x => x.tableId == settings.tables[i].id && x.timeslotId == settings.timeslots[j].id);
                     var timeslot = $("<div></div>").addClass("timeslot cell");
-                    timeslot.attr("id", settings.sittingunits.find(x => x.tableid == settings.tables[i].id && x.timeslotid == settings.timeslots[j].id).id);
+                    timeslot.attr("id", currentSittingUnit.id);
+                    if (currentSittingUnit.reserved == true) {
+                        if (currentSittingUnit.belongsToCurrentReservation==false) { timeslot.addClass("occupied"); }
+                        else { timeslot.addClass("booked"); };
+                    }
                         
+
                     row.append(timeslot);
                 }
             }
 
             return rowContainer;
-
-
-
         },
-
-
     }
+
+
+    //Attach event listeners for the scheduler
+    var attachEventListeners = function (settings) {
+        $(".timeslot").on("click", { 'settings': settings }, listeners.timeslot);
+    }
+
+    //Event listner functions to attach
+    var listeners = {
+
+        timeslot: function (e) {
+            if (!$(e.target).hasClass("occupied"))
+            {
+                if (!$(e.target).hasClass("booked")) { $(e.target).addClass("booked")}
+                else { $(e.target).removeClass("booked")}
+            }
+           
+        }
+
+}
+
 
     // Sets the size of the scheduler timeslots
     var setSize = function (height, width) {
@@ -141,4 +168,4 @@
 
 
 
-    }(jQuery));
+}(jQuery));

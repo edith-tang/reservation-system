@@ -83,11 +83,13 @@
                 <span asp-validation-for="SittingUnitsId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Allocate" class="btn btn-primary" />
+                <input id="allocate" type="submit" value="Allocate" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+<input id="allocate1" type="submit" value="Allocate1" class="btn btn-primary" />
 
 <table style="border: 2px solid black">
     <thead>
@@ -107,7 +109,7 @@
                 @foreach (var t in Model.SCTables)
                 {
 
-                    <td><a>@ts.Id @t.Id @Model.AvailableSittingUnits.FirstOrDefault(asu => asu.TimeslotId == ts.Id && asu.TableId == t.Id).Id</a></td>
+                    <td><a>@ts.Id @t.Id @Model.FullSittingUnits.FirstOrDefault(asu => asu.TimeslotId == ts.Id && asu.TableId == t.Id).Id</a></td>
 
                 }
             </tr>
@@ -129,7 +131,39 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    
+
     <script src="~/scheduler/scheduler.js"></script>
-    <script>$("#scheduler").scheduler()</script>
+    <script>
+        var sittingDate = '@Model.Reservation.Sitting.Date.ToShortDateString()';
+        var sittingName = '@Model.Reservation.Sitting.SittingCategory.Name';
+        var tables = @Json.Serialize(Model.SCTablesDTO);
+        var timeslots =@Json.Serialize(Model.SCTimeslotsDTO);
+        var sittingUnits =@Json.Serialize(Model.SittingUnitsDTO);
+
+
+        var selectedSittingUnitId = [];
+
+        $("#scheduler").scheduler(
+            {
+            sittingDate: sittingDate,
+            sittingName: sittingName,
+            timeslots: timeslots,
+            tables: tables,
+            sittingUnits: sittingUnits,
+            }
+        );
+
+        $("#allocate1").on("click", () => {
+
+            selectedSittingUnitId = $(".booked").map(function () {
+                return parseInt(this.id);
+            }).get();
+
+            console.log(selectedSittingUnitId);
+
+        });
+
+    </script>
 
 }
