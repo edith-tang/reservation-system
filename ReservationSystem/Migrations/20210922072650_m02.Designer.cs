@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReservationSystem.Data;
 
 namespace ReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922072650_m02")]
+    partial class m02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,10 +259,7 @@ namespace ReservationSystem.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("ExpectedEndTime")
-                        .HasColumnType("time(0)");
-
-                    b.Property<TimeSpan>("ExpectedStartTime")
+                    b.Property<TimeSpan>("Duration")
                         .HasColumnType("time(0)");
 
                     b.Property<string>("Notes")
@@ -271,6 +270,9 @@ namespace ReservationSystem.Migrations
 
                     b.Property<int>("SittingId")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time(0)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -325,12 +327,17 @@ namespace ReservationSystem.Migrations
                     b.Property<int>("SittingCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SittingId")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time(0)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SittingCategoryId");
+
+                    b.HasIndex("SittingId");
 
                     b.ToTable("SCTimeslots");
                 });
@@ -716,6 +723,10 @@ namespace ReservationSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ReservationSystem.Data.Sitting", null)
+                        .WithMany("SittingTimeslots")
+                        .HasForeignKey("SittingId");
+
                     b.Navigation("SittingCategory");
                 });
 
@@ -760,6 +771,8 @@ namespace ReservationSystem.Migrations
             modelBuilder.Entity("ReservationSystem.Data.Sitting", b =>
                 {
                     b.Navigation("Reservations");
+
+                    b.Navigation("SittingTimeslots");
 
                     b.Navigation("SittingUnits");
                 });

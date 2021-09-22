@@ -12,24 +12,22 @@ namespace ReservationSystem.Models.Reservation
     //reservation made by customer
     public class CreateReservation
     {
-        public List<SittingOption> SittingOptions { get; set; }
-        public int SelectedSittingOptionId { get; set; }
-        public SittingOption SelectedSittingOption { get; set; }
-
         public DateTime MaxDate { get; set; }
         public string SysDateFormat { get; set; }
 
-        public Customer Customer { get; set; }
+        public CustomerDTO Customer { get; set; }
 
         #region RESERVATION INFO
+        public int SelectedSittingId { get; set; }
+        public string SelectedDate { get; set; }        
+        public string ExpectedStartTime { get; set; }
+        public string ExpectedEndTime { get; set; }
         public int NumOfGuests { get; set; }
         public string Notes { get; set; }
-        public TimeSpan ExpectedStartTime { get; set; }
-        public List<SCTimeslot> PreferredTimeslots { get; set; }
         #endregion
     }
 
-    public class SittingOption
+    public class SittingDTO
     {
         public int Id { get; set; }
         public string Date { get; set; }
@@ -38,7 +36,7 @@ namespace ReservationSystem.Models.Reservation
         public string EndTime { get; set; }
     }
 
-    public class Customer
+    public class CustomerDTO
     {
         public string CustFName { get; set; }
         public string CustLName { get; set; }

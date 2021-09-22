@@ -43,20 +43,22 @@
             </div>
 
             @*<div class="row">
-                <div class="form-group col-6">
-                    <label class="control-label">Selecte a date:</label>
-                    <input type="text" id="datepicker" class="form-control" autocomplete="off" />
-                </div>
-            </div>*@
+                    <div class="form-group col-6">
+                        <label class="control-label">Selecte a date:</label>
+                        <input type="text" id="datepicker" class="form-control" autocomplete="off" />
+                    </div>
+                </div>*@
 
             <div class="row" id="SelectSitting">
                 <div class="form-group col-6">
                     <label class="control-label">Selecte a date:</label>
-                    <input type="text" class="form-control" id="Calendar" />
+                    <input asp-for="SelectedDate" type="text" class="form-control" id="Calendar" />
+                    <span asp-validation-for="SelectedDate" class="text-danger"></span>
                 </div>
                 <div class="form-group col-6">
                     <label class="control-label">Select a Sitting:</label>
-                    <select asp-for="SelectedSittingOptionId" class="form-control" id="Sittings" ></select>
+                    <select asp-for="SelectedSittingId" class="form-control" id="Sittings"></select>
+                    <span asp-validation-for="SelectedSittingId" class="text-danger"></span>
                 </div>
             </div>
 
@@ -64,20 +66,24 @@
                 @* in line with sc timeslot start time *@
                 <div class="form-group col-6">
                     <label class="control-label">Expected Arrival</label>
-                    <select type="text" class="form-control" id="StartTimes"></select>
+                    <select asp-for="ExpectedStartTime" type="text" class="form-control" id="StartTimes"></select>
+                    <span asp-validation-for="ExpectedStartTime" class="text-danger"></span>
                 </div>
                 @* in line with sc timeslot duration *@
-                <div class="form-group col-6">
-                    <label class="control-label">Expected Leave</label>
-                    <select type="text" class="form-control" id="EndTimes"></select>
-                </div>
+            <div class="form-group col-6">
+                <label class="control-label">Expected Leave</label>
+                <select asp-for="ExpectedEndTime" type="text" class="form-control" id="EndTimes"></select>
+                <span asp-validation-for="ExpectedEndTime" class="text-danger"></span>
+            </div>
             </div>
 
-            <div class="row">
+            <div id="CapacityWarning" hidden style="color: red">Please note: <span id="RemainingCapacity"></span> seats left</div>
+
+            <div class="row" id="ReservationInfo">
                 <div class="form-group col-6">
                     @* can't exceed remaining capacity' *@
                     <label asp-for="NumOfGuests" class="control-label">Number of Guests</label>
-                    <input asp-for="NumOfGuests" class="form-control" min="1" />
+                    <input asp-for="NumOfGuests" class="form-control" min="1" id="NumOfGuests"/>
                     <span asp-validation-for="NumOfGuests" class="text-danger"></span>
                 </div>
                 <div class="form-group col-6">
@@ -103,52 +109,6 @@
 </div>
 
 @section Scripts {
-    
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <script>
-        $('#Calendar').daterangepicker({
-                "singleDatePicker": true,
-                "showCustomRangeLabel": false,
-                "locale": {
-                    "format": "@Model.SysDateFormat",
-                    "separator": " - ",
-                    "applyLabel": "Apply",
-                    "cancelLabel": "Cancel",
-                    "fromLabel": "From",
-                    "toLabel": "To",
-                    "customRangeLabel": "Custom",
-                    "weekLabel": "W",
-                    "daysOfWeek": [
-                        "Sun",
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat"
-                    ],
-                    "monthNames": [
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July",
-                        "August",
-                        "September",
-                        "October",
-                        "November",
-                        "December"
-                    ],
-                    "firstDay": 1
-                },
-                "minDate": "@minDay",
-                "maxDate": "@maxDay"
-            }, function () { });
-    </script>
 
     @*<script>
             var reserveddates = ['21-09-30', '21-10-31'];
@@ -160,53 +120,138 @@
             });
         </script>*@
 
-<script>
-    var sittingOptions = @Json.Serialize(Model.SittingOptions);
-    var filter;
-    var filteredSittings;
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script>
+        $('#Calendar').daterangepicker({
+            "singleDatePicker": true,
+            "showCustomRangeLabel": false,
+            "autoApply": true,
+            "locale": {
+                    "format": "@Model.SysDateFormat",
+                    "separator": " - ",
+                    "applyLabel": "Apply",
+                    "cancelLabel": "Cancel",
+                    "fromLabel": "From",
+                    "toLabel": "To",
+                    "customRangeLabel": "Custom",
+                    "weekLabel": "W",
+                    "daysOfWeek": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    "monthNames": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+                    "firstDay": 1
+                },
+                "minDate": "@minDay", "maxDate": "@maxDay"
+            }, function () { });
+    </script>
 
-    $('#Calendar').on('change', function () {
-        //when a different date is selected, empty all other dropdown lists
-        $('#Sittings').empty();
-        $('#StartTimes').empty();
-        $('#EndTimes').empty();
+    <script>
+        $(document).ready(function () {
 
-        //find all sittings for the selected date, if exist, create a dropdown list for the sittings
-        filter = this.value;
-        filteredSittings = sittingOptions.filter(s => s.date == filter);
-        if (filteredSittings.length > 0) {
-            $('#Sittings').append($('<option>', {
-                value: "none", text: '-- Select a Sitting --', selected: true, disabled: true,
-            }));
-            $.each(filteredSittings, function (i, item) {
-                $('#Sittings').append($('<option>', {
-                    value: item.id, text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
-                }));
+            //Generate sitting options list for default date selected
+            $.ajax({
+                type: "GET",
+                url: '/Reservation/GetSittingsByDate',
+                data: { date: $('#Calendar').val() },
+                dataType: "json",
+                success: function (response) {
+                    if (response.length > 0) {
+                        $('#Sittings').append($('<option>', {
+                            value: "none", text: '-- Select a Sitting --', selected: true, disabled: true,
+                        }));
+                        $.each(response, function (i, item) {
+                            $('#Sittings').append($('<option>', {
+                                value: item.id, text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
+                            }));
+                        });
+                    }
+                },
             });
-        }
-    });
 
-    //get all start times for the selected sitting from server
-    $('#Sittings').on('change', function () {
-        $.ajax({
-            type: "GET",
-            url: '/Reservation/GetTimeslots',
-            data: { sittingId: this.value },
-            dataType: "json",
-            success: function (response) {
+            //when a date is selected, show the sittings available
+            $('#Calendar').on(' change', function () {
+                
+                $('#Sittings').empty();
                 $('#StartTimes').empty();
-                $('#StartTimes').append($('<option>', {
-                    value: "none", text: '-- Select a Start Time --', selected: true, disabled: true,
-                }));
-                $.each(response, function (i, item) {
-                    $('#StartTimes').append($('<option>', {
-                        text: item
-                    }));
+                $('#EndTimes').empty();
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Reservation/GetSittingsByDate',
+                    data: { date: this.value },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.length > 0) {
+                            $('#Sittings').append($('<option>', {
+                                value: "none", text: '-- Select a Sitting --', selected: true, disabled: true,
+                            }));
+                            $.each(response, function (i, item) {
+                                $('#Sittings').append($('<option>', {
+                                    value: item.id, text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
+                                }));
+                            });
+                        }
+                    },
                 });
-            },
-        });
-    })
-    
+            });
+
+            //when a sitting is selected, show the remaining capacity and the start times available
+            $('#Sittings').on('change', function () {
+                
+                $.ajax({
+                    type: "GET",
+                    url: '/Reservation/GetSittingCapacity',
+                    data: { sittingId: this.value },
+                    dataType: "json",
+                    success: function (response) {
+                        $('#CapacityWarning').attr("hidden", false);
+                        $('#RemainingCapacity').text(response);
+                        $('#NumOfGuests').attr("max", response);
+                    },
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Reservation/GetStartTimes',
+                    data: { sittingId: this.value },
+                    dataType: "json",
+                    success: function (response) {
+                        $('#StartTimes').empty();
+                        $('#EndTimes').empty();
+                        $('#StartTimes').append($('<option>', {
+                            value: "none", text: '-- Select a Start Time --', selected: true, disabled: true,
+                        }));
+                        $.each(response, function (i, item) {
+                            $('#StartTimes').append($('<option>', {
+                                text: item
+                            }));
+                        });
+                    },
+                });
+            })
+
+            //when a start time is selected,  show the end times available
+            $('#StartTimes').on('change', function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/Reservation/GetEndTimes',
+                    data: { sittingId: $('#Sittings').val(), startTime: this.value },
+                    dataType: "json",
+                    success: function (response) {
+                        $('#EndTimes').empty();
+                        $('#EndTimes').append($('<option>', {
+                            value: "none", text: '-- Select an End Time --', selected: true, disabled: true,
+                        }));
+                        $.each(response, function (i, item) {
+                            $('#EndTimes').append($('<option>', {
+                                text: item
+                            }));
+                        });
+                    },
+                });
+            })
+
+        })
     </script>
 
     @*<script>
