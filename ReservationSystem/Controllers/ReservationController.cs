@@ -45,60 +45,63 @@ namespace ReservationSystem.Controllers
         public async Task<ActionResult> CreateReservation()
         {
             var sittings = await GetAllFutureSittings();
-
             var m = new CreateReservation
             {
-                SittingOptions = new List<SittingOption>(),
                 SysDateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToUpper(),
                 MaxDate = sittings.Max(s => s.Date),
             };
-            foreach (var s in sittings)
-            {
-                m.SittingOptions.Add(new SittingOption
-                {
-                    Id = s.Id,
-                    Date = s.Date.ToShortDateString(),
-                    SCName = s.SittingCategory.Name,
-                    StartTime = s.SittingCategory.StartTime.ToString(@"hh\:mm\:ss"),
-                    EndTime = s.SittingCategory.EndTime.ToString(@"hh\:mm\:ss"),
-                });
-            }
             return View(m);
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateReservation(CreateReservation m)
         {
-            var reservation = new Data.Reservation
+            try
             {
-                Customer = new Data.Customer
+                var sitting = await GetSittingById(m.SelectedSittingId);
+                bool checkDate = sitting.Date.ToShortDateString() == m.SelectedDate;
+                bool checkStartTime = CheckStartTime(sitting, m.ExpectedStartTime);
+                bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
+                bool checkCapacity = sitting.RemainingCapacity >= m.NumOfGuests;
+                if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
                 {
-                    CustFName = m.Customer.CustFName,
-                    CustLName = m.Customer.CustLName,
-                    CustEmail = m.Customer.CustEmail,
-                    CustPhone = m.Customer.CustPhone
-                },
-                SittingId = m.SelectedSittingOptionId,
-                NumOfGuests = m.NumOfGuests,
-                Notes = m.Notes,
-                TimeOfBooking = DateTime.Now,
-                Status = Data.Enums.ReservationStatus.Pending,
-            };
-            _cxt.Reservations.Add(reservation);
-            await _cxt.SaveChangesAsync();
+                    throw new Exception();
+                }
+                else
+                {
+                    var reservation = new Data.Reservation
+                    {
+                        Customer = new Data.Customer
+                        {
+                            CustFName = m.Customer.CustFName,
+                            CustLName = m.Customer.CustLName,
+                            CustEmail = m.Customer.CustEmail,
+                            CustPhone = m.Customer.CustPhone
+                        },
+                        SittingId = m.SelectedSittingId,
+                        ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
+                        ExpectedEndTime = TimeSpan.Parse(m.ExpectedEndTime),
+                        NumOfGuests = m.NumOfGuests,
+                        Notes = m.Notes,
 
-            return RedirectToAction(nameof(IndexReservation));
+                        TimeOfBooking = DateTime.Now,
+                        Status = Data.Enums.ReservationStatus.Pending,
+                    };
+                    _cxt.Reservations.Add(reservation);
+                    await _cxt.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(IndexReservation));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return View();
         }
         #endregion
 
         #region RESERVATION METHODS
-        //find all active sittings and dates
-        public async Task<List<Sitting>> GetAllFutureSittings()
-        {
-            return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past)
-                .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
-                .ToListAsync();
-        }
 
         //check reservations for a sitting
         public async Task<List<Reservation>> CheckReservationBySitting()
@@ -113,17 +116,100 @@ namespace ReservationSystem.Controllers
             return await _cxt.Reservations.Include(r => r.Customer).Where(r => r.Id == customerId).ToListAsync();
         }
 
-        public async Task<JsonResult> GetTimeslots(int sittingId)
+        //find all active sittings and dates
+        public async Task<List<Sitting>> GetAllFutureSittings()
         {
-            var sitting = _cxt.Sittings.FirstOrDefault(s => s.Id == sittingId);
-            var timeslots = await _cxt.SCTimeslots.Where(s => s.SittingCategoryId == sitting.SittingCategoryId).ToArrayAsync();
-            var startTimes = new List<string>();
-            foreach(var t in timeslots)
-            {
-                startTimes.Add(t.StartTime.ToString(@"hh\:mm"));
-            }
-            return Json(startTimes);
+            return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past)
+                .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
+                .ToListAsync();
         }
+
+        //find sittings for a specific date
+        public async Task<JsonResult> GetSittingsByDate(string date)
+        {
+            var sittings = await GetAllFutureSittings();
+            var filteredSittings = sittings.FindAll(s => s.Date == DateTime.Parse(date));
+            var sittingOptions = new List<SittingDTO>();
+            foreach (var i in filteredSittings)
+            {
+                sittingOptions.Add(new SittingDTO
+                {
+                    Id = i.Id,
+                    Date = i.Date.ToShortDateString(),
+                    SCName = i.SittingCategory.Name,
+                    StartTime = i.SittingCategory.StartTime.ToString(@"hh\:mm\:ss"),
+                    EndTime = i.SittingCategory.EndTime.ToString(@"hh\:mm\:ss"),
+                });
+            }
+            return Json(sittingOptions);
+        }
+
+        //find a sititng by id
+        public async Task<Sitting> GetSittingById(int sittingId)
+        {
+            return await _cxt.Sittings
+                .Include(s => s.Reservations)
+                .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
+                .FirstOrDefaultAsync(s => s.Id == sittingId);
+        }
+
+        //find the remaining capacity for a sitting
+        public async Task<int> GetSittingCapacity(int sittingId)
+        {
+            var sitting = await GetSittingById(sittingId);
+            return sitting.RemainingCapacity;
+        }
+
+        //find all starttimes for a sitting
+        public async Task<JsonResult> GetStartTimes(int sittingId)
+        {
+            var sitting = await GetSittingById(sittingId);
+            var startTimes = sitting.SittingStartTimes;
+            var startTimesJson = new List<string>();
+            foreach (var s in startTimes)
+            {
+                startTimesJson.Add(s.ToString(@"hh\:mm"));
+            }
+            return Json(startTimesJson);
+        }
+
+        //find all possible endtimes for a starttime of a sitting
+        public async Task<JsonResult> GetEndTimes(int sittingId, string startTime)
+        {
+            var sitting = await GetSittingById(sittingId);
+            var endTimes = sitting.SittingEndTimes;
+            var endTimesJson = new List<string>();
+            var st = TimeSpan.Parse(startTime);
+            foreach (var e in endTimes)
+            {
+                if (st < e) { endTimesJson.Add(e.ToString(@"hh\:mm")); }
+            }
+            return Json(endTimesJson);
+        }
+
+        public bool CheckStartTime(Data.Sitting sitting, string expectedStartTime)
+        {
+            var startTimes = sitting.SittingStartTimes;            
+            foreach (var s in startTimes)
+            {
+                if (s.ToString(@"hh\:mm") == expectedStartTime)
+                    return true;
+            }
+            return false;            
+        }
+
+        public bool CheckEndTime(Data.Sitting sitting, string expectedEndTime)
+        {
+            var endTimes = sitting.SittingEndTimes;
+            foreach (var s in endTimes)
+            {
+                if (s.ToString(@"hh\:mm") == expectedEndTime)
+                    return true;
+            }
+            return false;
+        }
+
+
         #endregion
     }
 }

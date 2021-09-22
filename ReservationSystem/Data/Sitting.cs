@@ -20,18 +20,40 @@ namespace ReservationSystem.Data
         public List<SittingUnit> SittingUnits { get; set; }
         #endregion
 
-        #region GETONLY PROPERTIES
+        #region GET ONLY PROPERTIES
         public int Capacity { get => SittingCategory.Capacity; }
         public int UsedCapacity
         {
             get
             {
-                if (Reservations.Count > 0)
-                { return Reservations.Sum(r => r.NumOfGuests); }
-                else { return 0; }
+                return Reservations.Count > 0 ? Reservations.Sum(r => r.NumOfGuests) : 0;
             }
         }
         public int RemainingCapacity { get => Capacity - UsedCapacity; }
+        public List<TimeSpan> SittingStartTimes { 
+            get
+            {
+                var startTimes = new List<TimeSpan>();
+                foreach (var t in SittingCategory.SCTimeslots)
+                {
+                    startTimes.Add(t.StartTime);
+                }
+                return startTimes;
+            } 
+        }
+        public List<TimeSpan> SittingEndTimes
+        {
+            get
+            {
+                var endTimes = new List<TimeSpan>();
+                foreach (var t in SittingCategory.SCTimeslots)
+                {
+                    endTimes.Add(t.EndTime);
+                }
+                return endTimes;
+            }
+        }
+
         #endregion
     }
 }

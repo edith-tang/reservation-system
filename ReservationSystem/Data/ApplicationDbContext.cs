@@ -46,8 +46,8 @@ namespace ReservationSystem.Data
             builder.Entity<Reservation>(b =>
             {
                 b.Property(r => r.NumOfGuests).IsRequired();
-                b.Property(r => r.StartTime).HasColumnType("time(0)").IsRequired();
-                b.Property(r => r.Duration).HasColumnType("time(0)").IsRequired();
+                b.Property(r => r.ExpectedStartTime).HasColumnType("time(0)").IsRequired();
+                b.Property(r => r.ExpectedEndTime).HasColumnType("time(0)").IsRequired();
                 b.Property(r => r.TimeOfBooking).IsRequired();
                 b.Property(r => r.WayOfBooking).IsRequired();
                 b.Property(r => r.Status).IsRequired();

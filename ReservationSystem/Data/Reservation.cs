@@ -14,9 +14,8 @@ namespace ReservationSystem.Data
         public int CustomerId { get; set; }
         public int SittingId { get; set; }
         public int NumOfGuests { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan Duration { get; set; }
-        public TimeSpan EndTime { get => StartTime + Duration; }
+        public TimeSpan ExpectedStartTime { get; set; }
+        public TimeSpan ExpectedEndTime { get; set; }
         public string Notes { get; set; }
 
         public DateTime TimeOfBooking { get; set; }
