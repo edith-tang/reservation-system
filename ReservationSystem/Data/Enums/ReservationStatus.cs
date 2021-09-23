@@ -7,12 +7,14 @@ namespace ReservationSystem.Data.Enums
 {
     public enum ReservationStatus
     {
-        New = 0,
-        Pending = 1,
-        Confirmed = 2,
-        Modified = 3,
-        Cancelled = 4,
-        Completed = 5,
+        //New ,
+        Pending = 0,
+        Confirmed = 1,
+        //Modified ,
+        Cancelled = 2,
+        Seated=3,
+        Completed = 4,
+        Expired=5
     }
 
 }

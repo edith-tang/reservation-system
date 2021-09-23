@@ -56,7 +56,9 @@
                 @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
-                <a class="btn btn-info" role="button"  asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
+                <a class="btn btn-info" role="button" asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
+                @if (item.SCSittings.Count==0) {<a class="btn btn-info" role="button" asp-action="DeleteSC" asp-route-id="@item.Id">Delete</a> }
+                
             </td>
         </tr>
 }

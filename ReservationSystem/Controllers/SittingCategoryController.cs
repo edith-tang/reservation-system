@@ -66,6 +66,27 @@ namespace ReservationSystem.Controllers
                 return View(m);
             }
         }
+
+        public async Task<ActionResult> DeleteSC(int id)
+        {
+            var sittingCategoryTBD = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == id);
+            if (_cxt.Sittings.FirstOrDefault(s => s.SittingCategoryId == id) == null)
+            {
+                var scTimeslotsTBD =_cxt.SCTimeslots.Where(sct => sct.SittingCategoryId == id);
+                var scTablesTBD = _cxt.SCTables.Where(sct => sct.SittingCategoryId == id);
+                _cxt.SCTimeslots.RemoveRange(scTimeslotsTBD);
+                _cxt.SCTables.RemoveRange(scTablesTBD);
+                _cxt.SittingCategories.RemoveRange(sittingCategoryTBD);
+            }
+            else
+            {
+                //
+            }
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(IndexSC));
+        }
+
+
         #endregion
 
         #region SC METHODS
