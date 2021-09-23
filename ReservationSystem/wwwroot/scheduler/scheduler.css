@@ -71,6 +71,15 @@
         text-align: center;
     }
 
+    #scheduler .responsiveHour {
+        height: 100%;
+        background: linear-gradient(#f2f2f2, #d9d9d9);
+        border-left: 1px solid #d9d9d9;
+        padding: 4px 0px;
+        color: #595959;
+        text-align: center;
+    }
+
     #scheduler .rsvn-container {
         position: relative;
     }
@@ -83,6 +92,12 @@
     }
 
     #scheduler .cell {
+        border-left: 1px solid #d9d9d9;
+        border-top: 1px solid #d9d9d9;
+        text-align: center;
+    }
+
+    #scheduler .responsiveCell {
         border-left: 1px solid #d9d9d9;
         border-top: 1px solid #d9d9d9;
         text-align: center;

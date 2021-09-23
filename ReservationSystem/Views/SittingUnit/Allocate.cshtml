@@ -119,7 +119,8 @@
 
 
 <input id="allocate" asp-action="Allocate" type="submit" value="Allocate" class="btn btn-primary" /><br/>
-<div id="scheduler" style="padding-top: 50px;"></div>
+
+<div id="scheduler" class="container-fluid"></div>
 
 
 
@@ -146,14 +147,17 @@
 
         var selectedSittingUnitId = [];
 
+        var x = 100 / timeslots.length + '%';
+
         $("#scheduler").scheduler(
             {
-            sittingDate: sittingDate,
-            sittingName: sittingName,
-            currentReservationId: currentReservationId,
-            timeslots: timeslots,
-            tables: tables,
-            sittingUnits: sittingUnits,
+                responsiveWidth: x,
+                sittingDate: sittingDate,
+                sittingName: sittingName,
+                currentReservationId: currentReservationId,
+                timeslots: timeslots,
+                tables: tables,
+                sittingUnits: sittingUnits,
             }
         );
 

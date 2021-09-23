@@ -28,7 +28,7 @@
         return this.each(function () {
 
             render.calender($(this), settings);
-            setSize(settings.timeslotHeight, settings.timeslotWidth);
+            setSize(settings.timeslotHeight, settings.timeslotWidth, settings.responsiveWidth);
             attachEventListeners(settings);
 
 
@@ -99,7 +99,7 @@
 
 
             for (i = 0; i < settings.timeslots.length; i++) {
-                var hour = $("<div></div>").addClass("hour").text(settings.timeslots[i].startTime);
+                var hour = $("<div></div>").addClass("responsiveHour").text(settings.timeslots[i].startTime);
                 columnHeader.append(hour);
             }
             rowContainer.append(columnHeader);
@@ -113,7 +113,7 @@
                 for (var j = 0; j < settings.timeslots.length; j++) {
 
                     var currentSittingUnit = settings.sittingUnits.find(x => x.tableId == settings.tables[i].id && x.timeslotId == settings.timeslots[j].id);
-                    var timeslot = $("<div></div>").addClass("timeslot cell");
+                    var timeslot = $("<div></div>").addClass("timeslot responsiveCell");
                     timeslot.attr("id", currentSittingUnit.id);
                     if (currentSittingUnit.reservationId != null) {
                         if (currentSittingUnit.reservationId != settings.currentReservationId) { timeslot.addClass("occupied"); }
@@ -150,22 +150,28 @@
 
 
     // Sets the size of the scheduler timeslots
-    var setSize = function (height, width) {
-        $(".cell")
-            .css({
-                minHeight: height,
-                minWidth: width,
-                maxHeight: height,
-                maxWidth: width
-            });
-        $(".hour")
-            .css({
-                minWidth: width,
-                maxWidth: width
-            });
+    var setSize = function (fixedHeight, fixedWidth, responsiveWidth) {
+        $(".hour").css({
+            minWidth: fixedWidth,
+            maxWidth: fixedWidth
+        });
+        $(".cell").css({
+            minHeight: fixedHeight,
+            minWidth: fixedWidth,
+            maxHeight: fixedHeight,
+            maxWidth: fixedWidth
+        });
+        $('.row-container').css({
+            width: '100%'
+        })
+        $(".responsiveHour").css({
+            width: responsiveWidth
+        });
+        $(".responsiveCell").css({
+            minHeight: fixedHeight,
+            maxHeight: fixedHeight,
+            width: responsiveWidth
+        });
     }
-
-
-
 
 }(jQuery));
