@@ -11,19 +11,20 @@ namespace ReservationSystem.Models.Sitting
 {
     public class CreateSitting
     {
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [Required]
+        [Display(Name = "Start Date")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [Required]
+        [Display(Name = "End Date")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
+        [Required]
+        [Display(Name = "Sitting Category")]
         public int SittingCategoryId { get; set; }
-        public SelectList SittingCategories { get;  set; }
-
+        public SelectList SittingCategories { get; set; }
         public Data.SittingCategory SittingCategory { get; set; }
-
-        //public List<SittingUnit> SittingUnits { get; protected set; }
     }
 }

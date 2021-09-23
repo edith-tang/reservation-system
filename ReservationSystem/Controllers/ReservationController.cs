@@ -29,11 +29,13 @@ namespace ReservationSystem.Controllers
             return View(reservations);
         }
 
+        //for logged in members only
         public ActionResult History()
         {
             return View();
         }
 
+        //for employee and logged in members only
         public async Task<ActionResult> DetailsReservation(int id)
         {
             var reservation = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ThenInclude(s => s.SittingCategory)
@@ -47,8 +49,8 @@ namespace ReservationSystem.Controllers
             var sittings = await GetAllFutureSittings();
             var m = new CreateReservation
             {
-                SysDateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToUpper(),
-                MaxDate = sittings.Max(s => s.Date),
+                MaxDate = sittings.Max(s => s.Date).ToString("yyyy-MM-dd"),
+                MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
             };
             return View(m);
         }
@@ -56,52 +58,45 @@ namespace ReservationSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateReservation(CreateReservation m)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var sitting = await GetSittingById(m.SelectedSittingId);
-                bool checkDate = sitting.Date.ToShortDateString() == m.SelectedDate;
-                bool checkStartTime = CheckStartTime(sitting, m.ExpectedStartTime);
-                bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
-                bool checkCapacity = sitting.RemainingCapacity >= m.NumOfGuests;
-                if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
+                try
                 {
-                    throw new Exception();
-                }
-                else
-                {
+                    await DataValidation(m);
+
                     var reservation = new Data.Reservation
                     {
-                        Customer = new Data.Customer
-                        {
-                            CustFName = m.Customer.CustFName,
-                            CustLName = m.Customer.CustLName,
-                            CustEmail = m.Customer.CustEmail,
-                            CustPhone = m.Customer.CustPhone
-                        },
                         SittingId = m.SelectedSittingId,
                         ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
                         ExpectedEndTime = TimeSpan.Parse(m.ExpectedEndTime),
                         NumOfGuests = m.NumOfGuests,
                         Notes = m.Notes,
-
                         TimeOfBooking = DateTime.Now,
                         Status = Data.Enums.ReservationStatus.Pending,
                     };
+
+                    await MembershipAndEmailValidation(m, reservation);
+
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
 
+                    //for employee: to all reservations
                     return RedirectToAction(nameof(IndexReservation));
+
+                    //for loggedin member: to member home page/ member reservation history
+                    //for non-member: to restaurant home / thank you page
+                }
+                catch (Exception)
+                {
+                    //input inconsistent with database
+                    //ModelState.AddModelError("Error", "SQL Error!");
                 }
             }
-            catch (Exception)
-            {
-
-            }
-            return View();
+            return View(m);
         }
         #endregion
 
-        #region RESERVATION METHODS
+        #region Methods
 
         //check reservations for a sitting
         public async Task<List<Reservation>> CheckReservationBySitting()
@@ -124,6 +119,9 @@ namespace ReservationSystem.Controllers
                 .ToListAsync();
         }
 
+        #endregion
+
+        #region Methods for Ajax Requests
         //find sittings for a specific date
         public async Task<JsonResult> GetSittingsByDate(string date)
         {
@@ -187,18 +185,34 @@ namespace ReservationSystem.Controllers
             return Json(endTimesJson);
         }
 
-        public bool CheckStartTime(Data.Sitting sitting, string expectedStartTime)
+        #endregion
+
+        #region Methods for [HttpPost] CreateReservation()
+        public async Task DataValidation(CreateReservation m)
         {
-            var startTimes = sitting.SittingStartTimes;            
+            var sitting = await GetSittingById(m.SelectedSittingId);
+            bool checkDate = sitting.Date == m.SelectedDate;
+            bool checkStartTime = CheckStartTime(sitting, m.ExpectedStartTime);
+            bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
+            bool checkCapacity = sitting.RemainingCapacity >= m.NumOfGuests;
+            if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
+            {
+                throw new Exception();
+            }
+        }
+
+        public bool CheckStartTime(Sitting sitting, string expectedStartTime)
+        {
+            var startTimes = sitting.SittingStartTimes;
             foreach (var s in startTimes)
             {
                 if (s.ToString(@"hh\:mm") == expectedStartTime)
                     return true;
             }
-            return false;            
+            return false;
         }
 
-        public bool CheckEndTime(Data.Sitting sitting, string expectedEndTime)
+        public bool CheckEndTime(Sitting sitting, string expectedEndTime)
         {
             var endTimes = sitting.SittingEndTimes;
             foreach (var s in endTimes)
@@ -208,8 +222,35 @@ namespace ReservationSystem.Controllers
             }
             return false;
         }
-
-
+        
+        public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
+        {
+            if (m.MemberId > 0) //For member: pass member id
+            {
+                //reservation.MemberId = m.MemberId;
+            }
+            else //For non-member: check if email exists            
+            {
+                var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);
+                if (custFound == null)
+                {
+                    reservation.Customer = new Data.Customer
+                    {
+                        CustFName = m.Customer.CustFName,
+                        CustLName = m.Customer.CustLName,
+                        CustEmail = m.Customer.CustEmail,
+                        CustPhone = m.Customer.CustPhone
+                    };
+                }
+                else
+                {
+                    reservation.CustomerId = custFound.Id;
+                    custFound.CustFName = m.Customer.CustFName;
+                    custFound.CustLName = m.Customer.CustLName;
+                    custFound.CustPhone = m.Customer.CustFName;
+                }
+            }
+        }
         #endregion
     }
 }

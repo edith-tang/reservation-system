@@ -57,46 +57,62 @@ namespace ReservationSystem.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateSitting(Models.Sitting.CreateSitting m)
-        {            
-            var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == m.SittingCategoryId);
-            var sittings = new List<Sitting>();
-            DateTime date = m.StartDate;
-            var nonValidDates = new List<String>();
-
-            //int days = (m.EndDate - m.StartDate).Days + 1;
-            //for (int i = 0; i < days; i++)
-
-            while (date <= m.EndDate)
+        {
+            if (ModelState.IsValid)
             {
-                if (SCSelectionValidation(date, m.SittingCategoryId))
+                try
                 {
-                    sittings.Add(new Sitting { SittingCategoryId = m.SittingCategoryId, Date = date, Status = SittingStatus.Open });
+                    if (m.StartDate > m.EndDate)
+                    {
+                        throw new Exception();
+                    }
+
+                    var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == m.SittingCategoryId);
+                    var sittings = new List<Sitting>();
+                    DateTime date = m.StartDate;
+                    var invalidDates = new List<String>();
+
+                    while (date <= m.EndDate)
+                    {
+                        if (SCSelectionValidation(date, m.SittingCategoryId))
+                        {
+                            sittings.Add(new Sitting { SittingCategoryId = m.SittingCategoryId, Date = date, Status = SittingStatus.Open });
+                        }
+                        else
+                        {
+                            invalidDates.Add(date.ToShortDateString());
+                        }
+                        date = date.AddDays(1);
+                    }
+
+                    //display warning message for overlapping dates
+                    if (invalidDates.Count > 0)
+                    {
+                        TempData["Message"] = string.Format("Your choice {0} overlaps with existing sittings {1}",
+                            sittingCategory.Name,
+                            string.Join(",", values: invalidDates));
+                    }
+
+                    _cxt.Sittings.AddRange(sittings);
+                    await _cxt.SaveChangesAsync();
+
+                    //CreateSittingUnits();
+                    int sittingId = await _cxt.Sittings.MaxAsync(s => s.Id) - sittings.Count + 1;
+                    for (int i = 0; i < sittings.Count; i++)
+                    {
+                        await CreateSittingUnits(sittingId, m.SittingCategoryId);
+                        sittingId++;
+                    }
+
+                    return RedirectToAction(nameof(IndexSitting));
                 }
-                else { nonValidDates.Add(date.ToString("dd/MM/yyyy")); }
+                catch (Exception)
+                {
 
-                date = date.AddDays(1);
+                }
+
             }
-
-            if (nonValidDates.Count != 0)
-            { 
-                TempData["Message"] = string.Format("Your choice {0} overlaps with existing sittings {1}", 
-                    sittingCategory.Name,
-                    string.Join(",", nonValidDates)
-                    ); 
-            }
-
-            _cxt.Sittings.AddRange(sittings);
-            await _cxt.SaveChangesAsync();
-
-            //CreateSittingUnits();
-            int sittingId = await _cxt.Sittings.MaxAsync(s => s.Id) - sittings.Count + 1;
-            for (int i = 0; i < sittings.Count; i++)
-            {
-                await CreateSittingUnits(sittingId, m.SittingCategoryId);
-                sittingId++;
-            }
-
-            return RedirectToAction(nameof(IndexSitting));
+            return View();
         }
         #endregion
 

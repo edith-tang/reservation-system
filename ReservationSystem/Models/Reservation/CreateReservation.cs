@@ -9,21 +9,33 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Models.Reservation
 {
-    //reservation made by customer
     public class CreateReservation
-    {
-        public DateTime MaxDate { get; set; }
-        public string SysDateFormat { get; set; }
-
+    {        
+        public string MaxDate { get; set; }
+        public string MinDate { get; set; }        
+        public int MemberId { get; set; }
         public CustomerDTO Customer { get; set; }
 
         #region RESERVATION INFO
+
+        [Required, Display(Name = "Choose a date:")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        public DateTime SelectedDate { get; set; }
+
+        [Required, Display(Name = "Choose a session:")]
         public int SelectedSittingId { get; set; }
-        public string SelectedDate { get; set; }        
+
+        [Required, Display(Name = "Expected Arrival")]
         public string ExpectedStartTime { get; set; }
+
+        [Required, Display(Name = "Expected Leave")]
         public string ExpectedEndTime { get; set; }
+
+        [Required, Display(Name = "Number of Guests")]
         public int NumOfGuests { get; set; }
+
         public string Notes { get; set; }
+
         #endregion
     }
 
@@ -38,9 +50,25 @@ namespace ReservationSystem.Models.Reservation
 
     public class CustomerDTO
     {
+        [Required]
+        [Display(Name = "First Name")]
+        [RegularExpression(".*[^ ].*")]
         public string CustFName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        [RegularExpression(".*[^ ].*")]
         public string CustLName { get; set; }
+
+        [Required]
+        [Display(Name = "Email")]
+        [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Invalid email address")]        
         public string CustEmail { get; set; }
+
+        [Required]
+        [Display(Name = "Phone")]
+        [StringLength(10)]
+        [DataType(DataType.PhoneNumber)]        
         public string CustPhone { get; set; }
     }
 }

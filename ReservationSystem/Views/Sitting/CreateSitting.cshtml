@@ -12,18 +12,18 @@
 
         <form asp-action="CreateSitting">
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="row">
                 <div class="form-group col-6">
-                    <label asp-for="StartDate" class="control-label">Start Date</label>
-                    <input asp-for="StartDate" class="form-control" />
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control calendar" id="StartDate"/>
                     <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-6">
-                    <label asp-for="EndDate" class="control-label">End Date</label>
-                    <input asp-for="EndDate" class="form-control" />
+                    <label asp-for="EndDate" class="control-label"></label>
+                    <input asp-for="EndDate" class="form-control calendar" id="EndDate"/>
                     <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
             </div>
@@ -66,9 +66,9 @@
             {
                 <div class="row">
                     <div class="form-group col-6">
-                        <label asp-for="SittingCategoryId" class="control-label">Sitting Category</label>
-                        <select id="select" asp-for="SittingCategoryId" asp-items="@Model.SittingCategories" class="form-control">
-                            <option value="none" selected disabled hidden>-- Select a Sitting Category --</option>
+                        <label asp-for="SittingCategoryId" class="control-label"></label>
+                        <select id="SClist" asp-for="SittingCategoryId" asp-items="@Model.SittingCategories" class="form-control">
+                            <option value="none" selected disabled>-- Select a Sitting Category --</option>
                         </select>
                         <span asp-validation-for="SittingCategoryId" class="text-danger"></span>
                     </div>
@@ -111,17 +111,29 @@
 </div>
 
 @section Scripts {
+
+    @*<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
-        var allSC = @Json.Serialize(Model.SittingCategories);
+        $('.calendar').daterangepicker({
+            "singleDatePicker": true, "showCustomRangeLabel": false, "autoApply": true,
+            "locale": {
+                "format": "yyyyMMdd", "separator": " - ", "applyLabel": "Apply", "cancelLabel": "Cancel",
+                "fromLabel": "From", "toLabel": "To", "customRangeLabel": "Custom", "weekLabel": "W",
+                "daysOfWeek": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                "monthNames": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                "firstDay": 1
+            },
+        }, function () { });
+    </script>*@
 
-        $('#select').on('change', function () {
-            var scId = this.value;
-            var sc = allSC.find(s => s.id == scId);
-            alert(sc.text);
-        });
-    </script>
-
-
+<script>
+    $('#StartDate').attr('min', "2021-01-01");
+    $('#StartDate').on('change', function () {
+        $('#EndDate').attr('min', $('#StartDate').val());
+    })
+</script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
