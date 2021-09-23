@@ -35,16 +35,16 @@ namespace ReservationSystem.Controllers
 
             if (id.HasValue)
             {
-                m.Reservation = await _cxt.Reservations
+                m.CurrentReservation = await _cxt.Reservations
                     .Include(r => r.Sitting.SittingCategory).ThenInclude(sc => sc.SCTables.OrderBy(t => t.Table.Id)).ThenInclude(sct => sct.Table)
                     .Include(r => r.Sitting.SittingCategory).ThenInclude(sc => sc.SCTimeslots.OrderBy(t => t.StartTime))
                     .Include(r => r.Sitting.SittingUnits)
                     .FirstOrDefaultAsync(r => r.Id == id);
 
                 //get row and colomns
-                m.SCTimeslots = m.Reservation.Sitting.SittingCategory.SCTimeslots;
-                m.SCTables = m.Reservation.Sitting.SittingCategory.SCTables;
-                m.FullSittingUnits = m.Reservation.Sitting.SittingUnits;
+                m.SCTimeslots = m.CurrentReservation.Sitting.SittingCategory.SCTimeslots;
+                m.SCTables = m.CurrentReservation.Sitting.SittingCategory.SCTables;
+                m.FullSittingUnits = m.CurrentReservation.Sitting.SittingUnits;
 
                 //transferring date into DTO
 
@@ -75,15 +75,14 @@ namespace ReservationSystem.Controllers
                         Id = fsu.Id,
                         TableId = fsu.TableId,
                         TimeslotId = fsu.TimeslotId,
-                        Reserved= fsu.Status == 0 ? false:true,
-                        BelongsToCurrentReservation = fsu.ReservationId == m.Reservation.Id ? true:false,
+                        ReservationId= fsu.ReservationId,
                     });
                 }
 
 
                 //dropdown list demo
                 var availableSittingUnits = _cxt.SittingUnits
-                    .Where(su => su.SittingId == m.Reservation.SittingId && su.Status == 0)
+                    .Where(su => su.SittingId == m.CurrentReservation.SittingId && su.Status == 0)
                     .Select(su => new
                     {
                         Id = su.Id,
@@ -97,13 +96,13 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Allocate(int reservationId, int[] selectedSittingUnitId)
+        public async Task<IActionResult> Allocate(int currentReservationId, int[] selectedSittingUnitId)
         {
-            var previousSittingUnits =_cxt.SittingUnits.Where(su => su.ReservationId== reservationId).ToList();
+            var previousSittingUnits =_cxt.SittingUnits.Where(su => su.ReservationId== currentReservationId).ToList();
             previousSittingUnits.ForEach(su => { su.ReservationId = null; su.Status = Data.Enums.SittingUnitStatus.Available; });
 
             var currentSittingUnits=_cxt.SittingUnits.Where(su => selectedSittingUnitId.Contains(su.Id)).ToList();
-            currentSittingUnits.ForEach(su => { su.ReservationId = reservationId; su.Status = Data.Enums.SittingUnitStatus.Reserved; });
+            currentSittingUnits.ForEach(su => { su.ReservationId = currentReservationId; su.Status = Data.Enums.SittingUnitStatus.Reserved; });
             await _cxt.SaveChangesAsync();
             return Json(Url.Action("Index"));
         }

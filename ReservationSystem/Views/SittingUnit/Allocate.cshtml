@@ -14,28 +14,28 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.Sitting.SittingCategory.Name)
+            @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.Sitting.SittingCategory.Name)
+            @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.Sitting.Date)
+            @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.Date)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.Sitting.Date)
+            @Html.DisplayFor(model => model.CurrentReservation.Sitting.Date)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.Sitting.SittingCategory.StartTime)
+            @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.StartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.Sitting.SittingCategory.StartTime)
+            @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.StartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.Sitting.SittingCategory.EndTime)
+            @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.EndTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.Sitting.SittingCategory.EndTime)
+            @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.EndTime)
         </dd>
 
     </dl>
@@ -46,33 +46,33 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.NumOfGuests)
+            @Html.DisplayNameFor(model => model.CurrentReservation.NumOfGuests)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.NumOfGuests)
+            @Html.DisplayFor(model => model.CurrentReservation.NumOfGuests)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.ExpectedStartTime)
+            @Html.DisplayNameFor(model => model.CurrentReservation.ExpectedStartTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.ExpectedStartTime)
+            @Html.DisplayFor(model => model.CurrentReservation.ExpectedStartTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.ExpectedEndTime)
+            @Html.DisplayNameFor(model => model.CurrentReservation.ExpectedEndTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.ExpectedEndTime)
+            @Html.DisplayFor(model => model.CurrentReservation.ExpectedEndTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reservation.Notes)
+            @Html.DisplayNameFor(model => model.CurrentReservation.Notes)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Reservation.Notes)
+            @Html.DisplayFor(model => model.CurrentReservation.Notes)
         </dd>
     </dl>
 </div>
 
-<div class="row">
+@*<div class="row">
     <div class="col-md-4">
         <form asp-action="Allocate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -83,15 +83,14 @@
                 <span asp-validation-for="SittingUnitsId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input id="allocate" type="submit" value="Allocate" class="btn btn-primary" hidden />
+                <input id="allocate1" type="submit" value="Allocate1" class="btn btn-primary" hidden />
             </div>
         </form>
     </div>
-</div>
+</div>*@
 
-<input id="allocate1" asp-action="Allocate" type="submit" value="Allocate1" class="btn btn-primary" />
 
-<table style="border: 2px solid black">
+@*<table style="border: 2px solid black">
     <thead>
         <tr>
             <td></td>
@@ -116,8 +115,10 @@
 
         }
     </tbody>
-</table>
+</table>*@
 
+
+<input id="allocate" asp-action="Allocate" type="submit" value="Allocate" class="btn btn-primary" /><br/>
 <div id="scheduler" style="padding-top: 50px;"></div>
 
 
@@ -135,26 +136,28 @@
 
     <script src="~/scheduler/scheduler.js"></script>
     <script>
-        var sittingDate = '@Model.Reservation.Sitting.Date.ToShortDateString()';
-        var sittingName = '@Model.Reservation.Sitting.SittingCategory.Name';
+        var sittingDate = '@Model.CurrentReservation.Sitting.Date.ToShortDateString()';
+        var sittingName = '@Model.CurrentReservation.Sitting.SittingCategory.Name';
+        var currentReservationId = @Model.CurrentReservation.Id;
         var tables = @Json.Serialize(Model.SCTablesDTO);
         var timeslots =@Json.Serialize(Model.SCTimeslotsDTO);
         var sittingUnits =@Json.Serialize(Model.SittingUnitsDTO);
 
-        var reservationId = @Model.Reservation.Id;
+
         var selectedSittingUnitId = [];
 
         $("#scheduler").scheduler(
             {
             sittingDate: sittingDate,
             sittingName: sittingName,
+            currentReservationId: currentReservationId,
             timeslots: timeslots,
             tables: tables,
             sittingUnits: sittingUnits,
             }
         );
 
-        $("#allocate1").on("click", () => {
+        $("#allocate").on("click", () => {
 
             selectedSittingUnitId = $(".booked").map(function () {
                 return parseInt(this.id);
@@ -166,7 +169,7 @@
             $.ajax({
                 type: "POST",
                 url: '/SittingUnit/Allocate',
-                data: { reservationId: reservationId, selectedSittingUnitId: selectedSittingUnitId },
+                data: { currentReservationId: currentReservationId, selectedSittingUnitId: selectedSittingUnitId },
                 dataType: "json",
                 success: function (data) {
                     window.location.href = data;

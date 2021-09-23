@@ -10,7 +10,7 @@ namespace ReservationSystem.Models.SittingUnit
     public class Allocate
     {
 
-        public Data.Reservation Reservation { get; set; }
+        public Data.Reservation CurrentReservation { get; set; }
         public List<SCTimeslot> SCTimeslots { get; set; }
         public List<SCTable> SCTables { get; set; }
         public List<Data.SittingUnit> FullSittingUnits { get; set; }
@@ -37,8 +37,7 @@ namespace ReservationSystem.Models.SittingUnit
         public int Id { get; set; }
         public int TimeslotId { get; set; }
         public int TableId { get; set; }
-        public bool Reserved { get; set; }
-        public bool BelongsToCurrentReservation { get; set; }
+        public int? ReservationId { get; set; }
 
     }
 

@@ -3,18 +3,19 @@
 
     var defaults = {
         timeslotHeight: 40,
-        timeslotWidth: 75,
+        timeslotWidth: 90,
         sittingDate: '2019-01-01',
         sittingName: 'Breakfast',
+        currentReservationId: 1,
         timeslots: [{ id: 1, startTime: "8:00:00", endTime: "9:00:00" }, { id: 2, startTime: "9:00:00", endTime: "10:00:00" }, { id: 3, startTime: "10:00:00", endTime: "11:00:00" }],
         tables: [{ id: 1, name: "A1" }, { id: 2, name: "A2" }],
         sittingUnits: [
-            { id: 1, timeslotId: 1, tableId: 1, reserved: false, belongsToCurrentReservation: false},
-            { id: 2, timeslotId: 1, tableId: 2, reserved: false, belongsToCurrentReservation: false},
-            { id: 3, timeslotId: 2, tableId: 1, reserved: true, belongsToCurrentReservation: true},
-            { id: 4, timeslotId: 2, tableId: 2, reserved: true, belongsToCurrentReservation: false},
-            { id: 5, timeslotId: 3, tableId: 1, reserved: false, belongsToCurrentReservation: false},
-            { id: 6, timeslotId: 3, tableId: 2, reserved: false, belongsToCurrentReservation: false}],
+            { id: 1, timeslotId: 1, tableId: 1, reservationId: null },
+            { id: 2, timeslotId: 1, tableId: 2, reservationId: null },
+            { id: 3, timeslotId: 2, tableId: 1, reservationId: 1 },
+            { id: 4, timeslotId: 2, tableId: 2, reservationId: 2 },
+            { id: 5, timeslotId: 3, tableId: 1, reservationId: null},
+            { id: 6, timeslotId: 3, tableId: 2, reservationId: null }],
 
     }
 
@@ -114,11 +115,11 @@
                     var currentSittingUnit = settings.sittingUnits.find(x => x.tableId == settings.tables[i].id && x.timeslotId == settings.timeslots[j].id);
                     var timeslot = $("<div></div>").addClass("timeslot cell");
                     timeslot.attr("id", currentSittingUnit.id);
-                    if (currentSittingUnit.reserved == true) {
-                        if (currentSittingUnit.belongsToCurrentReservation==false) { timeslot.addClass("occupied"); }
+                    if (currentSittingUnit.reservationId != null) {
+                        if (currentSittingUnit.reservationId != settings.currentReservationId) { timeslot.addClass("occupied"); }
                         else { timeslot.addClass("booked"); };
                     }
-                        
+
 
                     row.append(timeslot);
                 }
@@ -138,15 +139,14 @@
     var listeners = {
 
         timeslot: function (e) {
-            if (!$(e.target).hasClass("occupied"))
-            {
-                if (!$(e.target).hasClass("booked")) { $(e.target).addClass("booked")}
-                else { $(e.target).removeClass("booked")}
+            if (!$(e.target).hasClass("occupied")) {
+                if (!$(e.target).hasClass("booked")) { $(e.target).addClass("booked") }
+                else { $(e.target).removeClass("booked") }
             }
-           
+
         }
 
-}
+    }
 
 
     // Sets the size of the scheduler timeslots
