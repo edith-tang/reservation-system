@@ -108,7 +108,7 @@ namespace ReservationSystem.Controllers
             currentReservation.Status = Data.Enums.ReservationStatus.Confirmed;
 
             await _cxt.SaveChangesAsync();
-            return Json(Url.Action("Index", "Reservation"));
+            return Json(Url.Action("IndexReservation", "Reservation"));
         }
     }
 }
