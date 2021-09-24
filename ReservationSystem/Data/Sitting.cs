@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ namespace ReservationSystem.Data
     {
         public int Id { get; set; }
         public int SittingCategoryId { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime Date { get; set; }
         public SittingStatus Status { get; set; }
 

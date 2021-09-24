@@ -194,7 +194,7 @@ namespace ReservationSystem.Controllers
             bool checkDate = sitting.Date == m.SelectedDate;
             bool checkStartTime = CheckStartTime(sitting, m.ExpectedStartTime);
             bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
-            bool checkCapacity = sitting.RemainingCapacity >= m.NumOfGuests;
+            bool checkCapacity = 0 < m.NumOfGuests && m.NumOfGuests <= sitting.RemainingCapacity;
             if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
             {
                 throw new Exception();

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<ReservationSystem.Data.Reservation>
+@using ReservationSystem.Data.Enums;
 
-@{
+@{    
     ViewData["Title"] = "Reservation - Home";
 }
 
@@ -12,17 +13,18 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Expected Start Time</th>
-            <th scope="col">Expected End Time</th>
-            <th scope="col">Num. of guests</th>
-            <th scope="col">Status</th>
-            <th scope="col">@Html.DisplayNameFor(model => model.Customer)</th>
-            <th scope="col"></th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.Sitting.Date)</th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.ExpectedStartTime)</th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.ExpectedEndTime)</th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.NumOfGuests)</th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.Status)</th>
+            <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.Customer)</th>
+            <th scope="col" style="white-space: nowrap"></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Sitting.Date)
@@ -43,9 +45,7 @@
                 @Html.DisplayFor(modelItem => item.Customer.CustEmail)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a> | 
                 <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id">Allocate</a>
             </td>
         </tr>

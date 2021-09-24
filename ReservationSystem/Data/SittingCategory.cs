@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,8 +13,12 @@ namespace ReservationSystem.Data
         public int Id { get; set; }
         public string Name { get; private set; }
         public int Capacity { get; private set; }
+
+        [Display(Name = "Start Time")]
         public TimeSpan StartTime { get; private set; }
         public TimeSpan Duration { get; private set; }
+
+        [Display(Name = "End Time")]
         public TimeSpan EndTime { get => StartTime + Duration; }
 
         #region RELATIONSHIPS        

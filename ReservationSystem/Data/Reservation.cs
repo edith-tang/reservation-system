@@ -13,12 +13,21 @@ namespace ReservationSystem.Data
         public int Id { get; private set; }        
         public int CustomerId { get; set; }
         public int SittingId { get; set; }
+
+        [Display(Name = "Number of guests")]
         public int NumOfGuests { get; set; }
+
+        [Display(Name = "Expected Arrival")]
         public TimeSpan ExpectedStartTime { get; set; }
+
+        [Display(Name = "Expected Leave")]
         public TimeSpan ExpectedEndTime { get; set; }
         public string Notes { get; set; }
 
+        [Display(Name = "Time of booking")]
         public DateTime TimeOfBooking { get; set; }
+
+        [Display(Name = "Way of booking")]
         public WayOfBooking WayOfBooking { get; set; }
         public ReservationStatus Status { get; set; }
 
