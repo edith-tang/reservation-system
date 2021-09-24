@@ -31,7 +31,8 @@ namespace ReservationSystem.Controllers
 
         public async Task<ActionResult> DetailsSC(int id)
         {
-            var sc = await GetSCById(id);            
+            var sc = await GetSCById(id);
+            GetTableStrings(sc);
             return View(sc);
         }
 
@@ -146,6 +147,22 @@ namespace ReservationSystem.Controllers
         {
             var allSC = await GetSCs();
            return allSC.FirstOrDefault(i => i.Id == sittingCategoryId);                
+        }
+
+        public void GetTableStrings(SittingCategory sc)
+        {
+            var mainTables = sc.SCTables.FindAll(t => t.Table.Area == "Main").OrderBy(t => t.TableId);
+            var outsideTables = sc.SCTables.FindAll(t => t.Table.Area == "Outside").OrderBy(t => t.TableId);
+            var balconyTables = sc.SCTables.FindAll(t => t.Table.Area == "Balcony").OrderBy(t => t.TableId);
+            string mainString = "", outsideString = "", balconyString = "";
+
+            if (mainTables.Count() > 0) { foreach (var t in mainTables) { mainString += t.Table.Name + " "; } }
+            if (outsideTables.Count() > 0) { foreach (var t in outsideTables) { outsideString += t.Table.Name + " "; } }
+            if (balconyTables.Count() > 0) { foreach (var t in balconyTables) { balconyString += t.Table.Name + " "; } }
+
+            ViewBag.mainString = (mainString=="")?"None":mainString;
+            ViewBag.outsideString = (outsideString == "") ? "None" : outsideString;
+            ViewBag.balconyString = (balconyString == "") ? "None" : balconyString;
         }
         #endregion
     }

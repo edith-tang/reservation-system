@@ -39,18 +39,11 @@
         <div class="col-sm-6">
             <h4>Timeslots</h4>
             <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Start Time</th>
-                        <th scope="col">End Time</th>
-                    </tr>
-                </thead>
                 <tbody>
                     @foreach (var item in Model.SCTimeslots)
                     {
                         <tr>
-                            <td>@item.StartTime</td>
-                            <td>@item.EndTime</td>
+                            <td>@(item.StartTime + " - " + item.EndTime)</td>
                         </tr>
                     }
                 </tbody>
@@ -62,17 +55,22 @@
                 <thead>
                     <tr>
                         <th scope="col">Area</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Tables</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.SCTables)
-                    {
-                        <tr>
-                            <td>@item.Table.Area</td>
-                            <td>@item.Table.Name</td>
-                        </tr>
-                    }
+                    <tr>
+                        <td>Main</td>
+                        <td>@ViewBag.mainString</td>
+                    </tr>
+                    <tr>
+                        <td>Outside</td>
+                        <td>@ViewBag.outsideString</td>
+                    </tr>
+                    <tr>
+                        <td>Balcony</td>
+                        <td>@ViewBag.balconyString</td>
+                    </tr>
                 </tbody>
             </table>
 
