@@ -41,6 +41,7 @@ namespace ReservationSystem.Data
                 b.Property(rc => rc.CustLName).IsRequired();
                 b.Property(rc => rc.CustPhone).IsRequired();
                 b.Property(rc => rc.CustEmail).IsRequired();
+                b.HasOne(p => p.IdentityUser).WithOne().HasForeignKey<Customer>();
             });
 
             builder.Entity<Reservation>(b =>

@@ -13,7 +13,7 @@ namespace ReservationSystem.Models.Reservation
     {        
         public string MaxDate { get; set; }
         public string MinDate { get; set; }        
-        public int MemberId { get; set; }
+        public int CustomerId { get; set; }
         public CustomerDTO Customer { get; set; }
 
         #region RESERVATION INFO

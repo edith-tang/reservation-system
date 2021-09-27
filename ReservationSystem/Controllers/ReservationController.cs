@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ReservationSystem.Data;
 using ReservationSystem.Models.Reservation;
+using ReservationSystem.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,9 +19,13 @@ namespace ReservationSystem.Controllers
     {
         #region DI
         private readonly ApplicationDbContext _cxt;
-        public ReservationController(ApplicationDbContext cxt)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly CustomerService _customerService;
+        public ReservationController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager, CustomerService customerService)
         {
             _cxt = cxt;
+            _userManager = userManager;
+            _customerService = customerService;
         }
         #endregion
 
@@ -30,10 +37,16 @@ namespace ReservationSystem.Controllers
         }
 
         //for logged in members only
-        public ActionResult History()
+
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult> HistoryReservation()
         {
-            return View();
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+            var reservation = await _cxt.Reservations.Include(r=>r.Customer).Where(r => r.CustomerId == custAuthenticated.Id).ToListAsync();
+            return View(reservation);
         }
+
 
         //for employee and logged in members only
         public async Task<ActionResult> DetailsReservation(int id)
@@ -51,7 +64,18 @@ namespace ReservationSystem.Controllers
             {
                 MaxDate = sittings.Max(s => s.Date).ToString("yyyy-MM-dd"),
                 MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
+                Customer = new CustomerDTO(),
             };
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+                m.CustomerId = custAuthenticated.Id;
+                m.Customer.CustFName = custAuthenticated.CustFName;
+                m.Customer.CustLName = custAuthenticated.CustLName;
+                m.Customer.CustEmail = custAuthenticated.CustEmail;
+                m.Customer.CustPhone = custAuthenticated.CustPhone;
+            }
             return View(m);
         }
 
@@ -84,6 +108,7 @@ namespace ReservationSystem.Controllers
                     return RedirectToAction(nameof(IndexReservation));
 
                     //for loggedin member: to member home page/ member reservation history
+
                     //for non-member: to restaurant home / thank you page
                 }
                 catch (Exception)
@@ -94,6 +119,9 @@ namespace ReservationSystem.Controllers
             }
             return View(m);
         }
+
+
+
         #endregion
 
         #region Methods
@@ -225,10 +253,18 @@ namespace ReservationSystem.Controllers
         
         public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
         {
-            if (m.MemberId > 0) //For member: pass member id
+            if (User.Identity.IsAuthenticated)
             {
-                //reservation.MemberId = m.MemberId;
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+                reservation.CustomerId = custAuthenticated.Id;
             }
+
+            //if (m.CustomerId > 0) //For member: pass member id
+            //{
+            //    reservation.CustomerId = m.CustomerId;
+            //}
+
             else //For non-member: check if email exists            
             {
                 var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);

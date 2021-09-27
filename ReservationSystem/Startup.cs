@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ReservationSystem.Data;
+using ReservationSystem.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,18 +33,20 @@ namespace ReservationSystem
             {
                 cfg.CreateMap<Models.SittingCategory.CreateSC, Data.SittingCategory>();
             });
+            services.AddScoped<CustomerService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +80,23 @@ namespace ReservationSystem
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+            createRoles(serviceProvider);
+        }
+
+        public void createRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            string[] roleNames = { "Admin", "Employee", "Member" };
+            foreach (var roleName in roleNames)
+            {
+                Task<bool> roleExists = roleManager.RoleExistsAsync(roleName);
+                roleExists.Wait();
+                if (!roleExists.Result)
+                {
+                    Task<IdentityResult> result = roleManager.CreateAsync(new IdentityRole(roleName));
+                    result.Wait();
+                }
+            }
         }
     }
 }

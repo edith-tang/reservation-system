@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data.Users;
 
@@ -27,6 +28,8 @@ namespace ReservationSystem.Data
 
         #region RELATIONSHIPS        
         public List<Reservation> Reservations { get; private set; }
+        public string IdentityUserId { get; set; }
+        public virtual IdentityUser IdentityUser { get; set; }
         //public Member Member { get; set; }
         #endregion
     }
