@@ -103,7 +103,7 @@ namespace ReservationSystem.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "Member");
-                    var c = new Customer
+                    var c = new Data.Customer
                     {
                         CustFName = Input.FName,
                         CustLName = Input.LName,
@@ -111,7 +111,9 @@ namespace ReservationSystem.Areas.Identity.Pages.Account
                         CustPhone = Input.Phone,
                         IdentityUserId = user.Id
                     };
-                    _cxt.Customers.Add(c);
+                    //previously unregistered customer will update the info and register
+                    await _customerService.UpsertCustomerAsync(c,true);
+
                     await _cxt.SaveChangesAsync();
 
                     _logger.LogInformation("User created a new account with password.");

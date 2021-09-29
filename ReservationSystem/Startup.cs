@@ -42,7 +42,10 @@ namespace ReservationSystem
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+
+            bool clientValidationEnabled = Configuration.GetValue<bool>("ClientValidationEnabled");
+            services.AddControllersWithViews()
+                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = clientValidationEnabled); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

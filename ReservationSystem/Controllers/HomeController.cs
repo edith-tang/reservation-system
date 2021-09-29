@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -50,6 +51,28 @@ namespace ReservationSystem.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [Authorize]
+        public IActionResult RedirectUser()
+        {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index","Home",new { area = "Admin" });
+            }
+            else if (User.IsInRole("Employee"))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Employee" });
+            }
+            else if (User.IsInRole("Member"))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Member" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            
         }
     }
 }

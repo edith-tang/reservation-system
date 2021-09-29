@@ -12,7 +12,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
     public abstract class AdminAreaBaseControlller : Controller
     {
 
-        private readonly ApplicationDbContext _cxt;
+        protected readonly ApplicationDbContext _cxt;
 
         public AdminAreaBaseControlller(ApplicationDbContext cxt)
         {

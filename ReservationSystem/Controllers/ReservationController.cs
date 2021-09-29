@@ -257,7 +257,7 @@ namespace ReservationSystem.Controllers
             {
                 var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-                reservation.CustomerId = custAuthenticated.Id;
+                reservation.Customer = custAuthenticated;
             }
 
             //if (m.CustomerId > 0) //For member: pass member id
@@ -267,24 +267,36 @@ namespace ReservationSystem.Controllers
 
             else //For non-member: check if email exists            
             {
-                var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);
-                if (custFound == null)
+                var custEntered = new Data.Customer
                 {
-                    reservation.Customer = new Data.Customer
-                    {
-                        CustFName = m.Customer.CustFName,
-                        CustLName = m.Customer.CustLName,
-                        CustEmail = m.Customer.CustEmail,
-                        CustPhone = m.Customer.CustPhone
-                    };
-                }
-                else
-                {
-                    reservation.CustomerId = custFound.Id;
-                    custFound.CustFName = m.Customer.CustFName;
-                    custFound.CustLName = m.Customer.CustLName;
-                    custFound.CustPhone = m.Customer.CustFName;
-                }
+                    CustFName = m.Customer.CustFName,
+                    CustLName = m.Customer.CustLName,
+                    CustEmail = m.Customer.CustEmail,
+                    CustPhone = m.Customer.CustPhone
+                };
+
+                //previously unregistered customer will update the info and booking confirmed
+                reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true);
+
+
+                //var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);
+                //if (custFound == null)
+                //{
+                //    reservation.Customer = new Data.Customer
+                //    {
+                //        CustFName = m.Customer.CustFName,
+                //        CustLName = m.Customer.CustLName,
+                //        CustEmail = m.Customer.CustEmail,
+                //        CustPhone = m.Customer.CustPhone
+                //    };
+                //}
+                //else
+                //{
+                //    reservation.CustomerId = custFound.Id;
+                //    custFound.CustFName = m.Customer.CustFName;
+                //    custFound.CustLName = m.Customer.CustLName;
+                //    custFound.CustPhone = m.Customer.CustFName;
+                //}
             }
         }
         #endregion
