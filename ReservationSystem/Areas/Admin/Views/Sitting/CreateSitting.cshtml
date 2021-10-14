@@ -64,40 +64,6 @@
                     </dl>
                 </div>
             }
-            else
-            {
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label asp-for="SittingCategoryId" class="control-label"></label>
-                        <select id="SClist" asp-for="SittingCategoryId" asp-items="@Model.SittingCategories" class="form-control">
-                            <option value="none" selected disabled>-- Select a Sitting Category --</option>
-                        </select>
-                        <span asp-validation-for="SittingCategoryId" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div id="SCInfo">
-                    <h4>Sitting Category Info</h4>
-                    <dl class="row">
-                        <dt class="col-sm-2">Category</dt>
-                        <dd class="col-sm-10">
-
-                        </dd>
-                        <dt class="col-sm-2">Capacity</dt>
-                        <dd class="col-sm-10">
-
-                        </dd>
-                        <dt class="col-sm-2">Start Time</dt>
-                        <dd class="col-sm-10">
-
-                        </dd>
-                        <dt class="col-sm-2">End Time</dt>
-                        <dd class="col-sm-10">
-
-                        </dd>
-                    </dl>
-                </div>
-            }
 
             <input type="submit" value="Create" class="btn btn-primary" />
 
@@ -118,20 +84,6 @@
             $('#EndDate').attr('min', $('#StartDate').val());
         })
     </script>
-
-<script>
-    $('#SClist').on('change', function () {
-        $.ajax({
-            type: "GET",
-            url: '/Admin/Sitting/GetSCInfo',
-            data: { scId: $('#SClist').val() },
-            dataType: "json",
-            success: function (response) {
-                
-            },
-        });
-    })
-</script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

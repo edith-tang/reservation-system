@@ -42,19 +42,12 @@ namespace ReservationSystem.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateSitting(int? id)
+        public async Task<IActionResult> CreateSitting(int id)
         {
             var m = new CreateSitting();
-            if (id.HasValue)
-            {
-                var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == id);
-                m.SittingCategoryId = sittingCategory.Id;
-                m.SittingCategory = sittingCategory;
-            }
-            else
-            {
-                m.SittingCategories = new SelectList(_cxt.SittingCategories.ToArray(), nameof(SittingCategory.Id), nameof(SittingCategory.Name));
-            }
+            var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == id);
+            m.SittingCategoryId = sittingCategory.Id;
+            m.SittingCategory = sittingCategory;
             return View(m);
         }
 
@@ -177,18 +170,18 @@ namespace ReservationSystem.Areas.Admin.Controllers
             await _cxt.SaveChangesAsync();
         }
 
-        public async Task<JsonResult> GetSCInfo(int scId)
-        {
-            var sc = await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Id == scId);
-            var scInfo = new ScDTO
-            {
-                Id = sc.Id,
-                Capacity = sc.Capacity,
-                StartTime = sc.StartTime.ToString(@"hh\:mm\:ss"),
-                EndTime = sc.EndTime.ToString(@"hh\:mm\:ss"),
-            };
-            return Json(scInfo);
-        }
+        //public async Task<JsonResult> GetSCInfo(int scId)
+        //{
+        //    var sc = await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Id == scId);
+        //    var scInfo = new ScDTO
+        //    {
+        //        Id = sc.Id,
+        //        Capacity = sc.Capacity,
+        //        StartTime = sc.StartTime.ToString(@"hh\:mm\:ss"),
+        //        EndTime = sc.EndTime.ToString(@"hh\:mm\:ss"),
+        //    };
+        //    return Json(scInfo);
+        //}
         #endregion
     }
 }

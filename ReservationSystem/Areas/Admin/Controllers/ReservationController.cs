@@ -142,7 +142,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         //find all active sittings and dates
         public async Task<List<Sitting>> GetAllFutureSittings()
         {
-            return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past)
+            return await _cxt.Sittings.Where(s => s.Status == Data.Enums.SittingStatus.Open)
                 .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
                 .ToListAsync();
         }

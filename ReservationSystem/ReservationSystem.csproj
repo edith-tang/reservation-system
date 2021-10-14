@@ -17,7 +17,6 @@
     <None Include="Areas\Admin\Views\SittingUnit\Index.cshtml" />
     <None Include="Areas\Admin\Views\Sitting\CreateSitting.cshtml" />
     <None Include="Areas\Admin\Views\Sitting\DetailsSitting.cshtml" />
-    <None Include="Areas\Admin\Views\Sitting\Index.cshtml" />
     <None Include="Areas\Admin\Views\Sitting\IndexSitting.cshtml" />
     <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
