@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ReservationSystem.Data;
 using ReservationSystem.Models;
+using ReservationSystem.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,27 +20,31 @@ namespace ReservationSystem.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _cxt;
         private readonly UserManager<IdentityUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext cxt, UserManager<IdentityUser> userManager)
+        private readonly AdminService _adminService;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext cxt, UserManager<IdentityUser> userManager, AdminService adminService)
         {
             _logger = logger;
             _cxt = cxt;
             _userManager = userManager;
+            _adminService = adminService;
         }
         #endregion
 
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _cxt.Users.FirstOrDefaultAsync(u=>u.UserName==User.Identity.Name);
 
-                var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+            await _adminService.SeedAdmin();
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    var user = await _cxt.Users.FirstOrDefaultAsync(u=>u.UserName==User.Identity.Name);
 
-                if (!User.IsInRole("Member")) 
-                { 
-                await _userManager.AddToRoleAsync(user, "Member");
-                }
-            }
+            //    var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+
+            //    if (!User.IsInRole("Member")) 
+            //    { 
+            //    await _userManager.AddToRoleAsync(user, "Member");
+            //    }
+            //}
             return View();
         }
 

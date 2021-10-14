@@ -34,6 +34,7 @@ namespace ReservationSystem
                 cfg.CreateMap<Areas.Admin.Models.SittingCategory.CreateSC, Data.SittingCategory>();
             });
             services.AddScoped<CustomerService>();
+            services.AddScoped<AdminService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
