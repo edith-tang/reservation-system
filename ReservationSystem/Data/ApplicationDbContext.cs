@@ -1,22 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using ReservationSystem.Data.Users;
-using ReservationSystem.Data.Enums;
-using ReservationSystem.Models.SittingCategory;
-using ReservationSystem.Areas.Admin.Models.Employee;
 
 namespace ReservationSystem.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
         #region TABLE SETUP
-        //public DbSet<Manager> Managers { get; set; }
-        //public DbSet<Employee> Employees { get; set; }
-        //public DbSet<Member> Members { get; set; }
-
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Reservation> Reservations { get; set; }        
@@ -128,9 +117,5 @@ namespace ReservationSystem.Data
               );
             #endregion
         }
-
-        public DbSet<ReservationSystem.Areas.Admin.Models.Employee.CreateEmployee> CreateEmployee { get; set; }
-
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,16 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Controllers
+namespace ReservationSystem.Areas.Admin.Controllers
 {
-    public class SittingCategoryController : Controller
+    public class SittingCategoryController : AdminAreaBaseController
     {
         #region DI
-        private readonly ApplicationDbContext _cxt;
         private readonly IMapper _mapper;
-        public SittingCategoryController(ApplicationDbContext cxt, IMapper mapper)
+        public SittingCategoryController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager, IMapper mapper) : base(cxt, userManager)
         {
-            _cxt = cxt;
             _mapper = mapper;
         }
         #endregion

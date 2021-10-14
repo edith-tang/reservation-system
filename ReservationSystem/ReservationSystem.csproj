@@ -7,6 +7,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Areas\Admin\Views\Employee\CreateEmployee.cshtml" />
+    <None Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <None Include="Areas\Admin\Views\SittingCategory\CreateSC.cshtml" />
+    <None Include="Areas\Admin\Views\SittingCategory\DetailsSC.cshtml" />
+    <None Include="Areas\Admin\Views\SittingCategory\IndexSC.cshtml" />
+    <None Include="Areas\Admin\Views\SittingUnit\Allocate.cshtml" />
+    <None Include="Areas\Admin\Views\SittingUnit\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Sitting\CreateSitting.cshtml" />
+    <None Include="Areas\Admin\Views\Sitting\DetailsSitting.cshtml" />
+    <None Include="Areas\Admin\Views\Sitting\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Sitting\IndexSitting.cshtml" />
+    <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
+    <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Employee\Views\Home\Index.cshtml" />
+    <None Include="Areas\Employee\_ViewImports.cshtml" />
+    <None Include="Areas\Employee\_ViewStart.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Login.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.9" />
@@ -16,12 +42,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Employee\Data\" />
-    <Folder Include="Areas\Employee\Models\" />
   </ItemGroup>
 
 </Project>

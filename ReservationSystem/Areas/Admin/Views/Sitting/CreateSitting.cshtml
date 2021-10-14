@@ -1,4 +1,4 @@
-﻿@model ReservationSystem.Models.Sitting.CreateSitting
+﻿@model ReservationSystem.Areas.Admin.Models.Sitting.CreateSitting
 
 @{
     ViewData["Title"] = "Create Sitting";
@@ -123,7 +123,7 @@
     $('#SClist').on('change', function () {
         $.ajax({
             type: "GET",
-            url: '/Sitting/GetSCInfo',
+            url: '/Admin/Sitting/GetSCInfo',
             data: { scId: $('#SClist').val() },
             dataType: "json",
             success: function (response) {

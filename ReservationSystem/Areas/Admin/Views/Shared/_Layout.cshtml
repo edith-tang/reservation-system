@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ReservationSystem</a>
+                <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Index">ReservationSystem</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,16 +20,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SittingCategory" asp-action="IndexSC">Sitting Category</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="SittingCategory" asp-action="IndexSC">Sitting Category</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sitting" asp-action="IndexSitting">Sitting</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Sitting" asp-action="IndexSitting">Sitting</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="IndexReservation">Reservation</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Reservation" asp-action="IndexReservation">Reservation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SittingUnit" asp-action="Index">Sitting Unit</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="SittingUnit" asp-action="Index">Sitting Unit</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Admin" asp-controller="Employee" asp-action="CreateEmployee">Create Employee</a>
@@ -47,9 +47,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - ReservationSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+        <div class="container">&copy; 2021 - ReservationSystem</div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -31,7 +31,7 @@ namespace ReservationSystem
 
             services.AddAutoMapper(cfg =>
             {
-                cfg.CreateMap<Models.SittingCategory.CreateSC, Data.SittingCategory>();
+                cfg.CreateMap<Areas.Admin.Models.SittingCategory.CreateSC, Data.SittingCategory>();
             });
             services.AddScoped<CustomerService>();
             services.AddDbContext<ApplicationDbContext>(options =>

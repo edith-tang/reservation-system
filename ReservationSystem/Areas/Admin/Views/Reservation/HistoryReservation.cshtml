@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ReservationSystem.Data.Reservation>
+
+@{
+    ViewData["Title"] = "HistoryReservation";
+}
+
+<h1>HistoryReservation</h1>
+
+<p>
+    <a asp-action="CreateReservation">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NumOfGuests)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedStartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedEndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeOfBooking)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WayOfBooking)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sitting)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumOfGuests)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedStartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedEndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeOfBooking)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WayOfBooking)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.CustEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sitting.Id)
+            </td>
+            <td>
+                
+                <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a> 
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,26 +1,24 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ReservationSystem.Areas.Admin.Models.Sitting;
 using ReservationSystem.Data;
 using ReservationSystem.Data.Enums;
-using ReservationSystem.Models;
-using ReservationSystem.Models.Sitting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Controllers
+namespace ReservationSystem.Areas.Admin.Controllers
 {
-    public class SittingController : Controller
+    public class SittingController : AdminAreaBaseController
     {
         #region DI
-        private readonly ApplicationDbContext _cxt;
         private readonly IMapper _mapper;
-        public SittingController(ApplicationDbContext cxt, IMapper mapper)
+        public SittingController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager, IMapper mapper) : base(cxt, userManager)
         {
-            _cxt = cxt;
             _mapper = mapper;
         }
         #endregion
@@ -30,6 +28,11 @@ namespace ReservationSystem.Controllers
         {
             var sittings = await GetSittings();            
             return View(sittings);
+        }
+
+        public ActionResult Index()
+        {
+            return View();
         }
 
         public async Task<IActionResult> DetailsSitting(int id)

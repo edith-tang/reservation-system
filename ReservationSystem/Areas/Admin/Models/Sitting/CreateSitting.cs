@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Models.Sitting
+namespace ReservationSystem.Areas.Admin.Models.Sitting
 {
     public class CreateSitting
     {

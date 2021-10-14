@@ -58,7 +58,7 @@ namespace ReservationSystem.Controllers
             }
             else if (User.IsInRole("Employee"))
             {
-                return RedirectToAction("Index", "Home", new { area = "Employee" });
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
             else
             {

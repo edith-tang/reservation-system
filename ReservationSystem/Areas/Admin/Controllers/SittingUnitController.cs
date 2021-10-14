@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ReservationSystem.Areas.Admin.Models.SittingUnit;
 using ReservationSystem.Data;
-using ReservationSystem.Models.SittingUnit;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Controllers
+namespace ReservationSystem.Areas.Admin.Controllers
 {
-    public class SittingUnitController : Controller
+    public class SittingUnitController : AdminAreaBaseController
     {
-
-        private readonly ApplicationDbContext _cxt;
-        public SittingUnitController(ApplicationDbContext cxt)
+        #region DI
+        public SittingUnitController (ApplicationDbContext cxt, UserManager<IdentityUser> userManager): base(cxt, userManager)
         {
-            _cxt = cxt;
         }
+        #endregion
+
         public async Task<IActionResult> Index()
         {
             var sittingUnits = await _cxt.SittingUnits

@@ -1,4 +1,4 @@
-﻿@model ReservationSystem.Models.SittingUnit.Allocate
+﻿@model ReservationSystem.Areas.Admin.Models.SittingUnit.Allocate
 
 @{
     ViewData["Title"] = "Allocate Sitting Units";
@@ -6,7 +6,7 @@
 
 <h1>Allocate</h1>
 
-<a class="btn btn-info" role="button" asp-action="Index">Back to List</a>
+<a class="btn btn-info" role="button" asp-controller="Reservation" asp-action="IndexReservation">Back to List</a>
 
 <br />
 <div>
@@ -218,25 +218,19 @@
 
             //console.log(selectedSittingUnitId);
             if (selectedSittingUnitId.length == 0) {
-
-
+                if (confirm("Do you want to proceed with no allocation?")) { }
+                else { return false; }
             }
-            if (confirm("Do you want to proceed with no allocation?")) {
-
-                //Post back selected ids
-                $.ajax({
-                    type: "POST",
-                    url: '/SittingUnit/Allocate',
-                    data: { currentReservationId: currentReservationId, selectedSittingUnitId: selectedSittingUnitId },
-                    dataType: "json",
-                    success: function (data) {
-                        window.location.href = data;
-                    },
-                });
-
-            }
-            else { return false;}
-           
+             //Post back selected ids
+            $.ajax({
+                type: "POST",
+                url: '/Admin/SittingUnit/Allocate',
+                data: { currentReservationId: currentReservationId, selectedSittingUnitId: selectedSittingUnitId },
+                dataType: "json",
+                success: function (data) {
+                    window.location.href = data;
+                },
+            });
         });
 
     </script>

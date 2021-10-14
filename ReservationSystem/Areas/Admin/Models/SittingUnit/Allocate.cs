@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Models.SittingUnit
+namespace ReservationSystem.Areas.Admin.Models.SittingUnit
 {
     public class Allocate
     {

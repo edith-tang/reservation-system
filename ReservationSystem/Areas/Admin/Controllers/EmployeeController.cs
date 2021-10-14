@@ -1,24 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ReservationSystem.Data;
 using ReservationSystem.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ReservationSystem.Areas.Admin.Controllers
 {
-    public class EmployeeController : AdminAreaBaseControlller
-    {
-        private readonly UserManager<IdentityUser> _userManager;
+    public class EmployeeController : AdminAreaBaseController
+    {        
         private readonly CustomerService _customerService;
-
-        public EmployeeController(ApplicationDbContext cxt,  CustomerService customerService, UserManager<IdentityUser> userManager) : base(cxt)
+        public EmployeeController(ApplicationDbContext cxt,  CustomerService customerService, UserManager<IdentityUser> userManager): base(cxt, userManager)
         {
-            _userManager = userManager;
             _customerService = customerService;
         }
 
