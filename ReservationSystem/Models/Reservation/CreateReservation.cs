@@ -19,7 +19,7 @@ namespace ReservationSystem.Models.Reservation
         #region RESERVATION INFO
 
         [Required, Display(Name = "Choose a date:")]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime SelectedDate { get; set; }
 
         [Required, Display(Name = "Choose a session:")]

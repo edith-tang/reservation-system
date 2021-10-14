@@ -70,7 +70,7 @@ namespace ReservationSystem.Controllers
                     var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == m.SittingCategoryId);
                     var sittings = new List<Sitting>();
                     DateTime date = m.StartDate;
-                    var invalidDates = new List<String>();
+                    var invalidDates = new List<string>();
 
                     while (date <= m.EndDate)
                     {
@@ -124,6 +124,7 @@ namespace ReservationSystem.Controllers
                 .Include(s => s.SittingCategory)
                 .Include(s => s.Reservations)
                 .Include(s => s.SittingUnits)
+                .OrderBy(s => s.Date)
                 .ToListAsync();
         }
 
@@ -171,6 +172,19 @@ namespace ReservationSystem.Controllers
             _cxt.SittingUnits.AddRange(sUnits);
                         
             await _cxt.SaveChangesAsync();
+        }
+
+        public async Task<JsonResult> GetSCInfo(int scId)
+        {
+            var sc = await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Id == scId);
+            var scInfo = new ScDTO
+            {
+                Id = sc.Id,
+                Capacity = sc.Capacity,
+                StartTime = sc.StartTime.ToString(@"hh\:mm\:ss"),
+                EndTime = sc.EndTime.ToString(@"hh\:mm\:ss"),
+            };
+            return Json(scInfo);
         }
         #endregion
     }

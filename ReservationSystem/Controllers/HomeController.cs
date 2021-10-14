@@ -15,16 +15,17 @@ namespace ReservationSystem.Controllers
 {
     public class HomeController : Controller
     {
+        #region DI
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _cxt;
         private readonly UserManager<IdentityUser> _userManager;
-
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext cxt, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _cxt = cxt;
             _userManager = userManager;
         }
+        #endregion
 
         public async Task<IActionResult> Index()
         {
@@ -39,11 +40,6 @@ namespace ReservationSystem.Controllers
                 await _userManager.AddToRoleAsync(user, "Member");
                 }
             }
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
@@ -63,10 +59,6 @@ namespace ReservationSystem.Controllers
             else if (User.IsInRole("Employee"))
             {
                 return RedirectToAction("Index", "Home", new { area = "Employee" });
-            }
-            else if (User.IsInRole("Member"))
-            {
-                return RedirectToAction("Index", "Home", new { area = "Member" });
             }
             else
             {

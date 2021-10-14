@@ -13,7 +13,7 @@ namespace ReservationSystem.Data
         public int Id { get; set; }
         public int SittingCategoryId { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:d}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime Date { get; set; }
         public SittingStatus Status { get; set; }
 

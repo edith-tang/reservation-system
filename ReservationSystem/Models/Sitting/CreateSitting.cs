@@ -13,18 +13,25 @@ namespace ReservationSystem.Models.Sitting
     {
         [Required]
         [Display(Name = "Start Date")]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [Required]
         [Display(Name = "End Date")]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
         [Required]
         [Display(Name = "Sitting Category")]
         public int SittingCategoryId { get; set; }
         public SelectList SittingCategories { get; set; }
-        public Data.SittingCategory SittingCategory { get; set; }
+        public Data.SittingCategory SittingCategory { get; set; }        
+    }
+    public class ScDTO
+    {
+        public int Id { get; set; }
+        public int Capacity { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }

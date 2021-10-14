@@ -17,13 +17,15 @@
             <div class="row">
                 <div class="form-group col-6">
                     <label asp-for="StartDate" class="control-label"></label>
-                    <input asp-for="StartDate" class="form-control calendar" id="StartDate"/>
+                    <input asp-for="StartDate" class="form-control calendar" id="StartDate" />
                     <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="form-group col-6">
                     <label asp-for="EndDate" class="control-label"></label>
-                    <input asp-for="EndDate" class="form-control calendar" id="EndDate"/>
+                    <input asp-for="EndDate" class="form-control calendar" id="EndDate" />
                     <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
             </div>
@@ -74,7 +76,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div id="SCInfo">
                     <h4>Sitting Category Info</h4>
                     <dl class="row">
                         <dt class="col-sm-2">Category</dt>
@@ -97,9 +99,7 @@
                 </div>
             }
 
-            <div class="form-group col-6">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <input type="submit" value="Create" class="btn btn-primary" />
 
         </form>
 
@@ -118,6 +118,20 @@
             $('#EndDate').attr('min', $('#StartDate').val());
         })
     </script>
+
+<script>
+    $('#SClist').on('change', function () {
+        $.ajax({
+            type: "GET",
+            url: '/Sitting/GetSCInfo',
+            data: { scId: $('#SClist').val() },
+            dataType: "json",
+            success: function (response) {
+                
+            },
+        });
+    })
+</script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

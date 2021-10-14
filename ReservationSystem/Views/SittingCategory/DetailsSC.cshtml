@@ -28,10 +28,10 @@
             @Html.DisplayFor(model => model.StartTime)
         </dd>
         <dt class="col-sm-4">
-            @Html.DisplayNameFor(model => model.Duration)
+            @Html.DisplayNameFor(model => model.EndTime)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.Duration)
+            @Html.DisplayFor(model => model.EndTime)
         </dd>
     </dl>
 
@@ -93,7 +93,7 @@
                     @foreach (var item in Model.SCSittings)
                     {
                         <tr>
-                            <td>@item.Date</td>
+                            <td>@item.Date.ToString("yyyy/MM/dd")</td>
                             <td>@item.Status</td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@item.Id">Details</a>

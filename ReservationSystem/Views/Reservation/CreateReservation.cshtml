@@ -67,18 +67,19 @@
             }
 
 
-            <div class="row" id="SelectSitting">
-                <div class="form-group col-6">
-                    <label asp-for="SelectedDate" class="control-label"></label>
-                    <input asp-for="SelectedDate" class="form-control" id="Calendar" min="@Model.MinDate" max="@Model.MaxDate" />
-                    <span asp-validation-for="SelectedDate" class="text-danger"></span>
-                </div>
-                <div class="form-group col-6">
-                    <label asp-for="SelectedSittingId" class="control-label"></label>
-                    <select asp-for="SelectedSittingId" class="form-control" id="Sittings"></select>
-                    <span asp-validation-for="SelectedSittingId" class="text-danger"></span>
-                </div>
+        <div class="row" id="SelectSitting">            
+            <div class="form-group col-6">
+                <label asp-for="SelectedDate" class="control-label"></label>
+                <input asp-for="SelectedDate" class="form-control" id="Calendar" min="@Model.MinDate" max="@Model.MaxDate" />
+                <span asp-validation-for="SelectedDate" class="text-danger"></span>
+                <span id="SittingWarning" hidden style="color: red; margin-top: 10px; display: block">Sorry, no available sittings for this date</span>
             </div>
+            <div class="form-group col-6">
+                <label asp-for="SelectedSittingId" class="control-label"></label>
+                <select asp-for="SelectedSittingId" class="form-control" id="Sittings"></select>
+                <span asp-validation-for="SelectedSittingId" class="text-danger"></span>
+            </div>
+        </div>
 
             <div class="row" id="SelectTime">
                 <div class="form-group col-6">
@@ -92,13 +93,14 @@
                     <span asp-validation-for="ExpectedEndTime" class="text-danger"></span>
                 </div>
             </div>
-
-            <div id="CapacityWarning" hidden style="color: red">Please note: <span id="RemainingCapacity"></span> seats left</div>
-
-            <div class="row" id="ReservationInfo">
+            
+            <div class="row" id="ReservationInfo">                
                 <div class="form-group col-6">
                     <label asp-for="NumOfGuests" class="control-label"></label>
                     <input asp-for="NumOfGuests" class="form-control" min="1" id="NumOfGuests" />
+                    <span id="CapacityWarning" hidden style="color: red; margin-bottom: 10px; display: block">
+                        Please note: <span id="RemainingCapacity"></span> seats left
+                    </span>
                     <span asp-validation-for="NumOfGuests" class="text-danger"></span>
                 </div>
                 <div class="form-group col-6">
@@ -136,6 +138,8 @@
                 $('#Sittings').empty();
                 $('#StartTimes').empty();
                 $('#EndTimes').empty();
+                $('#SittingWarning').attr("hidden", true);
+                $('#CapacityWarning').attr("hidden", true);
 
                 $.ajax({
                     type: "GET",
@@ -152,6 +156,9 @@
                                     value: item.id, text: item.date + " " + item.startTime + "-" + item.endTime + " " + item.scName,
                                 }));
                             });
+                        }
+                        else {
+                            $('#SittingWarning').attr("hidden", false);
                         }
                     },
                 });
