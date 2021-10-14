@@ -117,7 +117,9 @@
     </tbody>
 </table>*@
 
-
+@if ((int)Model.CurrentReservation.Status ==1) { 
+    <button id="toggler"class="btn btn-primary">Enable Reallocation</button>
+}
 <input id="allocate" asp-action="Allocate" type="submit" value="Allocate" class="btn btn-primary" /><br/>
 
 <div id="scheduler" class="container-fluid"></div>
@@ -149,36 +151,92 @@
 
         var x = 100 / timeslots.length + '%';
 
-        $("#scheduler").scheduler(
-            {
-                responsiveWidth: x,
-                sittingDate: sittingDate,
-                sittingName: sittingName,
-                currentReservationId: currentReservationId,
-                timeslots: timeslots,
-                tables: tables,
-                sittingUnits: sittingUnits,
+
+        $(document).ready(function () {
+            if (@((int)Model.CurrentReservation.Status)> 0) {
+                $("#allocate").hide();
+                $("#scheduler").scheduler(
+                    {
+                        responsiveWidth: x,
+                        sittingDate: sittingDate,
+                        sittingName: sittingName,
+                        currentReservationId: currentReservationId,
+                        timeslots: timeslots,
+                        tables: tables,
+                        sittingUnits: sittingUnits,
+                        clickEnabled: false,
+                    }
+                );
             }
-        );
+            else {
+                $("#scheduler").scheduler(
+                    {
+                        responsiveWidth: x,
+                        sittingDate: sittingDate,
+                        sittingName: sittingName,
+                        currentReservationId: currentReservationId,
+                        timeslots: timeslots,
+                        tables: tables,
+                        sittingUnits: sittingUnits,
+                        clickEnabled: true,
+                    }
+                );
+            }
+        
+            $("#toggler").click(function () {
+                if(confirm("Do you wish to enable the reallocation?")){
+                $("#allocate").show();
+                $(this).hide();
+                $(".timeslot").on("click", function (e) {
+                    if (!$(e.target).hasClass("occupied")) {
+                        if (!$(e.target).hasClass("booked")) { $(e.target).addClass("booked") }
+                        else { $(e.target).removeClass("booked") }
+                    }
+                    });
+                    
+
+            }
+                else { return false; };
+            });
+
+        });
+
+        
+
+
+
+
+
 
         $("#allocate").on("click", () => {
+
+            //Get id's of all elements with a particular class
 
             selectedSittingUnitId = $(".booked").map(function () {
                 return parseInt(this.id);
             }).get();
 
-            console.log(selectedSittingUnitId);
+            //console.log(selectedSittingUnitId);
+            if (selectedSittingUnitId.length == 0) {
 
-            //Post back selected ids
-            $.ajax({
-                type: "POST",
-                url: '/SittingUnit/Allocate',
-                data: { currentReservationId: currentReservationId, selectedSittingUnitId: selectedSittingUnitId },
-                dataType: "json",
-                success: function (data) {
-                    window.location.href = data;
-                },
-            });
+
+            }
+            if (confirm("Do you want to proceed with no allocation?")) {
+
+                //Post back selected ids
+                $.ajax({
+                    type: "POST",
+                    url: '/SittingUnit/Allocate',
+                    data: { currentReservationId: currentReservationId, selectedSittingUnitId: selectedSittingUnitId },
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.href = data;
+                    },
+                });
+
+            }
+            else { return false;}
+           
         });
 
     </script>

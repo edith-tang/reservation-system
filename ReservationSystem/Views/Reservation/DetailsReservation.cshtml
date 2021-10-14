@@ -77,6 +77,19 @@
     </dd>
 </dl>
 
+@if ((int)Model.Status == 0)
+{
+    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">Allocate</a>
+}
+else if ((int)Model.Status == 1)
+{
+    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">Reallocate</a>
+}
+else if ((int)Model.Status > 2)
+{
+    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">More Info</a>
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

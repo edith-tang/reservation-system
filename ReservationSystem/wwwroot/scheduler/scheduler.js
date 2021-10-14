@@ -16,7 +16,7 @@
             { id: 4, timeslotId: 2, tableId: 2, reservationId: 2 },
             { id: 5, timeslotId: 3, tableId: 1, reservationId: null},
             { id: 6, timeslotId: 3, tableId: 2, reservationId: null }],
-
+        clickEnabled: true,
     }
 
     $.fn.scheduler = function (options) {
@@ -29,7 +29,7 @@
 
             render.calender($(this), settings);
             setSize(settings.timeslotHeight, settings.timeslotWidth, settings.responsiveWidth);
-            attachEventListeners(settings);
+            if (settings.clickEnabled==true) { attachEventListeners(settings) };
 
 
         });

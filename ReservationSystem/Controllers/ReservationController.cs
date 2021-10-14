@@ -51,7 +51,9 @@ namespace ReservationSystem.Controllers
         //for employee and logged in members only
         public async Task<ActionResult> DetailsReservation(int id)
         {
-            var reservation = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ThenInclude(s => s.SittingCategory)
+            var reservation = await _cxt.Reservations
+                .Include(r => r.Customer)
+                .Include(r => r.Sitting.SittingCategory)
                 .FirstOrDefaultAsync(r => r.Id == id);
             return View(reservation);
         }

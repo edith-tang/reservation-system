@@ -105,7 +105,8 @@ namespace ReservationSystem.Controllers
             var currentSittingUnits=_cxt.SittingUnits.Where(su => selectedSittingUnitId.Contains(su.Id)).ToList();
             currentSittingUnits.ForEach(su => { su.ReservationId = currentReservationId; su.Status = Data.Enums.SittingUnitStatus.Reserved; });
 
-            currentReservation.Status = Data.Enums.ReservationStatus.Confirmed;
+            if (selectedSittingUnitId.Length == 0) { currentReservation.Status = Data.Enums.ReservationStatus.Pending; }
+            else { currentReservation.Status = Data.Enums.ReservationStatus.Confirmed; }
 
             await _cxt.SaveChangesAsync();
             return Json(Url.Action("IndexReservation", "Reservation"));
