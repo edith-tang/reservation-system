@@ -120,7 +120,15 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(m);
         }
 
-
+        public async Task<IActionResult> CancelReservation(int id)
+        {
+            var r = _cxt.Reservations.FirstOrDefault(r => r.Id == id);
+            var su = _cxt.SittingUnits.Where(su => su.ReservationId == id).ToList();
+            r.Status = Data.Enums.ReservationStatus.Cancelled;
+            su.ForEach(su => { su.ReservationId = null; su.Status = Data.Enums.SittingUnitStatus.Available; });
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(IndexReservation));
+        }
 
         #endregion
 

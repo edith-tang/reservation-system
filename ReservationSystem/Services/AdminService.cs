@@ -26,7 +26,7 @@ namespace ReservationSystem.Services
             if (user == null)
             {
 
-                var admin = new IdentityUser { UserName = "admin" };
+                var admin = new IdentityUser { UserName = "admin@a.com", Email="admin@a.com" };
                 var result = await _userManager.CreateAsync(admin, "Admin@123");
                 if (result.Succeeded)
                 {
@@ -35,7 +35,7 @@ namespace ReservationSystem.Services
                     {
                         EmpFName = "admin",
                         EmpLName = "admin",
-                        EmpEmail = null,
+                        EmpEmail = admin.Email,
                         EmpPhone = null,
                         IdentityUserId = admin.Id
                     };

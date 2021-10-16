@@ -11,10 +11,11 @@ namespace ReservationSystem.Data.Enums
         Pending = 0,
         Confirmed = 1,
         //Modified ,
-        Cancelled = 2,
-        Seated=3,
-        Completed = 4,
-        Expired=5
+        Seated = 2,
+        Completed = 3,
+
+        Cancelled = 4,
+        Expired = 5,
     }
 
 }
