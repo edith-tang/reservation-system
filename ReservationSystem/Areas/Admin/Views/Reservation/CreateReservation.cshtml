@@ -109,11 +109,11 @@
                     <span asp-validation-for="Notes" class="text-danger"></span>
                 </div>
                 <div class="form-group col-6">
-                    <label asp-for="WayOfBookingId" class="control-label"></label>
-                    <select asp-for="WayOfBookingId" asp-items="Model.WayOfBookings" class="form-control">
-                        <option value="">-- select wayofbooking --</option>
+                    <label asp-for="WayOfBooking" class="control-label"></label>
+                    <select asp-for="WayOfBooking" asp-items="Model.WayOfBookings" class="form-control">
+                        <option value="" selected disabled>-- Select Way of Booking --</option>
                     </select>
-                    <span asp-validation-for="WayOfBookingId" class="text-danger"></span>
+                    <span asp-validation-for="WayOfBooking" class="text-danger"></span>
                 </div>
             </div>
 

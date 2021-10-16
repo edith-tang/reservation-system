@@ -1,49 +1,51 @@
 ﻿@model IEnumerable<ReservationSystem.Data.Sitting>
 
 @{
-    ViewData["Title"] = "Index -Sittings";
+    ViewData["Title"] = "Manage Sittings";
 }
 
-<h4>Manage Sittings</h4>
+<div class="my-3">
+    <h4>@ViewData["Title"]</h4>
+</div>
 
 <table class="table">
     <thead>
         <tr>
-            <th scope="col" style="white-space: nowrap">Date</th>
-            <th scope="col" style="white-space: nowrap">Status</th>
-            <th scope="col" style="white-space: nowrap">Category</th>
-            <th scope="col" style="white-space: nowrap">Capacity</th>
-            <th scope="col" style="white-space: nowrap">Used Capacity</th>
-            <th scope="col" style="white-space: nowrap">Remaining Capacity</th>
-            <th scope="col" style="white-space: nowrap"></th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Category</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Used</th>
+            <th scope="col">Remain</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SittingCategory.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsedCapacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RemainingCapacity)
-            </td>
-            <td>
-                <a class="btn btn-info" role="button" asp-action="DetailsSitting" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SittingCategory.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Capacity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UsedCapacity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RemainingCapacity)
+                </td>
+                <td>
+                    <a class="btn btn-info" role="button" asp-action="DetailsSitting" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
@@ -56,5 +58,8 @@
                 alert("@TempData["Message"]");
             };
     </script>
+}
 
-}  
+@section Styles{
+    <link href="~/css/my.css" rel="stylesheet" />
+}

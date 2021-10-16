@@ -99,7 +99,7 @@
 
 
             for (i = 0; i < settings.timeslots.length; i++) {
-                var hour = $("<div></div>").addClass("responsiveHour").text(settings.timeslots[i].startTime);
+                var hour = $("<div></div>").addClass("responsiveHour").text(settings.timeslots[i].startTime + " - " + settings.timeslots[i].endTime);
                 columnHeader.append(hour);
             }
             rowContainer.append(columnHeader);

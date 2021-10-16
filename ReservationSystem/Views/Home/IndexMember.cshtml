@@ -2,9 +2,11 @@
     ViewData["Title"] = "IndexMember";
 }
 
-<h3>Welcome, member!</h3>
-<p>What would you like to do today?</p>
+<div class="text-center">
+    <h4>Welcome, member!</h4>
+    <p>What would you like to do today?</p>
 
-<a class="btn btn-info" role="button" asp-controller="Reservation" asp-action="CreateReservation">Make a reservation</a>
-<a class="btn btn-info" role="button" asp-controller="Reservation" asp-action="HistoryReservation">View History</a>
+    <a class="btn btn-info w-25 text-nowrap" asp-controller="Reservation" asp-action="CreateReservation">Reserve Now</a>
+    <a class="btn btn-info w-25 text-nowrap" asp-controller="Reservation" asp-action="HistoryReservation">View History</a>
+</div>
 

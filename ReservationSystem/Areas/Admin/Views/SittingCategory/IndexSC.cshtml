@@ -1,64 +1,74 @@
 ﻿@model IEnumerable<ReservationSystem.Data.SittingCategory>
 
 @{
-    ViewData["Title"] = "Index - Sitting Category";
+    ViewData["Title"] = "Manage Sitting Categories";
 }
 
-<h4>Manage Sitting Categories</h4>
+<div class="row my-3">
+    <div class="col-6">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="col-6">
+        <a class="btn btn-info float-right" role="button" asp-action="CreateSC">Create New</a>
+    </div>
+</div>
 
-<a class="btn btn-info" role="button" asp-action="CreateSC">Create New</a>
-<p></p>
 <table class="table">
     <thead>
         <tr>
-            <th scope="col" style="white-space: nowrap">
+            <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
-            <th scope="col" style="white-space: nowrap">
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th scope="col" style="white-space: nowrap">
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Capacity)
             </th>
-            <th scope="col" style="white-space: nowrap">
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.StartTime)
             </th>
-            <th scope="col" style="white-space: nowrap">
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.EndTime)
             </th>
-            <th scope="col" style="white-space: nowrap">
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Duration)
             </th>
-            <th scope="col" style="white-space: nowrap">Action</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <th scope="row">
-                @Html.DisplayFor(modelItem => item.Id)
-            </th>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
-                <a asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
-                @if (item.SCSittings.Count == 0)
-                {<a asp-action="DeleteSC" asp-route-id="@item.Id">Delete</a>}
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Capacity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    <a asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
+                    @if (item.SCSittings.Count == 0)
+                    {<a asp-action="DeleteSC" asp-route-id="@item.Id">Delete</a>}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Styles{
+    <link href="~/css/my.css" rel="stylesheet" />
+}

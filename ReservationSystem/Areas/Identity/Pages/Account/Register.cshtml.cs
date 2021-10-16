@@ -112,7 +112,7 @@ namespace ReservationSystem.Areas.Identity.Pages.Account
                         IdentityUserId = user.Id
                     };
                     //previously unregistered customer will update the info and register
-                    await _customerService.UpsertCustomerAsync(c,true);
+                    await _customerService.UpsertCustomerAsync(c,true,true);
 
                     await _cxt.SaveChangesAsync();
 

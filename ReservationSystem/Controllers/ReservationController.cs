@@ -36,7 +36,11 @@ namespace ReservationSystem.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-            var reservation = await _cxt.Reservations.Include(r=>r.Customer).Where(r => r.CustomerId == custAuthenticated.Id).ToListAsync();
+            var reservation = await _cxt.Reservations
+                .Include(r => r.Sitting)
+                .Include(r => r.Customer).Where(r => r.CustomerId == custAuthenticated.Id)
+                .OrderBy(r => r.Sitting.Date)
+                .ToListAsync();
             return View(reservation);
         }
 
@@ -88,7 +92,7 @@ namespace ReservationSystem.Controllers
                         ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
                         ExpectedEndTime = TimeSpan.Parse(m.ExpectedEndTime),
                         NumOfGuests = m.NumOfGuests,
-                        Notes = m.Notes,
+                        Notes = m.Notes ?? "N/A",
                         TimeOfBooking = DateTime.Now,
                         WayOfBooking = "Online",
                         Status = Data.Enums.ReservationStatus.Pending,
@@ -111,7 +115,6 @@ namespace ReservationSystem.Controllers
             return View(m);
         }
 
-        //Member can cancel pending reservations
         public async Task<IActionResult> CancelReservation(int id)
         {
             var r = _cxt.Reservations.FirstOrDefault(r => r.Id == id);
@@ -266,7 +269,7 @@ namespace ReservationSystem.Controllers
                     CustPhone = m.Customer.CustPhone
                 };
                 //info of unregistered customer with existing booking records will be updated
-                reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true);
+                reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true,false);
             }
         }
         #endregion

@@ -28,14 +28,18 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #region ACTION METHODS
         public async Task<ActionResult> IndexReservation()
         {
-            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ToListAsync();
+            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).OrderBy(r => r.Sitting.Date).ToListAsync();
             return View(reservations);
         }
 
         //check a customer's history
         public async Task<ActionResult> HistoryReservation(int id)
         {
-            var reservation = await _cxt.Reservations.Include(r => r.Customer).Where(r => r.CustomerId == id).ToListAsync();
+            var reservation = await _cxt.Reservations
+                .Include(r => r.Sitting)
+                .Include(r => r.Customer).Where(r => r.CustomerId == id)
+                .OrderBy(r => r.Sitting.Date)
+                .ToListAsync();
             return View(reservation);
         }
 
@@ -62,9 +66,9 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 WayOfBookings = new SelectList(
                     new List<SelectListItem>
                     {
-                        new SelectListItem { Text = "Email", Value = "1"},
-                        new SelectListItem { Text = "Phone", Value ="2"},
-                        new SelectListItem { Text = "Walk-in", Value ="3"},
+                        new SelectListItem { Text = "Email", Value = "Email"},
+                        new SelectListItem { Text = "Phone", Value ="Phone"},
+                        new SelectListItem { Text = "Walk-in", Value ="Walk-in"},
                     }, "Value", "Text"),
             };
             return View(m);
@@ -88,6 +92,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                         NumOfGuests = m.NumOfGuests,
                         Notes = m.Notes,
                         TimeOfBooking = DateTime.Now,
+                        WayOfBooking = m.WayOfBooking,
                         Status = Data.Enums.ReservationStatus.Pending,
                     };
 
@@ -105,6 +110,13 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     //ModelState.AddModelError("Error", "SQL Error!");
                 }
             }
+            m.WayOfBookings = new SelectList(
+                   new List<SelectListItem>
+                   {
+                        new SelectListItem { Text = "Email", Value = "Email"},
+                        new SelectListItem { Text = "Phone", Value ="Phone"},
+                        new SelectListItem { Text = "Walk-in", Value ="Walk-in"},
+                   }, "Value", "Text");
             return View(m);
         }
 
@@ -250,14 +262,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         //needs modification
         public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                //var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                //var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-                //reservation.Customer = custAuthenticated;
-            }
-            else //For non-member: check if email exists            
-            {
+           
                 var custEntered = new Data.Customer
                 {
                     CustFName = m.Customer.CustFName,
@@ -266,8 +271,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     CustPhone = m.Customer.CustPhone
                 };
                 //previously unregistered customer will update the info and booking confirmed
-                reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true);
-            }
+                reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered,true, false);
+            
         }
         #endregion
     }

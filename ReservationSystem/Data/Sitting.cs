@@ -29,7 +29,7 @@ namespace ReservationSystem.Data
         {
             get
             {
-                return Reservations.Count > 0 ? Reservations.Sum(r => r.NumOfGuests) : 0;
+                return Reservations.Any(r => r.Status != ReservationStatus.Cancelled) ? Reservations.Sum(r => r.NumOfGuests) : 0;
             }
         }
         public int RemainingCapacity { get => Capacity - UsedCapacity; }

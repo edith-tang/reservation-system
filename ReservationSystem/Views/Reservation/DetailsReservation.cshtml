@@ -1,96 +1,82 @@
 ﻿@model ReservationSystem.Data.Reservation
 
 @{
-    ViewData["Title"] = "Reservation Details";
+    ViewData["Title"] = "Your Reservation Details";
 }
 
 <h4>@ViewData["Title"]</h4>
-<hr/>
-
-<table class="table" id="SittingInfo">
-    <thead>
-        <tr>
-            <th scope="col">@Html.DisplayNameFor(model => model.Sitting.Date)</th>
-            <th scope="col">@Html.DisplayNameFor(model => model.Sitting.SittingCategory.Name)</th>
-            <th scope="col">@Html.DisplayNameFor(model => model.Sitting.SittingCategory.StartTime)</th>
-            <th scope="col">@Html.DisplayNameFor(model => model.Sitting.SittingCategory.EndTime)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">@Html.DisplayFor(model => model.Sitting.Date)</th>
-            <td>@Html.DisplayFor(model => model.Sitting.SittingCategory.Name)</td>
-            <td>@Html.DisplayFor(model => model.Sitting.SittingCategory.StartTime)</td>
-            <td>@Html.DisplayFor(model => model.Sitting.SittingCategory.EndTime)</td>
-        </tr>
-    </tbody>
-</table>
+<hr />
 
 <dl class="row" id="ReservationInfo">
-    <dt class="col-sm-4">
-        @Html.DisplayNameFor(model => model.NumOfGuests)
+    <dt class="col-md-3">
+        @Html.DisplayNameFor(model => model.Sitting.Date)
     </dt>
-    <dd class="col-sm-8">
-        @Html.DisplayFor(model => model.NumOfGuests)
+    <dd class="col-md-9">
+        @Html.DisplayFor(model => model.Sitting.Date)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.ExpectedStartTime)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.ExpectedStartTime)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.ExpectedEndTime)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.ExpectedEndTime)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
+        @Html.DisplayNameFor(model => model.NumOfGuests)
+    </dt>
+    <dd class="col-md-9">
+        @Html.DisplayFor(model => model.NumOfGuests)
+    </dd>
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.Notes)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.Notes)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.TimeOfBooking)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.TimeOfBooking)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.WayOfBooking)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.WayOfBooking)
     </dd>
-    <dt class="col-sm-4">
+    <dt class="col-md-3">
         @Html.DisplayNameFor(model => model.Status)
     </dt>
-    <dd class="col-sm-8">
+    <dd class="col-md-9">
         @Html.DisplayFor(model => model.Status)
-    </dd>
-    <dt class="col-sm-4">
-        @Html.DisplayNameFor(model => model.Customer)
-    </dt>
-    <dd class="col-sm-8">
-        @Html.DisplayFor(model => model.Customer.CustEmail)
     </dd>
 </dl>
 
-@if ((int)Model.Status == 0)
-{
-    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">Allocate</a>
-}
-else if ((int)Model.Status == 1)
-{
-    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">Reallocate</a>
-}
-else if ((int)Model.Status > 2)
-{
-    <a class="btn btn-primary" asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@Model.Id">More Info</a>
-}
-
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if ((int)Model.Status == 0)
+    {
+        <a id="cancel" class="btn btn-primary float-left" asp-action="CancelReservation" asp-route-id="@Model.Id">Cancel</a>
+    }
+    else if ((int)Model.Status == 1)
+    {
+        <p>Please contact our staff if you wish to modify your reservation.</p>
+    }
+    <a class="btn btn-info float-right" asp-action="HistoryReservation">Back to List</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $("#cancel").on("click", () => {
+            if (confirm("Do you want to cancel this allocation?")) { }
+            else { return false; }
+        });
+    </script>
+}

@@ -37,7 +37,7 @@ namespace ReservationSystem.Areas.Admin.Models.Reservation
         public string Notes { get; set; }
 
         [Display(Name = "Way of Booking")]
-        public int WayOfBookingId { get; set; }
+        public string WayOfBooking { get; set; }
         public SelectList WayOfBookings { get; set; }
         #endregion
     }

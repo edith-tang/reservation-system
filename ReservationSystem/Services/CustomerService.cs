@@ -20,7 +20,7 @@ namespace ReservationSystem.Services
             _userManager = userManager;
         }
 
-        public async Task<Customer> UpsertCustomerAsync(Customer data, bool update)
+        public async Task<Customer> UpsertCustomerAsync(Customer data, bool updateInfo, bool updateIdentity)
         {
             var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == data.CustEmail);
             if (customer == null)
@@ -37,14 +37,20 @@ namespace ReservationSystem.Services
                 _cxt.Customers.Add(customer);
 
             }
-            if (customer != null && update)
+            else
             {
-                customer.CustFName = data.CustFName;
-                customer.CustLName = data.CustLName;
-                customer.CustPhone = data.CustPhone;
-                customer.IdentityUserId = data.IdentityUserId;
+                if (updateInfo)
+                {
+                    customer.CustFName = data.CustFName;
+                    customer.CustLName = data.CustLName;
+                    customer.CustPhone = data.CustPhone;
+                }
+                if (updateIdentity)
+                {
+                    customer.IdentityUserId = data.IdentityUserId;
+                }
             }
-            
+           
             return customer;
 
         }

@@ -16,78 +16,79 @@
 <br />
 
 <div class="row">
-    <div class="col-sm-6">
-        <h4>Sitting Info</h4>
+    <div class="col-md-6">
+        <h5>Sitting Info</h5>
         <hr />
         <dl class="row">
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.Name)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.Name)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.Date)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.Sitting.Date)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.StartTime)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.StartTime)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.Sitting.SittingCategory.EndTime)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.Sitting.SittingCategory.EndTime)
             </dd>
         </dl>
     </div>
-    <div class="col-sm-6">
-        <h4>Reservation Info</h4>
+    <div class="col-md-6">
+        <h5>Reservation Info</h5>
         <hr />
         <dl class="row">
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.NumOfGuests)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.NumOfGuests)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.ExpectedStartTime)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.ExpectedStartTime)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.ExpectedEndTime)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.ExpectedEndTime)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.CurrentReservation.Notes)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.CurrentReservation.Notes)
             </dd>
         </dl>
     </div>
-    </div>
+</div>
 
-@if ((int)Model.CurrentReservation.Status ==1) { 
-    <button id="toggler"class="btn btn-primary">Enable Reallocation</button>
-}
-<input id="allocate" asp-action="Allocate" type="submit" value="Allocate" class="btn btn-primary" /><br/>
+<div id="scheduler" class="container-fluid px-0"></div>
 
-<div id="scheduler" class="container-fluid"></div>
+<div class="mt-3">
+    @if ((int)Model.CurrentReservation.Status == 1)
+    {
+        <button id="toggler" class="btn btn-primary btn-block">Enable Reallocation</button>
+    }
+    <input id="allocate" asp-action="Allocate" type="submit" value="Allocate" class="btn btn-primary btn-block" />
+</div>
 
-
-
-@section Styles{    
+@section Styles{
     <link href="~/scheduler/scheduler.css" rel="stylesheet" />
 }
 
@@ -138,7 +139,7 @@
                     }
                 );
             }
-        
+
             $("#toggler").click(function () {
                 if (confirm("Do you wish to enable the reallocation?")) {
                     $("#allocate").show();
