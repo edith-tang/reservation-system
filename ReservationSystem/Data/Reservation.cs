@@ -28,7 +28,7 @@ namespace ReservationSystem.Data
         public DateTime TimeOfBooking { get; set; }
 
         [Display(Name = "Way of booking")]
-        public WayOfBooking WayOfBooking { get; set; }
+        public string WayOfBooking { get; set; }
         public ReservationStatus Status { get; set; }
 
         #region RELATIONSHIPS

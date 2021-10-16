@@ -19,7 +19,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
     {
         #region DI
         private readonly CustomerService _customerService;
-        public ReservationController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager, CustomerService customerService): base(cxt, userManager)
+        public ReservationController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager, CustomerService customerService) : base(cxt, userManager)
         {
             _customerService = customerService;
         }
@@ -35,7 +35,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         //check a customer's history
         public async Task<ActionResult> HistoryReservation(int id)
         {
-            var reservation = await _cxt.Reservations.Include(r=>r.Customer).Where(r => r.CustomerId == id).ToListAsync();
+            var reservation = await _cxt.Reservations.Include(r => r.Customer).Where(r => r.CustomerId == id).ToListAsync();
             return View(reservation);
         }
 
@@ -59,6 +59,13 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 MaxDate = sittings.Max(s => s.Date).ToString("yyyy-MM-dd"),
                 MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
                 Customer = new CustomerDTO(),
+                WayOfBookings = new SelectList(
+                    new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Email", Value = "1"},
+                        new SelectListItem { Text = "Phone", Value ="2"},
+                        new SelectListItem { Text = "Walk-in", Value ="3"},
+                    }, "Value", "Text"),
             };
             return View(m);
         }
@@ -239,7 +246,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             }
             return false;
         }
-        
+
         //needs modification
         public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
         {

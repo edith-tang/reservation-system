@@ -90,6 +90,7 @@ namespace ReservationSystem.Controllers
                         NumOfGuests = m.NumOfGuests,
                         Notes = m.Notes,
                         TimeOfBooking = DateTime.Now,
+                        WayOfBooking = "Online",
                         Status = Data.Enums.ReservationStatus.Pending,
                     };
 

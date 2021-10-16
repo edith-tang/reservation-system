@@ -94,7 +94,7 @@
                 </div>
             </div>
             
-            <div class="row" id="ReservationInfo">                
+            <div class="row" id="ReservationInfo">
                 <div class="form-group col-6">
                     <label asp-for="NumOfGuests" class="control-label"></label>
                     <input asp-for="NumOfGuests" class="form-control" min="1" id="NumOfGuests" />
@@ -107,6 +107,13 @@
                     <label asp-for="Notes" class="control-label"></label>
                     <input asp-for="Notes" class="form-control" id="notes" />
                     <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="WayOfBookingId" class="control-label"></label>
+                    <select asp-for="WayOfBookingId" asp-items="Model.WayOfBookings" class="form-control">
+                        <option value="">-- select wayofbooking --</option>
+                    </select>
+                    <span asp-validation-for="WayOfBookingId" class="text-danger"></span>
                 </div>
             </div>
 
