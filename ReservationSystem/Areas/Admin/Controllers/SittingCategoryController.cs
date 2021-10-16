@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SittingCategoryController : AdminAreaBaseController
     {
         #region DI
@@ -155,9 +157,9 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var balconyTables = sc.SCTables.FindAll(t => t.Table.Area == "Balcony").OrderBy(t => t.TableId);
             string mainString = "", outsideString = "", balconyString = "";
 
-            if (mainTables.Count() > 0) { foreach (var t in mainTables) { mainString += t.Table.Name + " "; } }
-            if (outsideTables.Count() > 0) { foreach (var t in outsideTables) { outsideString += t.Table.Name + " "; } }
-            if (balconyTables.Count() > 0) { foreach (var t in balconyTables) { balconyString += t.Table.Name + " "; } }
+            if (mainTables.Any()) { foreach (var t in mainTables) { mainString += t.Table.Name + " "; } }
+            if (outsideTables.Any()) { foreach (var t in outsideTables) { outsideString += t.Table.Name + " "; } }
+            if (balconyTables.Any()) { foreach (var t in balconyTables) { balconyString += t.Table.Name + " "; } }
 
             ViewBag.mainString = (mainString=="")?"None":mainString;
             ViewBag.outsideString = (outsideString == "") ? "None" : outsideString;

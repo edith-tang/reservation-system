@@ -32,44 +32,44 @@ namespace ReservationSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-
+            //check or seed admin on calling this method
             await _adminService.SeedAdmin();
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    var user = await _cxt.Users.FirstOrDefaultAsync(u=>u.UserName==User.Identity.Name);
 
-            //    var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-
-            //    if (!User.IsInRole("Member")) 
-            //    { 
-            //    await _userManager.AddToRoleAsync(user, "Member");
-            //    }
-            //}
             return View();
+        }
+
+        [Authorize(Roles = "Member")]
+        public IActionResult IndexMember()
+        {
+            return View();
+        }
+
+        public IActionResult ThankYouPage()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult RedirectUser()
+        {
+            if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+            {
+                return RedirectToAction("Index","Home", new { area = "Admin" });
+            }
+            else if (User.IsInRole("Member"))
+            {
+                return RedirectToAction("IndexMember", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [Authorize]
-        public IActionResult RedirectUser()
-        {
-            if (User.IsInRole("Admin"))
-            {
-                return RedirectToAction("Index","Home",new { area = "Admin" });
-            }
-            else if (User.IsInRole("Employee"))
-            {
-                return RedirectToAction("Index", "Home", new { area = "Admin" });
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home", new { area = "" });
-            }
-            
         }
     }
 }

@@ -5,8 +5,8 @@
     ViewData["Title"] = "Reservation - Home";
 }
 
-<h3>Manage Reservations</h3>
-
+<h4>Manage Reservations</h4>
+<hr />
 <p>
     <a class="btn btn-info" role="button"  asp-action="CreateReservation">Create Reservation</a>
 </p>
@@ -19,7 +19,7 @@
             <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.NumOfGuests)</th>
             <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.Status)</th>
             <th scope="col" style="white-space: nowrap">@Html.DisplayNameFor(model => model.Customer)</th>
-            <th scope="col" style="white-space: nowrap"></th>
+            <th scope="col" style="white-space: nowrap">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -44,17 +44,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Customer.CustEmail)
             </td>
-            <td>
-                <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a> |
-                @if ((int)item.Status == 0)
-                {
-                    <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id">Allocate</a>
-                }
-                else if ((int)item.Status == 1)
-                {
-                    <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id">Reallocate</a>
-                }
-
+            <td class="text-center">
+                <div style="white-space: nowrap">
+                    <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a>
+                    @if ((int)item.Status == 0)
+                    {
+                        <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Allocate</a>
+                    }
+                    else if ((int)item.Status == 1)
+                    {
+                        <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Reallocate</a>
+                    }
+                </div>
             </td>
         </tr>
 }

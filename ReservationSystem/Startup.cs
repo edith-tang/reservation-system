@@ -28,16 +28,9 @@ namespace ReservationSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.CreateMap<Areas.Admin.Models.SittingCategory.CreateSC, Data.SittingCategory>();
-            });
-            services.AddScoped<CustomerService>();
-            services.AddScoped<AdminService>();
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -46,7 +39,13 @@ namespace ReservationSystem
 
             bool clientValidationEnabled = Configuration.GetValue<bool>("ClientValidationEnabled");
             services.AddControllersWithViews()
-                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = clientValidationEnabled); 
+                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = clientValidationEnabled);
+
+            services.AddScoped<CustomerService>();
+
+            services.AddScoped<AdminService>();
+
+            services.AddAutoMapper(cfg => { cfg.CreateMap<Areas.Admin.Models.SittingCategory.CreateSC, Data.SittingCategory>(); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,21 +72,24 @@ namespace ReservationSystem
 
             app.UseEndpoints(endpoints =>
             {
-
                 endpoints.MapControllerRoute(
                     name: "area-route",
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapRazorPages();
             });
-            createRoles(serviceProvider);
+
+            CreateRoles(serviceProvider);
+
+            //Problem: can't call async task in Configure
+            //await SeedAdmin(serviceProvider, cxt);
         }
 
-        public void createRoles(IServiceProvider serviceProvider)
+        public void CreateRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             string[] roleNames = { "Admin", "Employee", "Member" };
@@ -102,5 +104,12 @@ namespace ReservationSystem
                 }
             }
         }
+
+        //public async Task SeedAdmin(IServiceProvider serviceProvider, ApplicationDbContext cxt)
+        //{
+        //    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        //    var adminService = new AdminService(cxt, userManager);
+        //    await adminService.SeedAdmin();
+        //}
     }
 }

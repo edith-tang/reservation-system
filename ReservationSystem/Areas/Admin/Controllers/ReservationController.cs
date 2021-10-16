@@ -32,18 +32,14 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(reservations);
         }
 
-        //for logged in members only
-
-        [Authorize(Roles = "Member")]
-        public async Task<ActionResult> HistoryReservation()
+        //check a customer's history
+        public async Task<ActionResult> HistoryReservation(int id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-            var reservation = await _cxt.Reservations.Include(r=>r.Customer).Where(r => r.CustomerId == custAuthenticated.Id).ToListAsync();
+            var reservation = await _cxt.Reservations.Include(r=>r.Customer).Where(r => r.CustomerId == id).ToListAsync();
             return View(reservation);
         }
 
-        //for employee and logged in members only
+        //check a customer's reservation detail
         public async Task<ActionResult> DetailsReservation(int id)
         {
             var reservation = await _cxt.Reservations
@@ -53,6 +49,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(reservation);
         }
 
+        //admin and employee creates reservation for customer
         [HttpGet]
         public async Task<ActionResult> CreateReservation()
         {
@@ -63,22 +60,10 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
                 Customer = new CustomerDTO(),
             };
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    if (User.IsInRole("Member"))
-            //    {
-            //        var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            //        var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-            //        m.CustomerId = custAuthenticated.Id;
-            //        m.Customer.CustFName = custAuthenticated.CustFName;
-            //        m.Customer.CustLName = custAuthenticated.CustLName;
-            //        m.Customer.CustEmail = custAuthenticated.CustEmail;
-            //        m.Customer.CustPhone = custAuthenticated.CustPhone;
-            //    }
-            //}
             return View(m);
         }
 
+        //admin and employee submits reservation for customer
         [HttpPost]
         public async Task<ActionResult> CreateReservation(CreateReservation m)
         {
@@ -104,12 +89,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
 
-                    //for employee: to all reservations
+                    //for employees: redirect to all reservations page
                     return RedirectToAction(nameof(IndexReservation));
-
-                    //for loggedin member: to member home page/ member reservation history
-
-                    //for non-member: to restaurant home / thank you page
                 }
                 catch (Exception)
                 {
@@ -259,20 +240,15 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return false;
         }
         
+        //needs modification
         public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
         {
             if (User.Identity.IsAuthenticated)
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
-                reservation.Customer = custAuthenticated;
+                //var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                //var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+                //reservation.Customer = custAuthenticated;
             }
-
-            //if (m.CustomerId > 0) //For member: pass member id
-            //{
-            //    reservation.CustomerId = m.CustomerId;
-            //}
-
             else //For non-member: check if email exists            
             {
                 var custEntered = new Data.Customer
@@ -282,29 +258,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     CustEmail = m.Customer.CustEmail,
                     CustPhone = m.Customer.CustPhone
                 };
-
                 //previously unregistered customer will update the info and booking confirmed
                 reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true);
-
-
-                //var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);
-                //if (custFound == null)
-                //{
-                //    reservation.Customer = new Data.Customer
-                //    {
-                //        CustFName = m.Customer.CustFName,
-                //        CustLName = m.Customer.CustLName,
-                //        CustEmail = m.Customer.CustEmail,
-                //        CustPhone = m.Customer.CustPhone
-                //    };
-                //}
-                //else
-                //{
-                //    reservation.CustomerId = custFound.Id;
-                //    custFound.CustFName = m.Customer.CustFName;
-                //    custFound.CustLName = m.Customer.CustLName;
-                //    custFound.CustPhone = m.Customer.CustFName;
-                //}
             }
         }
         #endregion

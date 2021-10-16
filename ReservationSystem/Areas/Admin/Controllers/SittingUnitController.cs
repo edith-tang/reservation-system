@@ -27,11 +27,9 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(sittingUnits);
         }
 
-
         public async Task<IActionResult> Allocate(int? id)
         {
             var m = new Models.SittingUnit.Allocate();
-
 
             if (id.HasValue)
             {
@@ -47,7 +45,6 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 m.FullSittingUnits = m.CurrentReservation.Sitting.SittingUnits;
 
                 //transferring date into DTO
-
                 foreach (var scts in m.SCTimeslots)
                 {
                     m.SCTimeslotsDTO.Add(new SCTimeslotDTO
@@ -79,14 +76,13 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     });
                 }
 
-
                 //dropdown list demo
                 var availableSittingUnits = _cxt.SittingUnits
                     .Where(su => su.SittingId == m.CurrentReservation.SittingId && su.Status == 0)
                     .Select(su => new
                     {
                         Id = su.Id,
-                        Description = $"{ su.TableId}-- {su.TimeslotId}"
+                        Description = $"{ su.TableId} -- {su.TimeslotId}"
                     }).ToList();
 
                 m.SittingUnits = new MultiSelectList(availableSittingUnits, "Id", "Description");

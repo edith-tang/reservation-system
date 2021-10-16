@@ -1,19 +1,17 @@
 ﻿@model IEnumerable<ReservationSystem.Data.Reservation>
+@using ReservationSystem.Data.Enums;
 
 @{
-    ViewData["Title"] = "HistoryReservation";
+    ViewData["Title"] = "Your reservation history";
 }
 
-<h1>HistoryReservation</h1>
+<h4>@ViewData["Title"]</h4>
 
-<p>
-    <a asp-action="CreateReservation">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NumOfGuests)
+                @Html.DisplayNameFor(model => model.TimeOfBooking)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ExpectedStartTime)
@@ -22,10 +20,10 @@
                 @Html.DisplayNameFor(model => model.ExpectedEndTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Notes)
+                @Html.DisplayNameFor(model => model.NumOfGuests)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TimeOfBooking)
+                @Html.DisplayNameFor(model => model.Notes)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.WayOfBooking)
@@ -33,51 +31,56 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sitting)
-            </th>
-            <th></th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumOfGuests)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedStartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedEndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeOfBooking)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WayOfBooking)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sitting.Id)
-            </td>
-            <td>
-                
-                <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a> 
-                
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeOfBooking)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpectedStartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpectedEndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumOfGuests)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WayOfBooking)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (item.Status == ReservationStatus.Pending)
+                    {
+                        <a id="cancel" asp-action="CancelReservation" asp-route-id="@item.Id">Cancel</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div>
+    <a asp-controller="Home" asp-action="IndexMember">Back to Home Page</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $("#cancel").on("click", () => {
+            if (confirm("Do you want to cancel this allocation?")) { }
+            else { return false; }
+        });
+    </script>
+}

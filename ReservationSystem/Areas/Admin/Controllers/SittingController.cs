@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SittingController : AdminAreaBaseController
     {
         #region DI
@@ -169,19 +171,6 @@ namespace ReservationSystem.Areas.Admin.Controllers
                         
             await _cxt.SaveChangesAsync();
         }
-
-        //public async Task<JsonResult> GetSCInfo(int scId)
-        //{
-        //    var sc = await _cxt.SittingCategories.FirstOrDefaultAsync(s => s.Id == scId);
-        //    var scInfo = new ScDTO
-        //    {
-        //        Id = sc.Id,
-        //        Capacity = sc.Capacity,
-        //        StartTime = sc.StartTime.ToString(@"hh\:mm\:ss"),
-        //        EndTime = sc.EndTime.ToString(@"hh\:mm\:ss"),
-        //    };
-        //    return Json(scInfo);
-        //}
         #endregion
     }
 }

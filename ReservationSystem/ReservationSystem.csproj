@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Areas\Admin\Views\Employee\CreateEmployee.cshtml" />
     <None Include="Areas\Admin\Views\Home\Index.cshtml" />
     <None Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
@@ -20,12 +24,8 @@
     <None Include="Areas\Admin\Views\Sitting\IndexSitting.cshtml" />
     <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
-    <None Include="Areas\Employee\Views\Home\Index.cshtml" />
-    <None Include="Areas\Employee\_ViewImports.cshtml" />
-    <None Include="Areas\Employee\_ViewStart.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Login.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
-    <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />

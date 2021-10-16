@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Data;
 using ReservationSystem.Services;
@@ -6,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EmployeeController : AdminAreaBaseController
-    {        
-        private readonly CustomerService _customerService;
-        public EmployeeController(ApplicationDbContext cxt,  CustomerService customerService, UserManager<IdentityUser> userManager): base(cxt, userManager)
+    {
+        public EmployeeController(ApplicationDbContext cxt,  UserManager<IdentityUser> userManager): base(cxt, userManager)
         {
-            _customerService = customerService;
         }
 
         [HttpGet]
@@ -43,9 +43,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
                     await _cxt.SaveChangesAsync();
 
-                    return RedirectToAction("Index","Home",new { area="Employee"});
-
-
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 foreach (var error in result.Errors)
                 {

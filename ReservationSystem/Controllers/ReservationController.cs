@@ -30,13 +30,6 @@ namespace ReservationSystem.Controllers
         #endregion
 
         #region ACTION METHODS
-        public async Task<ActionResult> IndexReservation()
-        {
-            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).ToListAsync();
-            return View(reservations);
-        }
-
-        //for logged in members only
 
         [Authorize(Roles = "Member")]
         public async Task<ActionResult> HistoryReservation()
@@ -47,8 +40,7 @@ namespace ReservationSystem.Controllers
             return View(reservation);
         }
 
-
-        //for employee and logged in members only
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> DetailsReservation(int id)
         {
             var reservation = await _cxt.Reservations
@@ -105,13 +97,9 @@ namespace ReservationSystem.Controllers
 
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
+                    
+                    return RedirectToAction("ThankYouPage", "Home");
 
-                    //for employee: to all reservations
-                    return RedirectToAction(nameof(IndexReservation));
-
-                    //for loggedin member: to member home page/ member reservation history
-
-                    //for non-member: to restaurant home / thank you page
                 }
                 catch (Exception)
                 {
@@ -122,8 +110,14 @@ namespace ReservationSystem.Controllers
             return View(m);
         }
 
-
-
+        //Member can cancel pending reservations
+        public async Task<IActionResult> CancelReservation(int id)
+        {
+            var r = _cxt.Reservations.FirstOrDefault(r => r.Id == id);
+            r.Status = Data.Enums.ReservationStatus.Cancelled;
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(HistoryReservation));
+        }
         #endregion
 
         #region Methods
@@ -261,13 +255,7 @@ namespace ReservationSystem.Controllers
                 var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
                 reservation.Customer = custAuthenticated;
             }
-
-            //if (m.CustomerId > 0) //For member: pass member id
-            //{
-            //    reservation.CustomerId = m.CustomerId;
-            //}
-
-            else //For non-member: check if email exists            
+            else //For non-member
             {
                 var custEntered = new Data.Customer
                 {
@@ -276,29 +264,8 @@ namespace ReservationSystem.Controllers
                     CustEmail = m.Customer.CustEmail,
                     CustPhone = m.Customer.CustPhone
                 };
-
-                //previously unregistered customer will update the info and booking confirmed
+                //info of unregistered customer with existing booking records will be updated
                 reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered, true);
-
-
-                //var custFound = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == m.Customer.CustEmail);
-                //if (custFound == null)
-                //{
-                //    reservation.Customer = new Data.Customer
-                //    {
-                //        CustFName = m.Customer.CustFName,
-                //        CustLName = m.Customer.CustLName,
-                //        CustEmail = m.Customer.CustEmail,
-                //        CustPhone = m.Customer.CustPhone
-                //    };
-                //}
-                //else
-                //{
-                //    reservation.CustomerId = custFound.Id;
-                //    custFound.CustFName = m.Customer.CustFName;
-                //    custFound.CustLName = m.Customer.CustLName;
-                //    custFound.CustPhone = m.Customer.CustFName;
-                //}
             }
         }
         #endregion

@@ -14,11 +14,11 @@ namespace ReservationSystem.Data
         public string Name { get; private set; }
         public int Capacity { get; private set; }
 
-        [Display(Name = "Start Time")]
+        [Display(Name = "Start")]
         public TimeSpan StartTime { get; private set; }
         public TimeSpan Duration { get; private set; }
 
-        [Display(Name = "End Time")]
+        [Display(Name = "End")]
         public TimeSpan EndTime { get => StartTime + Duration; }
 
         #region RELATIONSHIPS        

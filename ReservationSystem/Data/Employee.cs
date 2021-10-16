@@ -22,10 +22,8 @@ namespace ReservationSystem.Data
 
         [Display(Name = "Phone")]
         public string EmpPhone { get; set; }
-        //public int MemberId { get; set; }
 
-        #region RELATIONSHIPS        
-        //public List<Reservation> Reservations { get; private set; }
+        #region RELATIONSHIPS
         public string IdentityUserId { get; set; }
         public virtual IdentityUser IdentityUser { get; set; }
 

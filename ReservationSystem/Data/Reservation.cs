@@ -14,13 +14,13 @@ namespace ReservationSystem.Data
         public int CustomerId { get; set; }
         public int SittingId { get; set; }
 
-        [Display(Name = "Number of guests")]
+        [Display(Name = "Guests")]
         public int NumOfGuests { get; set; }
 
-        [Display(Name = "Expected Arrival")]
+        [Display(Name = "Arrival")]
         public TimeSpan ExpectedStartTime { get; set; }
 
-        [Display(Name = "Expected Leave")]
+        [Display(Name = "Leave")]
         public TimeSpan ExpectedEndTime { get; set; }
         public string Notes { get; set; }
 

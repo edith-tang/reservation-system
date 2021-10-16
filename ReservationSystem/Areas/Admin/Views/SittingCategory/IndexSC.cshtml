@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index - Sitting Category";
 }
 
-<h3>Manage Sitting Categories</h3>
+<h4>Manage Sitting Categories</h4>
 
 <a class="btn btn-info" role="button" asp-action="CreateSC">Create New</a>
 <p></p>
@@ -24,12 +24,12 @@
                 @Html.DisplayNameFor(model => model.StartTime)
             </th>
             <th scope="col" style="white-space: nowrap">
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-            <th scope="col" style="white-space: nowrap">
                 @Html.DisplayNameFor(model => model.EndTime)
             </th>
-            <th scope="col"style="white-space: nowrap"></th>
+            <th scope="col" style="white-space: nowrap">
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th scope="col" style="white-space: nowrap">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -48,14 +48,15 @@
                 @Html.DisplayFor(modelItem => item.StartTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Duration)
+            </td>
+            <td>
                 <a asp-action="DetailsSC" asp-route-id="@item.Id">Details</a>
-                @if (item.SCSittings.Count==0) {<a asp-action="DeleteSC" asp-route-id="@item.Id">Delete</a> }                
+                @if (item.SCSittings.Count == 0)
+                {<a asp-action="DeleteSC" asp-route-id="@item.Id">Delete</a>}
             </td>
         </tr>
 }
