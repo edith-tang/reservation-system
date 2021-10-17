@@ -32,30 +32,35 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sitting.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sitting.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeslotId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TableId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reservation.Id)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sitting.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sitting.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeslotId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TableId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reservation.Id)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Styles{
+    <link href="~/css/my02.css" rel="stylesheet" />
+}

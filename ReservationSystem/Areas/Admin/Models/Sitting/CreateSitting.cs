@@ -24,7 +24,7 @@ namespace ReservationSystem.Areas.Admin.Models.Sitting
         [Required]
         [Display(Name = "Sitting Category")]
         public int SittingCategoryId { get; set; }
-        public SelectList SittingCategories { get; set; }
+        //public SelectList SittingCategories { get; set; }
         public Data.SittingCategory SittingCategory { get; set; }        
     }
     public class ScDTO

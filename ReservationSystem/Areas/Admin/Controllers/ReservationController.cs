@@ -28,7 +28,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #region ACTION METHODS
         public async Task<ActionResult> IndexReservation()
         {
-            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).OrderBy(r => r.Sitting.Date).ToListAsync();
+            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).OrderBy(r => r.TimeOfBooking).ToListAsync();
             return View(reservations);
         }
 

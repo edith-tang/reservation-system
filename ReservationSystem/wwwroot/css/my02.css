@@ -3,6 +3,6 @@
     text-align: center;
 }
 
-body{
-    min-width: 720px;
+dt, dd{
+    white-space: nowrap;
 }

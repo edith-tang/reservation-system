@@ -4,70 +4,72 @@
     ViewData["Title"] = "Make a Reservation";
 }
 
-<h4>Create Reservation</h4>
+<div class="row mx-5">
 
-<div class="row">
     <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <h4>@ViewData["Title"]</h4>
+            </div>
+            <div class="col-6">
+                <a class="btn btn-info float-right" asp-action="IndexReservation">Back to list</a>
+            </div>
+        </div>
+        <hr/>
+    </div>
 
-        <form asp-action="CreateReservation">
+    <form class="col-12" asp-action="CreateReservation">
 
-            <div asp-validation-summary="All" class="text-danger"></div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
 
-            @if (Model.CustomerId > 0)
-            {
-                <div class="row" id="CustInfo">
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustFName" class="control-label"></label>
-                        <div>@Html.DisplayFor(model => model.Customer.CustFName)</div>
-                       
-
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustLName" class="control-label"></label>
-                        <div>@Html.DisplayFor(model => model.Customer.CustLName)</div>
-
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustEmail" class="control-label"></label>
-                        <div>@Html.DisplayFor(model => model.Customer.CustEmail)</div>
-
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustPhone" class="control-label"></label>
-                        <div>@Html.DisplayFor(model => model.Customer.CustPhone)</div>
-
-                    </div>
+        @if (Model.CustomerId > 0)
+        {
+            <div class="row" id="CustInfo">
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustFName" class="control-label"></label>
+                    <div>@Html.DisplayFor(model => model.Customer.CustFName)</div>
                 </div>
-
-            }
-            else
-            {
-                <div class="row" id="CustInfo">
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustFName" class="control-label"></label>
-                        <input asp-for="Customer.CustFName" class="form-control" />
-                        <span asp-validation-for="Customer.CustFName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustLName" class="control-label"></label>
-                        <input asp-for="Customer.CustLName" class="form-control" />
-                        <span asp-validation-for="Customer.CustLName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustEmail" class="control-label"></label>
-                        <input asp-for="Customer.CustEmail" class="form-control" />
-                        <span asp-validation-for="Customer.CustEmail" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-3">
-                        <label asp-for="Customer.CustPhone" class="control-label"></label>
-                        <input asp-for="Customer.CustPhone" class="form-control" />
-                        <span asp-validation-for="Customer.CustPhone" class="text-danger"></span>
-                    </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustLName" class="control-label"></label>
+                    <div>@Html.DisplayFor(model => model.Customer.CustLName)</div>
                 </div>
-            }
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustEmail" class="control-label"></label>
+                    <div>@Html.DisplayFor(model => model.Customer.CustEmail)</div>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustPhone" class="control-label"></label>
+                    <div>@Html.DisplayFor(model => model.Customer.CustPhone)</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row" id="CustInfo">
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustFName" class="control-label"></label>
+                    <input asp-for="Customer.CustFName" class="form-control" />
+                    <span asp-validation-for="Customer.CustFName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustLName" class="control-label"></label>
+                    <input asp-for="Customer.CustLName" class="form-control" />
+                    <span asp-validation-for="Customer.CustLName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustEmail" class="control-label"></label>
+                    <input asp-for="Customer.CustEmail" class="form-control" />
+                    <span asp-validation-for="Customer.CustEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group col-3">
+                    <label asp-for="Customer.CustPhone" class="control-label"></label>
+                    <input asp-for="Customer.CustPhone" class="form-control" />
+                    <span asp-validation-for="Customer.CustPhone" class="text-danger"></span>
+                </div>
+            </div>
+        }
 
-
-        <div class="row" id="SelectSitting">            
+        <div class="row" id="SelectSitting">
             <div class="form-group col-6">
                 <label asp-for="SelectedDate" class="control-label"></label>
                 <input asp-for="SelectedDate" class="form-control" id="Calendar" min="@Model.MinDate" max="@Model.MaxDate" />
@@ -81,57 +83,50 @@
             </div>
         </div>
 
-            <div class="row" id="SelectTime">
-                <div class="form-group col-6">
-                    <label asp-for="ExpectedStartTime" class="control-label"></label>
-                    <select asp-for="ExpectedStartTime" type="text" class="form-control" id="StartTimes"></select>
-                    <span asp-validation-for="ExpectedStartTime" class="text-danger"></span>
-                </div>
-                <div class="form-group col-6">
-                    <label asp-for="ExpectedEndTime" class="control-label"></label>
-                    <select asp-for="ExpectedEndTime" type="text" class="form-control" id="EndTimes"></select>
-                    <span asp-validation-for="ExpectedEndTime" class="text-danger"></span>
-                </div>
+        <div class="row" id="SelectTime">
+            <div class="form-group col-6">
+                <label asp-for="ExpectedStartTime" class="control-label"></label>
+                <select asp-for="ExpectedStartTime" type="text" class="form-control" id="StartTimes"></select>
+                <span asp-validation-for="ExpectedStartTime" class="text-danger"></span>
             </div>
-            
-            <div class="row" id="ReservationInfo">
-                <div class="form-group col-6">
-                    <label asp-for="NumOfGuests" class="control-label"></label>
-                    <input asp-for="NumOfGuests" class="form-control" min="1" id="NumOfGuests" />
-                    <span id="CapacityWarning" hidden style="color: red; margin-bottom: 10px; display: block">
-                        Please note: <span id="RemainingCapacity"></span> seats left
-                    </span>
-                    <span asp-validation-for="NumOfGuests" class="text-danger"></span>
-                </div>
-                <div class="form-group col-6">
-                    <label asp-for="Notes" class="control-label"></label>
-                    <input asp-for="Notes" class="form-control" id="notes" />
-                    <span asp-validation-for="Notes" class="text-danger"></span>
-                </div>
-                <div class="form-group col-6">
-                    <label asp-for="WayOfBooking" class="control-label"></label>
-                    <select asp-for="WayOfBooking" asp-items="Model.WayOfBookings" class="form-control">
-                        <option value="" selected disabled>-- Select Way of Booking --</option>
-                    </select>
-                    <span asp-validation-for="WayOfBooking" class="text-danger"></span>
-                </div>
+            <div class="form-group col-6">
+                <label asp-for="ExpectedEndTime" class="control-label"></label>
+                <select asp-for="ExpectedEndTime" type="text" class="form-control" id="EndTimes"></select>
+                <span asp-validation-for="ExpectedEndTime" class="text-danger"></span>
             </div>
+        </div>
 
-            <input type="hidden" asp-for="CustomerId" />
-
-            <div class="row">
-                <div class="form-group col-6">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
+        <div class="row" id="ReservationInfo">
+            <div class="form-group col-6">
+                <label asp-for="NumOfGuests" class="control-label"></label>
+                <input asp-for="NumOfGuests" class="form-control" min="1" id="NumOfGuests" />
+                <span id="CapacityWarning" hidden style="color: red; margin-bottom: 10px; display: block">
+                    Please note: <span id="RemainingCapacity"></span> seats left
+                </span>
+                <span asp-validation-for="NumOfGuests" class="text-danger"></span>
             </div>
+            <div class="form-group col-6">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" id="notes" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="WayOfBooking" class="control-label"></label>
+                <select asp-for="WayOfBooking" asp-items="Model.WayOfBookings" class="form-control">
+                    <option value="" selected disabled>-- Select Way of Booking --</option>
+                </select>
+                <span asp-validation-for="WayOfBooking" class="text-danger"></span>
+            </div>
+        </div>
 
-        </form>
+        <input type="hidden" asp-for="CustomerId" />
 
-    </div>
-</div>
+        <div class="text-center mt-5">
+            <input type="submit" value="Submit" class="btn btn-primary w-50" />
+        </div>
 
-<div>
-    <a asp-action="IndexReservation">Back to List</a>
+    </form>
+
 </div>
 
 @section Scripts {
