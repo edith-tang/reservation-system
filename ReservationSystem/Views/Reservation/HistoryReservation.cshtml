@@ -5,62 +5,62 @@
     ViewData["Title"] = "Your reservation history";
 }
 
-<h4>@ViewData["Title"]</h4>
+<div class="row mx-5">
+        <div class="col-6">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+        <div class="col-6">
+            <a class="btn btn-info float-right"  role="button" asp-controller="Home" asp-action="IndexMember">Back to Home Page</a>
+        </div>
+    
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sitting.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExpectedStartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExpectedEndTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NumOfGuests)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sitting.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectedStartTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectedEndTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumOfGuests)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Sitting.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpectedStartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpectedEndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumOfGuests)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sitting.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedStartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedEndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumOfGuests)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a>
-                @if (item.Status == ReservationStatus.Pending)
-                {
-                    <a id="cancel" asp-action="CancelReservation" asp-route-id="@item.Id"> | Cancel</a>
-                }
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
-
-<div>
-    <a asp-controller="Home" asp-action="IndexMember">Back to Home Page</a>
 </div>
 
 @section Scripts {
