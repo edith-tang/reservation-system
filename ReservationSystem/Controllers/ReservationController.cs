@@ -117,8 +117,9 @@ namespace ReservationSystem.Controllers
 
         public async Task<IActionResult> CancelReservation(int id)
         {
-            var r = _cxt.Reservations.FirstOrDefault(r => r.Id == id);
+            var r = _cxt.Reservations.Include(r => r.Sitting).FirstOrDefault(r => r.Id == id);
             r.Status = Data.Enums.ReservationStatus.Cancelled;
+            if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }
             await _cxt.SaveChangesAsync();
             return RedirectToAction(nameof(HistoryReservation));
         }

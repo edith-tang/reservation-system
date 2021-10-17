@@ -101,6 +101,11 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
 
+                    var sitting = _cxt.Sittings.Include(s=>s.Reservations).FirstOrDefault(s => s.Id == reservation.SittingId);
+                    if (sitting.RemainingCapacity <= 0) { sitting.Status = Data.Enums.SittingStatus.Closed; }
+
+                    await _cxt.SaveChangesAsync();
+
                     //for employees: redirect to all reservations page
                     return RedirectToAction(nameof(IndexReservation));
                 }
@@ -122,9 +127,10 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
         public async Task<IActionResult> CancelReservation(int id)
         {
-            var r = _cxt.Reservations.FirstOrDefault(r => r.Id == id);
+            var r = _cxt.Reservations.Include(r => r.Sitting).FirstOrDefault(r => r.Id == id);
             var su = _cxt.SittingUnits.Where(su => su.ReservationId == id).ToList();
             r.Status = Data.Enums.ReservationStatus.Cancelled;
+            if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }
             su.ForEach(su => { su.ReservationId = null; su.Status = Data.Enums.SittingUnitStatus.Available; });
             await _cxt.SaveChangesAsync();
             return RedirectToAction(nameof(IndexReservation));

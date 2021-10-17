@@ -17,6 +17,7 @@
             <th scope="col">Capacity</th>
             <th scope="col">Used</th>
             <th scope="col">Remain</th>
+            <th scope="col">Reservations</th>
             <th scope="col">Action</th>
         </tr>
     </thead>
@@ -43,8 +44,24 @@
                     @Html.DisplayFor(modelItem => item.RemainingCapacity)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Reservations.Count)
+                </td>
+                <td>
                     <a class="btn btn-info" role="button" asp-action="DetailsSitting" asp-route-id="@item.Id">Details</a>
                 </td>
+                @if (item.Status == ReservationSystem.Data.Enums.SittingStatus.Open)
+                {
+                    <td>
+                        <a class="closesitting btn btn-info" role="button" asp-action="ManuallyCloseSitting" asp-route-id="@item.Id">Close</a>
+                    </td>
+                }
+                else if (item.Status == ReservationSystem.Data.Enums.SittingStatus.Closed && item.RemainingCapacity > 0)
+                {
+                    <td>
+                        <a class="btn btn-info" role="button" asp-action="ManuallyReopenSitting" asp-route-id="@item.Id">Reopen</a>
+                    </td>
+                }
+
             </tr>
         }
     </tbody>
@@ -62,4 +79,13 @@
 
 @section Styles{
     <link href="~/css/my.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script>
+        $(".closesitting").on("click", () => {
+            if (confirm("Do you want to close this sitting?")) { }
+            else { return false; }
+        });
+    </script>
 }

@@ -47,11 +47,75 @@
     </dl>
 </div>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">ExpectedStartTime</th>
+            <th scope="col">ExpectedEndTime</th>
+            <th scope="col">NumOfGuests</th>
+            <th scope="col">Status</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sitting.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpectedStartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpectedEndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumOfGuests)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.CustEmail)
+                </td>
+                <td>
+                    <a asp-action="DetailsReservation" asp-controller="Reservation" asp-route-id="@item.Id">Details</a>
+                    @if ((int)item.Status == 0)
+                    {
+                        <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Allocate</a>
+                    }
+                    else if ((int)item.Status == 1)
+                    {
+                        <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Reallocate</a>
+                    }
+                    @if ((int)Model.Status < 2)
+                    {
+                        <a class="cancelreservation" asp-action="CancelReservation" asp-controller="Reservation" asp-route-id="@item.Id">Cancel</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
 @*<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>*@
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>*@
 
 <div>
     @* su table *@
 </div>
+
+@section Scripts {
+    <script>
+        $(".cancelreservation").on("click", () => {
+            if (confirm("Do you want to cancel this reservation?")) { }
+            else { return false; }
+        });
+    </script>
+}

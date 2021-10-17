@@ -112,6 +112,24 @@ namespace ReservationSystem.Areas.Admin.Controllers
             }
             return View();
         }
+
+        public async Task<IActionResult> ManuallyCloseSitting(int id)
+        {
+            //Manually close a sitting
+            var sitting = _cxt.Sittings.Include(s => s.Reservations).FirstOrDefault(s => s.Id == id);
+            sitting.Status = Data.Enums.SittingStatus.Closed;
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(IndexSitting));
+        }
+
+        public async Task<IActionResult> ManuallyReopenSitting(int id)
+        {
+            //Manually close a sitting
+            var sitting = _cxt.Sittings.Include(s => s.Reservations).Include(s => s.SittingCategory).FirstOrDefault(s => s.Id == id);
+            if (sitting.RemainingCapacity > 0) { sitting.Status = Data.Enums.SittingStatus.Open; }
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(IndexSitting));
+        }
         #endregion
 
         #region SITTING METHODS
@@ -120,7 +138,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         {
             return await _cxt.Sittings
                 .Include(s => s.SittingCategory)
-                .Include(s => s.Reservations)
+                .Include(s => s.Reservations).ThenInclude(r => r.Customer)
                 .Include(s => s.SittingUnits)
                 .OrderBy(s => s.Date)
                 .ToListAsync();

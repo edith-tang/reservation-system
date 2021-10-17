@@ -22,7 +22,7 @@ namespace ReservationSystem.Services
 
         public async Task<IdentityUser> SeedAdmin()
         {
-            var user = await _userManager.FindByNameAsync("admin");
+            var user = await _userManager.FindByNameAsync("admin@a.com");
             if (user == null)
             {
 
