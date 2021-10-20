@@ -30,10 +30,10 @@ namespace ReservationSystem.Controllers
         }
         #endregion
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             //check or seed admin on calling this method
-            await _adminService.SeedAdmin();
+            //await _adminService.SeedAdmin();
 
             return View();
         }

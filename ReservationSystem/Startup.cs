@@ -84,6 +84,7 @@ namespace ReservationSystem
             });
 
             CreateRoles(serviceProvider);
+            SeedAdmin(serviceProvider);
 
             //Problem: can't call async task in Configure
             //await SeedAdmin(serviceProvider, cxt);
@@ -105,11 +106,34 @@ namespace ReservationSystem
             }
         }
 
-        //public async Task SeedAdmin(IServiceProvider serviceProvider, ApplicationDbContext cxt)
-        //{
-        //    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-        //    var adminService = new AdminService(cxt, userManager);
-        //    await adminService.SeedAdmin();
-        //}
+        public void SeedAdmin(IServiceProvider serviceProvider)
+        {
+            var cxt = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            
+            
+                var user = userManager.FindByNameAsync("admin@a.com").Result;
+                if (user == null)
+                {
+
+                    var admin = new IdentityUser { UserName = "admin@a.com", Email = "admin@a.com" };
+                    var result = userManager.CreateAsync(admin, "Admin@123").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(admin, "Admin").Wait();
+                        var emp = new Data.Employee
+                        {
+                            EmpFName = "admin",
+                            EmpLName = "admin",
+                            EmpEmail = admin.Email,
+                            EmpPhone = null,
+                            IdentityUserId = admin.Id
+                        };
+                        cxt.Employees.Add(emp);
+                        cxt.SaveChangesAsync().Wait();
+                    }
+
+                }
+        }
     }
 }
