@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<ReservationSystem.Data.Reservation>
-@using ReservationSystem.Data.Enums;
 
 @{
     ViewData["Title"] = "Customer Reservation History";
@@ -55,6 +54,14 @@
                     </td>
                     <td>
                         <a asp-action="DetailsReservation" asp-route-id="@item.Id">Details</a>
+                        @if ((int)item.Status == 0)
+                        {
+                            <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Allocate</a>
+                        }
+                        else if ((int)item.Status == 1)
+                        {
+                            <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Reallocate</a>
+                        }
                         @if ((int)item.Status < 2)
                         {
                             <a id="cancel" asp-action="CancelReservation" asp-route-id="@item.Id"> | Cancel</a>

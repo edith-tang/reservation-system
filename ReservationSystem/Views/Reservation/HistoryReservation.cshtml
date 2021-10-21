@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<ReservationSystem.Data.Reservation>
-@using ReservationSystem.Data.Enums;
 
 @{
     ViewData["Title"] = "Your Reservation History";
@@ -73,7 +72,7 @@
 
     <script>
         $("#cancel").on("click", () => {
-            if (confirm("Do you want to cancel this allocation?")) { }
+            if (confirm("Do you want to cancel this reservation?")) { }
             else { return false; }
         });
     </script>

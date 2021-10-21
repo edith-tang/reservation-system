@@ -20,21 +20,16 @@ namespace ReservationSystem.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _cxt;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly AdminService _adminService;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext cxt, UserManager<IdentityUser> userManager, AdminService adminService)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext cxt, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _cxt = cxt;
             _userManager = userManager;
-            _adminService = adminService;
         }
         #endregion
 
         public IActionResult Index()
         {
-            //check or seed admin on calling this method
-            //await _adminService.SeedAdmin();
-
             return View();
         }
 

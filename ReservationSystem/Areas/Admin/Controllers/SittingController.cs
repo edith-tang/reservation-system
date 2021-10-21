@@ -43,7 +43,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var m = new DetailsSitting
             {
                 Sitting = await _cxt.Sittings
-                    .Include(s => s.Reservations)
+                    .Include(s => s.Reservations).ThenInclude(r => r.Customer)
                     .Include(s => s.SittingCategory).ThenInclude(sc => sc.SCTables.OrderBy(t => t.Table.Id)).ThenInclude(sct => sct.Table)
                     .Include(s => s.SittingCategory).ThenInclude(sc => sc.SCTimeslots.OrderBy(t => t.StartTime))
                     .Include(s => s.SittingUnits)
@@ -141,7 +141,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                         sittingId++;
                     }
 
-                    return RedirectToAction(nameof(IndexSitting));
+                    return RedirectToAction("DetailsSC", "SittingCategory", new { id = m.SittingCategoryId });
                 }
                 catch (Exception)
                 {

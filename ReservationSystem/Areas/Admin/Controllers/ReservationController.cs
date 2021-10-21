@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using ReservationSystem.Data;
 using ReservationSystem.Areas.Admin.Models.Reservation;
 using ReservationSystem.Services;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,20 +23,27 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #endregion
 
         #region ACTION METHODS
+
+        //staff's reservation home page
         public ActionResult IndexReservation()
         {
             ViewData["Check"] = _cxt.Sittings.Any();
             return View();
         }
 
+        //update all past reservations status and display them
         public async Task<ActionResult> PastReservations()
         {
             var reservations = _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting) .Where(r => r.Sitting.Date < DateTime.Today);
             foreach(var r in reservations)
             {
-                if ((int)r.Status < 3)
+                if ((int)r.Status == 2)
                 {
                     r.Status = Data.Enums.ReservationStatus.Completed;
+                }
+                if ((int)r.Status < 2)
+                {
+                    r.Status = Data.Enums.ReservationStatus.Expired;
                 }
             }
             await _cxt.SaveChangesAsync();
@@ -48,6 +52,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(reservationsList);
         }
 
+        //display all future reservations
         public async Task<ActionResult> FutureReservations()
         {
             var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting)
@@ -67,7 +72,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(reservation);
         }
 
-        //check a customer's reservation detail
+        //check reservation detail
         public async Task<ActionResult> DetailsReservation(int id)
         {
             var reservation = await _cxt.Reservations
@@ -75,6 +80,22 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 .Include(r => r.Sitting.SittingCategory)
                 .FirstOrDefaultAsync(r => r.Id == id);
             return View(reservation);
+        }
+
+        public async Task<ActionResult> UpdateSeated(int id)
+        {
+            var reservation = await _cxt.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+            reservation.Status = Data.Enums.ReservationStatus.Seated;
+           await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(DetailsReservation), new { id = id });
+        }
+
+        public async Task<ActionResult> UpdateExpired(int id)
+        {
+            var reservation = await _cxt.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+            reservation.Status = Data.Enums.ReservationStatus.Expired;
+            await _cxt.SaveChangesAsync();
+            return RedirectToAction(nameof(DetailsReservation), new { id = id});
         }
 
         //admin and employee creates reservation for customer
@@ -108,7 +129,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 {
                     await DataValidation(m);
 
-                    var reservation = new Data.Reservation
+                    var reservation = new Reservation
                     {
                         SittingId = m.SelectedSittingId,
                         ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
@@ -125,7 +146,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
 
-                    var sitting = _cxt.Sittings.Include(s=>s.Reservations).FirstOrDefault(s => s.Id == reservation.SittingId);
+                    var sitting = _cxt.Sittings.Include(s => s.SittingCategory).Include(s=>s.Reservations).FirstOrDefault(s => s.Id == reservation.SittingId);
                     if (sitting.RemainingCapacity <= 0) { sitting.Status = Data.Enums.SittingStatus.Closed; }
 
                     await _cxt.SaveChangesAsync();
@@ -153,29 +174,13 @@ namespace ReservationSystem.Areas.Admin.Controllers
         {
             var r = _cxt.Reservations.Include(r => r.Sitting).ThenInclude(s => s.SittingCategory).FirstOrDefault(r => r.Id == id);
             var su = _cxt.SittingUnits.Where(su => su.ReservationId == id).ToList();
-            r.Status = Data.Enums.ReservationStatus.Cancelled;
-            if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }
             su.ForEach(su => { su.ReservationId = null; su.Status = Data.Enums.SittingUnitStatus.Available; });
+            r.Status = Data.Enums.ReservationStatus.Cancelled;
+            if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }            
             await _cxt.SaveChangesAsync();
             return RedirectToAction(nameof(IndexReservation));
         }
-
         #endregion
-
-        #region Methods
-
-        //check reservations for a sitting
-        public async Task<List<Reservation>> CheckReservationBySitting()
-        {
-            var sitting = new Sitting();
-            return await _cxt.Reservations.Include(r => r.Sitting).Where(r => r.Sitting == sitting).ToListAsync();
-        }
-
-        //check reservations for a customer
-        public async Task<List<Reservation>> CheckReservationByCust(int customerId)
-        {
-            return await _cxt.Reservations.Include(r => r.Customer).Where(r => r.Id == customerId).ToListAsync();
-        }
 
         //find all active sittings and dates
         public async Task<List<Sitting>> GetAllFutureSittings()
@@ -184,8 +189,6 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
                 .ToListAsync();
         }
-
-        #endregion
 
         #region Methods for Ajax Requests
         //find sittings for a specific date
@@ -208,7 +211,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return Json(sittingOptions);
         }
 
-        //find a sititng by id
+        //find a sittng by id
         public async Task<Sitting> GetSittingById(int sittingId)
         {
             return await _cxt.Sittings
@@ -254,6 +257,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #endregion
 
         #region Methods for [HttpPost] CreateReservation()
+
+        //check that all data passed by m is consistent with database
         public async Task DataValidation(CreateReservation m)
         {
             var sitting = await GetSittingById(m.SelectedSittingId);
@@ -261,6 +266,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
             bool checkStartTime = CheckStartTime(sitting, m.ExpectedStartTime);
             bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
             bool checkCapacity = 0 < m.NumOfGuests && m.NumOfGuests <= sitting.RemainingCapacity;
+
+            //if any inconsistency is found, throw an exception
             if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
             {
                 throw new Exception();
@@ -289,10 +296,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return false;
         }
 
-        //needs modification
-        public async Task MembershipAndEmailValidation(CreateReservation m, Data.Reservation reservation)
-        {
-           
+        public async Task MembershipAndEmailValidation(CreateReservation m, Reservation reservation)
+        {           
                 var custEntered = new Data.Customer
                 {
                     CustFName = m.Customer.CustFName,
@@ -300,9 +305,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     CustEmail = m.Customer.CustEmail,
                     CustPhone = m.Customer.CustPhone
                 };
-                //previously unregistered customer will update the info and booking confirmed
                 reservation.Customer = await _customerService.UpsertCustomerAsync(custEntered,true, false);
-            
         }
         #endregion
     }
