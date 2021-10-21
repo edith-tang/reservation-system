@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ReservationSystem.Data;
 using System;
 using System.Collections.Generic;
@@ -8,26 +9,66 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Areas.Admin.Models.SittingCategory
 {
-    public class CreateSC
-    {       
-        public string Name { get;  set; }
-        public int Capacity { get;  set; }
+    public class CreateSC : IValidatableObject
+    {
+        [Required]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Please enter 2 to 50 characters")]
+        [RegularExpression(".*[^ ].*", ErrorMessage = "Cannot contain blank space only")]
+        [Remote("IsNameAvailble", "SittingCategory")]
+        public string Name { get; set; }
 
+        [Required]
+        [Range(1, 100)]
+        public int Capacity { get; set; }
+
+        [Required]
         [Display(Name = "Start Time")]
-        public TimeSpan StartTime { get;  set; }
-        public TimeSpan Duration { get;  set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh\\:mm}")]
+        [RegularExpression("^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$", ErrorMessage = "Please enter time from 00:00 - 23:59(seconds optional)")]
+        public TimeSpan StartTime { get; set; }
 
+
+        public TimeSpan Duration { get => EndTime - StartTime; }
+
+        [Required]
         [Display(Name = "End Time")]
-        public TimeSpan EndTime { get => StartTime + Duration; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh\\:mm}")]
+        [RegularExpression("^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$", ErrorMessage = "Please enter time from 00:00 - 23:59(seconds optional)")]
+        public TimeSpan EndTime { get; set; }
 
+        [Required]
         [Display(Name = "Sitting duration (hours)")]
-        public int IntervalHours { get;  set; }
+        [Range(0, 24)]
+        public int IntervalHours { get; set; }
 
+        [Required]
         [Display(Name = "Sitting duration (minutes)")]
-        public int IntervalMinutes { get;  set; }
+        [Range(0, 59)]
+        public int IntervalMinutes { get; set; }
 
+        [Required]
         [Display(Name = "Tables")]
         public int[] TablesId { get; set; }
         public MultiSelectList Tables { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartTime >= EndTime) { yield return new ValidationResult("EndTime must be greater than StartTime", new List<string> { "StartTime" , "EndTime" }); }
+            if (IntervalHours == 0 && IntervalMinutes == 0)
+            {
+                yield return new ValidationResult("Sitting duration cannot be zero", new[] { "IntervalHours" , "IntervalMinutes" });
+            }
+            else
+            {
+                var Interval = new TimeSpan(IntervalHours, IntervalMinutes, 0);
+                if (Duration.TotalMinutes % Interval.TotalMinutes != 0)
+                {
+                    yield return new ValidationResult("Sitting duration must be divisible by interval", new[] { "EndTime", "IntervalHours", "IntervalMinutes" });
+                }
+            }
+            
+        }
+
+
     }
 }

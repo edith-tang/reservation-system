@@ -22,7 +22,7 @@
 
     <form  class="col-12" asp-action="CreateSC">
 
-        <div asp-validation-summary="All" class="text-danger"></div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
 
         <div class="row">
             <div class="form-group col-6">
@@ -44,9 +44,9 @@
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group col-6">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" id="Duration" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" class="form-control" id="EndTime" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
         </div>
 

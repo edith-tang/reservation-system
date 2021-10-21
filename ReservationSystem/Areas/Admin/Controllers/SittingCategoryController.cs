@@ -47,26 +47,48 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(m);
         }
 
+        public async Task<ActionResult> IsNameAvailbleAsync(string name)
+        {
+            var repeatedNameSC = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Name == name);
+            if (repeatedNameSC == null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Name \"{name}\" is already in use.");
+            }
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> CreateSC(Models.SittingCategory.CreateSC m)
         {
             if (ModelState.IsValid)
             {
-                var s = _mapper.Map<SittingCategory>(m);
-                _cxt.SittingCategories.Add(s);
-                await _cxt.SaveChangesAsync();
+                try
+                {
+                    var s = _mapper.Map<SittingCategory>(m);
+                    _cxt.SittingCategories.Add(s);
+                    await _cxt.SaveChangesAsync();
 
-                var id = await CreateSCId();
-                await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes, 0), id);
-                await CreateSCTables(id, m.TablesId);
+                    var id = await CreateSCId();
+                    await CreateSCTimeslots(m.StartTime, m.Duration, new TimeSpan(m.IntervalHours, m.IntervalMinutes, 0), id);
+                    await CreateSCTables(id, m.TablesId);
 
-                return RedirectToAction(nameof(IndexSC));
+                    return RedirectToAction(nameof(IndexSC));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
             else
             {
                 m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
                 return View(m);
             }
+
         }
 
         public async Task<ActionResult> DeleteSC(int id)
@@ -74,7 +96,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var sittingCategoryTBD = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == id);
             if (_cxt.Sittings.FirstOrDefault(s => s.SittingCategoryId == id) == null)
             {
-                var scTimeslotsTBD =_cxt.SCTimeslots.Where(sct => sct.SittingCategoryId == id);
+                var scTimeslotsTBD = _cxt.SCTimeslots.Where(sct => sct.SittingCategoryId == id);
                 var scTablesTBD = _cxt.SCTables.Where(sct => sct.SittingCategoryId == id);
                 _cxt.SCTimeslots.RemoveRange(scTimeslotsTBD);
                 _cxt.SCTables.RemoveRange(scTablesTBD);
@@ -147,7 +169,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         public async Task<SittingCategory> GetSCById(int sittingCategoryId)
         {
             var allSC = await GetSCs();
-           return allSC.FirstOrDefault(i => i.Id == sittingCategoryId);                
+            return allSC.FirstOrDefault(i => i.Id == sittingCategoryId);
         }
 
         public void GetTableStrings(SittingCategory sc)
@@ -161,7 +183,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             if (outsideTables.Any()) { foreach (var t in outsideTables) { outsideString += t.Table.Name + " "; } }
             if (balconyTables.Any()) { foreach (var t in balconyTables) { balconyString += t.Table.Name + " "; } }
 
-            ViewBag.mainString = (mainString=="")?"None":mainString;
+            ViewBag.mainString = (mainString == "") ? "None" : mainString;
             ViewBag.outsideString = (outsideString == "") ? "None" : outsideString;
             ViewBag.balconyString = (balconyString == "") ? "None" : balconyString;
         }
