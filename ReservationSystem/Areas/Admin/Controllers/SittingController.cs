@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ReservationSystem.Areas.Admin.Models.Sitting.DetailsSitting;
 
 namespace ReservationSystem.Areas.Admin.Controllers
 {
@@ -28,7 +29,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #region ACTION METHODS
         public async Task<IActionResult> IndexSitting()
         {
-            var sittings = await GetSittings();            
+            var sittings = await GetSittings();
             return View(sittings);
         }
 
@@ -39,8 +40,46 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
         public async Task<IActionResult> DetailsSitting(int id)
         {
-            var sitting = await GetSittingById(id);
-            return View(sitting);
+            var m = new DetailsSitting
+            {
+                Sitting = await _cxt.Sittings
+                    .Include(s => s.Reservations)
+                    .Include(s => s.SittingCategory).ThenInclude(sc => sc.SCTables.OrderBy(t => t.Table.Id)).ThenInclude(sct => sct.Table)
+                    .Include(s => s.SittingCategory).ThenInclude(sc => sc.SCTimeslots.OrderBy(t => t.StartTime))
+                    .Include(s => s.SittingUnits)
+                    .FirstOrDefaultAsync(s => s.Id == id),
+            };
+            foreach (var scts in m.Sitting.SittingCategory.SCTimeslots)
+            {
+                m.SCTimeslotsDTO.Add(new SCTimeslotDTO
+                {
+                    Id = scts.Id,
+                    StartTime = scts.StartTime.ToString(@"hh\:mm\:ss"),
+                    EndTime = scts.EndTime.ToString(@"hh\:mm\:ss"),
+                });
+            }
+
+            foreach (var sct in m.Sitting.SittingCategory.SCTables)
+            {
+                m.SCTablesDTO.Add(new SCTableDTO
+                {
+                    Id = sct.Id,
+                    Name = sct.Table.Name,
+                    Area = sct.Table.Area,
+                });
+            }
+
+            foreach (var fsu in m.Sitting.SittingUnits)
+            {
+                m.SittingUnitsDTO.Add(new SittingUnitDTO
+                {
+                    Id = fsu.Id,
+                    TableId = fsu.TableId,
+                    TimeslotId = fsu.TimeslotId,
+                    ReservationId = fsu.ReservationId,
+                });
+            }
+            return View(m);
         }
 
         [HttpGet]
@@ -154,7 +193,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         //check if the sitting to be created overlaps with existing sittings
         public bool SCSelectionValidation(DateTime date, int sittingCategoryId)
         {
-            var sittings = _cxt.Sittings.Where(s => s.Date == date).Include(s => s.SittingCategory).ToList();            
+            var sittings = _cxt.Sittings.Where(s => s.Date == date).Include(s => s.SittingCategory).ToList();
             if (sittings == null) { return true; }
 
             var sittingCategory = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == sittingCategoryId);
@@ -186,7 +225,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 }
             }
             _cxt.SittingUnits.AddRange(sUnits);
-                        
+
             await _cxt.SaveChangesAsync();
         }
         #endregion

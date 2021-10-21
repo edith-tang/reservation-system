@@ -40,9 +40,10 @@ namespace ReservationSystem.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult CreateSC()
         {
+            var selectedTable = _cxt.Tables.Select(t => t.Id).ToArray();
             var m = new Models.SittingCategory.CreateSC
             {
-                Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name))
+                Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name), selectedTable)
             };
             return View(m);
         }

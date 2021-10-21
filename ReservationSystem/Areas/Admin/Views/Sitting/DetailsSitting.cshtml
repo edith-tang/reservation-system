@@ -1,4 +1,4 @@
-﻿@model ReservationSystem.Data.Sitting
+﻿@model ReservationSystem.Areas.Admin.Models.Sitting.DetailsSitting
 
 @{
     ViewData["Title"] = "Sitting Details";
@@ -13,7 +13,7 @@
             </div>
             <div class="col-6">
                 @*<a class="btn btn-info float-right" role="button" asp-controller="SittingCategory" asp-action="DetailsSC" asp-route-id="@Model.SittingCategoryId">Back to Category</a>
-        <a class="btn btn-info float-right mr-3" role="button" asp-action="IndexSitting">Back to Sitting List</a>*@
+                    <a class="btn btn-info float-right mr-3" role="button" asp-action="IndexSitting">Back to Sitting List</a>*@
                 <button class="btn btn-info float-right" onclick="history.go(-1)">Go Back</button>
             </div>
         </div>
@@ -23,22 +23,22 @@
     <div class="col-4">
         <dl>
             <dt>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model.Sitting.Date)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Date)
+                @Html.DisplayFor(model => model.Sitting.Date)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.SittingCategory.StartTime)
+                @Html.DisplayNameFor(model => model.Sitting.SittingCategory.StartTime)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SittingCategory.StartTime)
+                @Html.DisplayFor(model => model.Sitting.SittingCategory.StartTime)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.SittingCategory.EndTime)
+                @Html.DisplayNameFor(model => model.Sitting.SittingCategory.EndTime)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SittingCategory.EndTime)
+                @Html.DisplayFor(model => model.Sitting.SittingCategory.EndTime)
             </dd>
         </dl>
     </div>
@@ -48,35 +48,35 @@
                 Capacity
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Capacity)
+                @Html.DisplayFor(model => model.Sitting.Capacity)
             </dd>
             <dt>
                 Used Capacity
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.UsedCapacity)
+                @Html.DisplayFor(model => model.Sitting.UsedCapacity)
             </dd>
             <dt>
                 Remaining Capacity
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.RemainingCapacity)
+                @Html.DisplayFor(model => model.Sitting.RemainingCapacity)
             </dd>
         </dl>
     </div>
     <div class="col-4">
         <dl>
             <dt>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model.Sitting.Status)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Status)
+                @Html.DisplayFor(model => model.Sitting.Status)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.SittingCategory)
+                @Html.DisplayNameFor(model => model.Sitting.SittingCategory)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SittingCategory.Name)
+                @Html.DisplayFor(model => model.Sitting.SittingCategory.Name)
             </dd>
         </dl>
     </div>
@@ -96,7 +96,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Reservations)
+                @foreach (var item in Model.Sitting.Reservations)
                 {
                     <tr>
                         <td>
@@ -138,6 +138,9 @@
         </table>
     </div>
 
+    <div class="col-12">
+        <div id="scheduler" class="container-fluid px-0"></div>
+    </div>
 
     @*<div>
             <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
@@ -149,14 +152,42 @@
     </div>
 </div>
 
-@section Styles{ 
+@section Styles{
     <link href="~/css/my02.css" rel="stylesheet" />
+    <link href="~/scheduler/scheduler.css" rel="stylesheet" />
 }
-    @section Scripts {
-        <script>
-            $(".cancelreservation").on("click", () => {
-                if (confirm("Do you want to cancel this reservation?")) { }
-                else { return false; }
-            });
-        </script>
-    }
+@section Scripts {
+    <script>
+        $(".cancelreservation").on("click", () => {
+            if (confirm("Do you want to cancel this reservation?")) { }
+            else { return false; }
+        });
+    </script>
+
+    <script src="~/scheduler/scheduler.js"></script>
+    <script>
+        var sittingDate = '@Model.Sitting.Date.ToShortDateString()';
+        var sittingName = '@Model.Sitting.SittingCategory.Name';
+        var currentReservationId = null;
+        var tables = @Json.Serialize(Model.SCTablesDTO);
+        var timeslots =@Json.Serialize(Model.SCTimeslotsDTO);
+        var sittingUnits =@Json.Serialize(Model.SittingUnitsDTO);
+
+        var selectedSittingUnitId = [];
+        var x = 100 / timeslots.length + '%';
+
+
+        $("#scheduler").scheduler(
+            {
+                responsiveWidth: x,
+                sittingDate: sittingDate,
+                sittingName: sittingName,
+                currentReservationId: currentReservationId,
+                timeslots: timeslots,
+                tables: tables,
+                sittingUnits: sittingUnits,
+                clickEnabled: false,
+            }
+        );
+    </script>
+}
