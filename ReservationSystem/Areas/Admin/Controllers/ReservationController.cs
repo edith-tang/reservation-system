@@ -26,9 +26,33 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #endregion
 
         #region ACTION METHODS
-        public async Task<ActionResult> IndexReservation()
+        public ActionResult IndexReservation()
         {
-            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).OrderBy(r => r.TimeOfBooking).ToListAsync();
+            ViewData["Check"] = _cxt.Sittings.Any();
+            return View();
+        }
+
+        public async Task<ActionResult> PastReservations()
+        {
+            var reservations = _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting) .Where(r => r.Sitting.Date < DateTime.Today);
+            foreach(var r in reservations)
+            {
+                if ((int)r.Status < 3)
+                {
+                    r.Status = Data.Enums.ReservationStatus.Completed;
+                }
+            }
+            await _cxt.SaveChangesAsync();
+
+            var reservationsList = _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting).Where(r => r.Sitting.Date < DateTime.Today);
+            return View(reservationsList);
+        }
+
+        public async Task<ActionResult> FutureReservations()
+        {
+            var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting)
+                .Where(r => r.Sitting.Date >= DateTime.Today)
+                .OrderBy(r => r.TimeOfBooking).ToListAsync();
             return View(reservations);
         }
 
@@ -90,7 +114,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                         ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
                         ExpectedEndTime = TimeSpan.Parse(m.ExpectedEndTime),
                         NumOfGuests = m.NumOfGuests,
-                        Notes = m.Notes,
+                        Notes = m.Notes ?? "N/A",
                         TimeOfBooking = DateTime.Now,
                         WayOfBooking = m.WayOfBooking,
                         Status = Data.Enums.ReservationStatus.Pending,
@@ -106,7 +130,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
                     await _cxt.SaveChangesAsync();
 
-                    //for employees: redirect to all reservations page
+                    //for employees: redirect to index reservation page
                     return RedirectToAction(nameof(IndexReservation));
                 }
                 catch (Exception)
@@ -127,7 +151,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
         public async Task<IActionResult> CancelReservation(int id)
         {
-            var r = _cxt.Reservations.Include(r => r.Sitting).FirstOrDefault(r => r.Id == id);
+            var r = _cxt.Reservations.Include(r => r.Sitting).ThenInclude(s => s.SittingCategory).FirstOrDefault(r => r.Id == id);
             var su = _cxt.SittingUnits.Where(su => su.ReservationId == id).ToList();
             r.Status = Data.Enums.ReservationStatus.Cancelled;
             if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }
@@ -168,7 +192,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         public async Task<JsonResult> GetSittingsByDate(string date)
         {
             var sittings = await GetAllFutureSittings();
-            var filteredSittings = sittings.FindAll(s => s.Date == DateTime.Parse(date));
+            var filteredSittings = sittings.FindAll(s => s.Date == DateTime.Parse(date) && s.Status == Data.Enums.SittingStatus.Open);
             var sittingOptions = new List<SittingDTO>();
             foreach (var i in filteredSittings)
             {

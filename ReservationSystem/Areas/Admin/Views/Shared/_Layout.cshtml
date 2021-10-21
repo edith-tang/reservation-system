@@ -23,22 +23,23 @@
                         <li class="nav-item">
                             <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="Reservation" asp-action="IndexReservation">Reservation</a>
                         </li>
-                        @*<li class="nav-item">
-            <a  style="white-space: nowrap" class="nav-link text-dark" asp-area="Admin" asp-controller="SittingUnit" asp-action="Index">Sitting Unit</a>
-        </li>*@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="SittingCategory" asp-action="IndexSC">Sitting Category</a>
-                            </li>
-                            <li class="nav-item">
                                 <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="Sitting" asp-action="IndexSitting">Sitting</a>
                             </li>
+                            <li class="nav-item">
+                                <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="SittingCategory" asp-action="IndexSC">Sitting Category</a>
+                            </li>
+
                             <li class="nav-item">
                                 <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="Report" asp-action="IndexReport">Report</a>
                             </li>
                             <li class="nav-item">
                                 <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="Employee" asp-action="IndexEmployee">Employee</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="white-space: nowrap; display: block" class="nav-link text-dark" asp-area="Admin" asp-controller="Customer" asp-action="IndexCustomer">Customer</a>
                             </li>
                         }
                     </ul>

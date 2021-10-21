@@ -14,7 +14,7 @@
                 <h4>Add a Sitting Category</h4>
             </div>
             <div class="col-6">
-                <a class="btn btn-info float-right" role="button" asp-action="IndexSC">Back to list</a>
+                <a class="btn btn-info float-right" role="button" asp-action="IndexSC">Go Back</a>
             </div>
         </div>
         <hr />
@@ -64,7 +64,7 @@
         </div>
 
         <div class="row">
-            <div class="form-group  col-12">
+            <div class="form-group col-12">
                 <label asp-for="TablesId" class="control-label"></label>
                 <select asp-for="TablesId" asp-items="Model.Tables" class="form-control" multiple="multiple">
                 </select>
@@ -72,9 +72,8 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary float-right" />
-            <a role="button" asp-action="IndexSC" class="btn btn-info float-left">Back to List</a>
+        <div class="row justify-content-center">
+            <input type="submit" value="Create" class="btn btn-primary w-25" />
         </div>
 
     </form>

@@ -39,8 +39,11 @@ namespace ReservationSystem.Controllers
         }
 
         [Authorize(Roles = "Member")]
-        public IActionResult IndexMember()
+        public async Task<IActionResult> IndexMember()
         {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var custAuthenticated = await _cxt.Customers.FirstOrDefaultAsync(c => c.IdentityUserId == user.Id);
+            ViewData["Name"] = custAuthenticated.CustFName + " " + custAuthenticated.CustLName;
             return View();
         }
 

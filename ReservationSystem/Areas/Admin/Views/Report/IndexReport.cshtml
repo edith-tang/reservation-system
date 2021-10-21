@@ -1,7 +1,7 @@
 ﻿@model ReservationSystem.Areas.Admin.Models.Report.ReportSitting
 
 @{
-    ViewData["Title"] = "IndexReport";
+    ViewData["Title"] = "Report";
 }
 
 <div class="row mx-5">
@@ -14,31 +14,37 @@
             <div class="col-6">
             </div>
         </div>
-        <hr/>
+        <hr />
     </div>
 
-    <div class="col-4">
-        <dl>
-            <dt>
-                @Html.DisplayNameFor(model => model.AvgOcpy)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.AvgOcpy)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.HighestOcpy)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.HighestOcpy)
-            </dd>
-        </dl>
-    </div>
-    <div class="col-4">
+    @if ((bool)ViewData["Check"])
+    {
+        <div class="col-4">
+            <dl>
+                <dt>
+                    @Html.DisplayNameFor(model => model.AvgOcpy)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.AvgOcpy)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.HighestOcpy)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.HighestOcpy)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-4">
 
-    </div>
-    <div class="col-4">
+        </div>
+        <div class="col-4">
 
-    </div>
-
+        </div>
+    }
+    else
+    {
+        <p>No report available</p>
+    }
 
 </div>

@@ -18,8 +18,19 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
         public async Task<IActionResult> IndexReport()
         {
-            var m = await ReportSitting();
-            return View(m);
+            bool check = _cxt.Reservations.Any();
+            ViewData["Check"] = check;
+
+            if (!check)
+            {
+                return View();
+            }
+            else
+            {
+                var m = await ReportSitting();
+                return View(m);
+            }
+            
         }
 
         #region REPORT METHODS

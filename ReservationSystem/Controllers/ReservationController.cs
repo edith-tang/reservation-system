@@ -102,7 +102,12 @@ namespace ReservationSystem.Controllers
 
                     _cxt.Reservations.Add(reservation);
                     await _cxt.SaveChangesAsync();
-                    
+
+                    var sitting = _cxt.Sittings.Include(s => s.Reservations).FirstOrDefault(s => s.Id == reservation.SittingId);
+                    if (sitting.RemainingCapacity <= 0) { sitting.Status = Data.Enums.SittingStatus.Closed; }
+
+                    await _cxt.SaveChangesAsync();
+
                     return RedirectToAction("ThankYouPage", "Home");
 
                 }
@@ -117,7 +122,7 @@ namespace ReservationSystem.Controllers
 
         public async Task<IActionResult> CancelReservation(int id)
         {
-            var r = _cxt.Reservations.Include(r => r.Sitting).FirstOrDefault(r => r.Id == id);
+            var r = await _cxt.Reservations.Include(r => r.Sitting).ThenInclude(s => s.SittingCategory).FirstOrDefaultAsync(r => r.Id == id);
             r.Status = Data.Enums.ReservationStatus.Cancelled;
             if (r.Sitting.RemainingCapacity > 0) { r.Sitting.Status = Data.Enums.SittingStatus.Open; }
             await _cxt.SaveChangesAsync();
@@ -143,7 +148,7 @@ namespace ReservationSystem.Controllers
         //find all active sittings and dates
         public async Task<List<Sitting>> GetAllFutureSittings()
         {
-            return await _cxt.Sittings.Where(s => s.Status != Data.Enums.SittingStatus.Past)
+            return await _cxt.Sittings.Where(s => s.Status == Data.Enums.SittingStatus.Open)
                 .Include(s => s.SittingCategory).ThenInclude(s => s.SCTimeslots)
                 .ToListAsync();
         }
@@ -155,7 +160,7 @@ namespace ReservationSystem.Controllers
         public async Task<JsonResult> GetSittingsByDate(string date)
         {
             var sittings = await GetAllFutureSittings();
-            var filteredSittings = sittings.FindAll(s => s.Date == DateTime.Parse(date));
+            var filteredSittings = sittings.FindAll(s => s.Date == DateTime.Parse(date) && s.Status == Data.Enums.SittingStatus.Open);
             var sittingOptions = new List<SittingDTO>();
             foreach (var i in filteredSittings)
             {

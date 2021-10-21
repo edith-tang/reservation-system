@@ -79,7 +79,8 @@
     @section Scripts {
 
         <script>
-            $('#StartDate').attr('min', '2021-01-01');
+            let today = new Date().toISOString().slice(0, 10);
+            $('#StartDate').attr('min', today);
             $('#StartDate').on('change', function () {
                 $('#EndDate').attr('min', $('#StartDate').val());
             })

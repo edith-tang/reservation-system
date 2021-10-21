@@ -12,8 +12,9 @@
                 <h4>@ViewData["Title"]</h4>
             </div>
             <div class="col-6">
-                <a class="btn btn-info float-right" role="button" asp-controller="SittingCategory" asp-action="DetailsSC" asp-route-id="@Model.SittingCategoryId">Back to Category</a>
-                <a class="btn btn-info float-right mr-3" role="button" asp-action="IndexSitting">Back to Sitting List</a>
+                @*<a class="btn btn-info float-right" role="button" asp-controller="SittingCategory" asp-action="DetailsSC" asp-route-id="@Model.SittingCategoryId">Back to Category</a>
+        <a class="btn btn-info float-right mr-3" role="button" asp-action="IndexSitting">Back to Sitting List</a>*@
+                <button class="btn btn-info float-right" onclick="history.go(-1)">Go Back</button>
             </div>
         </div>
         <hr />
@@ -126,7 +127,7 @@
                             {
                                 <a asp-action="Allocate" asp-controller="SittingUnit" asp-route-id="@item.Id"> | Reallocate</a>
                             }
-                            @if ((int)Model.Status < 2)
+                            @if ((int)item.Status < 2)
                             {
                                 <a class="cancelreservation" asp-action="CancelReservation" asp-controller="Reservation" asp-route-id="@item.Id"> | Cancel</a>
                             }
