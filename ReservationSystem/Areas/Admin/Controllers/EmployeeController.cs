@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Data;
 using ReservationSystem.Services;
 using System.Threading.Tasks;
@@ -10,8 +11,15 @@ namespace ReservationSystem.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class EmployeeController : AdminAreaBaseController
     {
-        public EmployeeController(ApplicationDbContext cxt,  UserManager<IdentityUser> userManager): base(cxt, userManager)
+        public EmployeeController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager) : base(cxt, userManager)
         {
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IndexEmployee()
+        {
+            var employees = await _cxt.Employees.ToListAsync();
+            return View(employees);
         }
 
         [HttpGet]
@@ -20,6 +28,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var m = new Models.Employee.CreateEmployee();
             return View(m);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateEmployee(Models.Employee.CreateEmployee m)
         {
