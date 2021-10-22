@@ -27,15 +27,30 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #endregion
 
         #region ACTION METHODS
-        public async Task<IActionResult> IndexSitting()
-        {
-            var sittings = await GetSittings();
-            return View(sittings);
-        }
-
-        public ActionResult Index()
+        public IActionResult IndexSitting()
         {
             return View();
+        }
+
+        public async Task<IActionResult> PastSittings()
+        {
+            var pastSittings = GetSittings().Where(s => s.Date < DateTime.Today);
+            foreach(var s in pastSittings)
+            {
+                if (s.Status != Data.Enums.SittingStatus.Past)
+                {
+                    s.Status = Data.Enums.SittingStatus.Past;
+                }
+            }
+           await _cxt.SaveChangesAsync();
+            var pastSittingsList = await GetSittings().Where(s => s.Date < DateTime.Today).OrderBy(s => s.Date).ToListAsync();
+            return View(pastSittingsList);
+        }
+
+        public async Task<IActionResult> FutureSittings()
+        {
+            var futureSittings = await GetSittings().Where(s => s.Date >= DateTime.Today).OrderBy(s => s.Date).ToListAsync();
+            return View(futureSittings);
         }
 
         public async Task<IActionResult> DetailsSitting(int id)
@@ -101,7 +116,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 {
                     if (m.StartDate > m.EndDate)
                     {
-                        throw new Exception();
+                        return StatusCode(403);
                     }
 
                     var sittingCategory = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Id == m.SittingCategoryId);
@@ -125,9 +140,9 @@ namespace ReservationSystem.Areas.Admin.Controllers
                     //display warning message for overlapping dates
                     if (invalidDates.Count > 0)
                     {
-                        TempData["Message"] = string.Format("Your choice {0} overlaps with existing sittings {1}",
-                            sittingCategory.Name,
-                            string.Join(",", values: invalidDates));
+                        TempData["Message"] = string.Format("Overlapping sitting(s) on {0} not created for Category: {1}.",                            
+                            string.Join(", ", values: invalidDates),
+                            sittingCategory.Name);
                     }
 
                     _cxt.Sittings.AddRange(sittings);
@@ -145,9 +160,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 }
                 catch (Exception)
                 {
-
+                    ModelState.AddModelError("Error", "Invalid submission!");
                 }
-
             }
             return View();
         }
@@ -158,7 +172,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var sitting = _cxt.Sittings.Include(s => s.Reservations).FirstOrDefault(s => s.Id == id);
             sitting.Status = Data.Enums.SittingStatus.Closed;
             await _cxt.SaveChangesAsync();
-            return RedirectToAction(nameof(IndexSitting));
+            return RedirectToAction(nameof(FutureSittings));
         }
 
         public async Task<IActionResult> ManuallyReopenSitting(int id)
@@ -167,28 +181,24 @@ namespace ReservationSystem.Areas.Admin.Controllers
             var sitting = _cxt.Sittings.Include(s => s.Reservations).Include(s => s.SittingCategory).FirstOrDefault(s => s.Id == id);
             if (sitting.RemainingCapacity > 0) { sitting.Status = Data.Enums.SittingStatus.Open; }
             await _cxt.SaveChangesAsync();
-            return RedirectToAction(nameof(IndexSitting));
+            return RedirectToAction(nameof(FutureSittings));
         }
         #endregion
 
         #region SITTING METHODS
-        //load all exisitng Sittings
-        public async Task<List<Sitting>> GetSittings()
+        public Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Sitting, List<SittingUnit>> GetSittings()
         {
-            return await _cxt.Sittings
+            return _cxt.Sittings
                 .Include(s => s.SittingCategory)
                 .Include(s => s.Reservations).ThenInclude(r => r.Customer)
-                .Include(s => s.SittingUnits)
-                .OrderBy(s => s.Date)
-                .ToListAsync();
+                .Include(s => s.SittingUnits);
         }
 
         //find a sitting by id
-        public async Task<Sitting> GetSittingById(int id)
-        {
-            var allSittings = await GetSittings();
-            return allSittings.FirstOrDefault(s => s.Id == id);
-        }
+        //public async Task<Sitting> GetSittingById(int id)
+        //{
+        //    return await GetSittings().FirstOrDefaultAsync(s => s.Id == id);
+        //}
 
         //check if the sitting to be created overlaps with existing sittings
         public bool SCSelectionValidation(DateTime date, int sittingCategoryId)

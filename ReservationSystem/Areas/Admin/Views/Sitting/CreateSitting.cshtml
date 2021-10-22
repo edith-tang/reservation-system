@@ -12,10 +12,10 @@
                 <h4>@ViewData["Title"]</h4>
             </div>
             <div class="col-6">
-                <a class="btn btn-info float-right" role="button" asp-controller="SittingCategory" asp-action="DetailsSC" asp-route-id="@Model.SittingCategoryId" >Back to Category</a>
+                <a class="btn btn-info float-right" role="button" asp-controller="SittingCategory" asp-action="DetailsSC" asp-route-id="@Model.SittingCategoryId">Back to Category</a>
             </div>
         </div>
-        <hr/>
+        <hr />
     </div>
 
     <form class="col-12" asp-action="CreateSitting">
@@ -69,22 +69,22 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <input class="btn btn-primary btn-block" type="submit" value="Create" />
+        <div class="form-group text-center">
+            <input class="btn btn-primary w-50" type="submit" value="Create" />
         </div>
 
     </form>
-    </div>
+</div>
 
-    @section Scripts {
+@section Scripts {
 
-        <script>
-            let today = new Date().toISOString().slice(0, 10);
-            $('#StartDate').attr('min', today);
-            $('#StartDate').on('change', function () {
-                $('#EndDate').attr('min', $('#StartDate').val());
-            })
-        </script>
-
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
+    <script>
+        let today = new Date().toISOString().slice(0, 10);
+        $('#StartDate').attr('min', today);
+        $('#StartDate').on('change', function () {
+            $('#EndDate').attr('min', $('#StartDate').val());
+        })
+    </script>
+    
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

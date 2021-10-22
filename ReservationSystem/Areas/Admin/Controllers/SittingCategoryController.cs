@@ -48,6 +48,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return View(m);
         }
 
+        //check if the SC name entered has been used already
         public async Task<ActionResult> IsNameAvailbleAsync(string name)
         {
             var repeatedNameSC = await _cxt.SittingCategories.FirstOrDefaultAsync(sc => sc.Name == name);
@@ -60,7 +61,6 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 return Json($"Name \"{name}\" is already in use.");
             }
         }
-
 
         [HttpPost]
         public async Task<ActionResult> CreateSC(Models.SittingCategory.CreateSC m)
@@ -81,17 +81,14 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 }
                 catch (Exception)
                 {
-                    throw;
+                    ModelState.AddModelError("Error", "Invalid submission!");
                 }
             }
-            else
-            {
-                m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
-                return View(m);
-            }
-
+            m.Tables = new MultiSelectList(_cxt.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name));
+            return View(m);
         }
 
+        //admin can delete an empty sitting category
         public async Task<ActionResult> DeleteSC(int id)
         {
             var sittingCategoryTBD = _cxt.SittingCategories.FirstOrDefault(sc => sc.Id == id);
@@ -102,20 +99,18 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 _cxt.SCTimeslots.RemoveRange(scTimeslotsTBD);
                 _cxt.SCTables.RemoveRange(scTablesTBD);
                 _cxt.SittingCategories.RemoveRange(sittingCategoryTBD);
+                await _cxt.SaveChangesAsync();
+                return RedirectToAction(nameof(IndexSC));
             }
             else
             {
-                //
+                return StatusCode(403);
             }
-            await _cxt.SaveChangesAsync();
-            return RedirectToAction(nameof(IndexSC));
         }
-
-
         #endregion
 
         #region SC METHODS
-        //get id of the newly added SC
+        //get the id of the newly added SC
         public async Task<int> CreateSCId()
         {
             return await _cxt.SittingCategories.MaxAsync(s => s.Id);
@@ -140,7 +135,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             }
             else
             {
-                throw new Exception("not permitted for non-interger number");
+                throw new Exception(message: "Duration must be divisible by interval");
             }
         }
 
@@ -173,6 +168,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
             return allSC.FirstOrDefault(i => i.Id == sittingCategoryId);
         }
 
+        //display table names in SC detail page
         public void GetTableStrings(SittingCategory sc)
         {
             var mainTables = sc.SCTables.FindAll(t => t.Table.Area == "Main").OrderBy(t => t.TableId);

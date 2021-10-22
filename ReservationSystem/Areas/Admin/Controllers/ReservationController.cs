@@ -127,8 +127,14 @@ namespace ReservationSystem.Areas.Admin.Controllers
             {
                 try
                 {
-                    await DataValidation(m);
+                    //verify model info against database info
+                    bool check = await DataValidation(m);
+                    if (!check)
+                    {
+                        return NotFound();
+                    }
 
+                    //if verified, add reservation
                     var reservation = new Reservation
                     {
                         SittingId = m.SelectedSittingId,
@@ -156,8 +162,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                 }
                 catch (Exception)
                 {
-                    //input inconsistent with database
-                    //ModelState.AddModelError("Error", "SQL Error!");
+                    ModelState.AddModelError("Error", "Invalid submission!");
                 }
             }
             m.WayOfBookings = new SelectList(
@@ -259,7 +264,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         #region Methods for [HttpPost] CreateReservation()
 
         //check that all data passed by m is consistent with database
-        public async Task DataValidation(CreateReservation m)
+        public async Task<bool> DataValidation(CreateReservation m)
         {
             var sitting = await GetSittingById(m.SelectedSittingId);
             bool checkDate = sitting.Date == m.SelectedDate;
@@ -267,11 +272,8 @@ namespace ReservationSystem.Areas.Admin.Controllers
             bool checkEndTime = CheckEndTime(sitting, m.ExpectedEndTime);
             bool checkCapacity = 0 < m.NumOfGuests && m.NumOfGuests <= sitting.RemainingCapacity;
 
-            //if any inconsistency is found, throw an exception
-            if (!(checkDate && checkStartTime && checkEndTime && checkCapacity))
-            {
-                throw new Exception();
-            }
+            bool dataValidationResult = checkDate && checkStartTime && checkEndTime && checkCapacity;
+            return dataValidationResult;
         }
 
         public bool CheckStartTime(Sitting sitting, string expectedStartTime)

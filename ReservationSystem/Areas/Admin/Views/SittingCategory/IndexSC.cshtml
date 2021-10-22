@@ -20,9 +20,6 @@
     <table class="table mt-3">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
                 <th scope="col">
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
@@ -45,9 +42,6 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <th scope="row">
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </th>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>

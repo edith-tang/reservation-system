@@ -1,96 +1,13 @@
-﻿@model IEnumerable<ReservationSystem.Data.Sitting>
-
+﻿
 @{
     ViewData["Title"] = "Manage Sittings";
 }
 
-<div class="row mx-5">
-
-    <div class="col-12">
-        <div class="row">
-            <div class="col-6">
-                <h4>@ViewData["Title"]</h4>
-            </div>
-            <div class="col-6">
-
-            </div>
-        </div>
+<div class="mt-5">
+    <div class="row justify-content-center mb-3">
+        <a class="btn btn-info w-25 text-nowrap" asp-action="PastSittings">Past Sittings</a>
     </div>
-
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Category</th>
-                <th scope="col">Capacity</th>
-                <th scope="col">Used</th>
-                <th scope="col">Remain</th>
-                <th scope="col">Reservations</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SittingCategory.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Capacity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UsedCapacity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RemainingCapacity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Reservations.Count)
-                    </td>
-                    <td>
-                        <a role="button" asp-action="DetailsSitting" asp-route-id="@item.Id">Details</a>
-                        @if (item.Status == ReservationSystem.Data.Enums.SittingStatus.Open)
-                        {
-                            <a class="closesitting" role="button" asp-action="ManuallyCloseSitting" asp-route-id="@item.Id"> | Close</a>
-                        }
-                        else if (item.Status == ReservationSystem.Data.Enums.SittingStatus.Closed && item.RemainingCapacity > 0)
-                        {
-                            <a role="button" asp-action="ManuallyReopenSitting" asp-route-id="@item.Id"> | Reopen</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row justify-content-center mb-3">
+        <a class="btn btn-info w-25 text-nowrap" asp-action="FutureSittings">Future Sittings</a>
+    </div>
 </div>
-
-@if (TempData["Message"] != null)
-{
-    <script type="text/javascript">
-
-            window.onload = function () {
-                alert("@TempData["Message"]");
-            };
-    </script>
-}
-
-@section Styles{
-    <link href="~/css/my02.css" rel="stylesheet" />
-}
-
-@section Scripts {
-    <script>
-        $(".closesitting").on("click", () => {
-            if (confirm("Do you want to close this sitting?")) { }
-            else { return false; }
-        });
-    </script>
-}
