@@ -52,7 +52,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
 
                     await _cxt.SaveChangesAsync();
 
-                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    return RedirectToAction("IndexEmployee", "Employee", new { area = "Admin" });
                 }
                 foreach (var error in result.Errors)
                 {
