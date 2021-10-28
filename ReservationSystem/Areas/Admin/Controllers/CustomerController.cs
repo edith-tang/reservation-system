@@ -14,7 +14,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         public CustomerController(ApplicationDbContext cxt, UserManager<IdentityUser> userManager) : base(cxt, userManager)
         {
         }
-        public async Task<IActionResult> IndexCustomerAsync()
+        public async Task<IActionResult> IndexCustomer()
         {
             var customers = await _cxt.Customers.ToListAsync();
             return View(customers);

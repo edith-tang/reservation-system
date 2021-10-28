@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -31,68 +33,91 @@ namespace ReservationSystem.Controllers.Api
 
         #region methods
 
-        // GET: api/Reservations
-        [HttpGet]
-        public async Task<IActionResult> GetReservations()
+        // GET: api/reservations
+        [HttpGet("")]
+        public async Task<IActionResult> Get()
         {
-            var r = await _cxt.Reservations
+            var reservations = await _cxt.Reservations
                 .Include(r => r.Sitting.SittingCategory)
                 .Include(r => r.Customer)
                 .OrderBy(r => r.Sitting.Date)
                 .ToListAsync();
 
-            var reservation = new ReservationDTO
-            {
+            //var options = new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve};
+            //var rJson = JsonSerializer.Serialize(r, options);
 
-            };
-            return Ok(r);
+            var reservationsDTO = new List<ReservationDTO>();
+            foreach (var reservation in reservations)
+            {
+                reservationsDTO.Add(new ReservationDTO
+                {
+                    Id = reservation.Id,
+                    SittingDate = reservation.Sitting.Date.ToShortDateString(),
+                    Arrival = reservation.ExpectedStartTime.ToString(),
+                    Leave = reservation.ExpectedEndTime.ToString(),
+                    Guests = reservation.NumOfGuests,
+                    Status=reservation.Status.ToString(),
+                    Customer=reservation.Customer.CustEmail,
+                    WayOfBooking=reservation.WayOfBooking,
+                    SittingCategoryName = reservation.Sitting.SittingCategory.Name,
+                    Notes = reservation.Notes
+                });
+            }
+            return Ok(reservationsDTO);
         }
 
 
-        // GET: api/Reservations/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(int id)
+        // GET: api/reservations/aa@a.com
+        [HttpGet("customer/{custEmail}")]
+        public async Task<ActionResult<Reservation>> GetReservation(string custEmail)
         {
-            var reservation = await _cxt.Reservations.FindAsync(id);
-
-            if (reservation == null)
+            var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == custEmail);
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return reservation;
+            var reservations = await _cxt.Reservations
+                .Where(r => r.Customer == customer)
+                .Include(r => r.Sitting.SittingCategory)
+                .Include(r => r.Customer)
+                .OrderBy(r => r.Sitting.Date)
+                .ToListAsync();
+
+            var reservationsDTO = new List<ReservationDTO>();
+            foreach (var reservation in reservations)
+            {
+                reservationsDTO.Add(new ReservationDTO
+                {
+                    Id = reservation.Id,
+                    SittingDate = reservation.Sitting.Date.ToShortDateString(),
+                    Arrival = reservation.ExpectedStartTime.ToString(),
+                    Leave = reservation.ExpectedEndTime.ToString(),
+                    Guests = reservation.NumOfGuests,
+                    Status = reservation.Status.ToString(),
+                    Customer = reservation.Customer.CustEmail,
+                    WayOfBooking = reservation.WayOfBooking,
+                    SittingCategoryName = reservation.Sitting.SittingCategory.Name,
+                    Notes = reservation.Notes
+                });
+            }
+            return Ok(reservationsDTO);
         }
 
         #endregion
 
         public class ReservationDTO
         {
-            public int Id { get; private set; }
-            public int CustomerId { get; set; }
-            public int SittingId { get; set; }
-
-            public int NumOfGuests { get; set; }
-
-            public TimeSpan ExpectedStartTime { get; set; }
-
-            public TimeSpan ExpectedEndTime { get; set; }
-
+            public int Id { get;  set; }
+            public int Guests { get; set; }
+            public string Arrival { get; set; }
+            public string Leave { get; set; }
             public string Notes { get; set; }
-
-            public DateTime TimeOfBooking { get; set; }
-
             public string WayOfBooking { get; set; }
-            public ReservationStatus Status { get; set; }
-
-            public Customer Customer { get; set; }
-
-            
-            public DateTime SittingDate { get; set; }
-
+            public string Status { get; set; }
+            public string Customer { get; set; }
+            public string SittingDate { get; set; }
             public string SittingCategoryName { get; set; }
-
         }
-
     }
-
 }

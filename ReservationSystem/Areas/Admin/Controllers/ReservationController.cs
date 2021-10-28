@@ -141,7 +141,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
                         ExpectedStartTime = TimeSpan.Parse(m.ExpectedStartTime),
                         ExpectedEndTime = TimeSpan.Parse(m.ExpectedEndTime),
                         NumOfGuests = m.NumOfGuests,
-                        Notes = m.Notes ?? "N/A",
+                        Notes = string.IsNullOrWhiteSpace(m.Notes) ? "N/A": m.Notes.Trim(),
                         TimeOfBooking = DateTime.Now,
                         WayOfBooking = m.WayOfBooking,
                         Status = Data.Enums.ReservationStatus.Pending,
