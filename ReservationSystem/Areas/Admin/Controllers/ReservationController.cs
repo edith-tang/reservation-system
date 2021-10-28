@@ -55,6 +55,7 @@ namespace ReservationSystem.Areas.Admin.Controllers
         //display all future reservations
         public async Task<ActionResult> FutureReservations()
         {
+            Response.Headers.Add("Refresh", "10");
             var reservations = await _cxt.Reservations.Include(r => r.Customer).Include(r => r.Sitting)
                 .Where(r => r.Sitting.Date >= DateTime.Today)
                 .OrderBy(r => r.TimeOfBooking).ToListAsync();
