@@ -56,9 +56,9 @@ namespace ReservationSystem.Controllers.Api
                     Arrival = reservation.ExpectedStartTime.ToString(),
                     Leave = reservation.ExpectedEndTime.ToString(),
                     Guests = reservation.NumOfGuests,
-                    Status=reservation.Status.ToString(),
-                    Customer=reservation.Customer.CustEmail,
-                    WayOfBooking=reservation.WayOfBooking,
+                    Status = reservation.Status.ToString(),
+                    Customer = reservation.Customer.CustEmail,
+                    WayOfBooking = reservation.WayOfBooking,
                     SittingCategoryName = reservation.Sitting.SittingCategory.Name,
                     Notes = reservation.Notes
                 });
@@ -69,7 +69,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/reservations/aa@a.com
         [HttpGet("customer/{custEmail}")]
-        public async Task<ActionResult<Reservation>> GetReservation(string custEmail)
+        public async Task<ActionResult<Reservation>> GetReservationByEmail(string custEmail)
         {
             var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == custEmail);
             if (customer == null)
@@ -104,18 +104,12 @@ namespace ReservationSystem.Controllers.Api
             return Ok(reservationsDTO);
         }
 
-        // GET: api/reservations/aa@a.com
-        [HttpGet("create")]
-        public async Task<ActionResult<Reservation>> CreateReservation()
-        {
-        
-            return Ok();
-        }
+
         #endregion
 
         public class ReservationDTO
         {
-            public int Id { get;  set; }
+            public int Id { get; set; }
             public int Guests { get; set; }
             public string Arrival { get; set; }
             public string Leave { get; set; }
