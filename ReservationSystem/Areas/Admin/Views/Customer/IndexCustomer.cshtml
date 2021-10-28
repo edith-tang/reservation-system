@@ -31,29 +31,38 @@
                 <th>
                     @Html.DisplayNameFor(model => model.CustPhone)
                 </th>
+                <th>
+                    Type
+                </th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustFName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustLName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustEmail)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustPhone)
-                    </td>
-                    <td>
-                        <a asp-controller="Reservation" asp-action="HistoryReservation" asp-route-id="@item.Id">Reservation History</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustFName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustLName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustPhone)
+                </td>
+                <td>
+                    @{ 
+                        var type = item.IdentityUserId == null ? "Visitor" : "Member";
+                        }
+                    @Html.DisplayFor(modelItem => type)
+                </td>
+                <td>
+                    <a asp-controller="Reservation" asp-action="HistoryReservation" asp-route-id="@item.Id">Reservation History</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
