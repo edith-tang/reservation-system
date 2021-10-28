@@ -37,12 +37,12 @@ namespace ReservationSystem.Areas.Admin.Models.SittingCategory
         public TimeSpan EndTime { get; set; }
 
         [Required]
-        [Display(Name = "Sitting duration (hours)")]
+        [Display(Name = "Timeslot (hours)")]
         [Range(0, 24)]
         public int IntervalHours { get; set; }
 
         [Required]
-        [Display(Name = "Sitting duration (minutes)")]
+        [Display(Name = "Timeslot (minutes)")]
         [Range(0, 59)]
         public int IntervalMinutes { get; set; }
 
@@ -56,14 +56,14 @@ namespace ReservationSystem.Areas.Admin.Models.SittingCategory
             if (StartTime >= EndTime) { yield return new ValidationResult("EndTime must be greater than StartTime", new List<string> { "StartTime" , "EndTime" }); }
             if (IntervalHours == 0 && IntervalMinutes == 0)
             {
-                yield return new ValidationResult("Sitting duration cannot be zero", new[] { "IntervalHours" , "IntervalMinutes" });
+                yield return new ValidationResult("Timeslot duration cannot be zero", new[] { "IntervalHours" , "IntervalMinutes" });
             }
             else
             {
                 var Interval = new TimeSpan(IntervalHours, IntervalMinutes, 0);
                 if (Duration.TotalMinutes % Interval.TotalMinutes != 0)
                 {
-                    yield return new ValidationResult("Sitting duration must be divisible by interval", new[] { "EndTime", "IntervalHours", "IntervalMinutes" });
+                    yield return new ValidationResult("Sitting category duration must be divisible by the timeslot duration", new[] { "EndTime", "IntervalHours", "IntervalMinutes" });
                 }
             }
             
