@@ -1,4 +1,4 @@
-﻿@model ReservationSystem.Areas.Admin.Models.Report.ReportSitting
+﻿@model ReservationSystem.Areas.Admin.Models.Report.Report
 
 @{
     ViewData["Title"] = "Report";
@@ -22,16 +22,52 @@
         <div class="col-4">
             <dl>
                 <dt>
-                    @Html.DisplayNameFor(model => model.AvgOcpy)
+                    @Html.DisplayNameFor(model => model.Customer.MostLoyalCustomer)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.AvgOcpy)
+                    @Html.DisplayFor(model => model.Customer.MostLoyalCustomer)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.HighestOcpy)
+                    @Html.DisplayNameFor(model => model.Customer.RegistrationRate)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.HighestOcpy)
+                    @Html.DisplayFor(model => model.Customer.RegistrationRate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sitting.AvgOcpy)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Sitting.AvgOcpy)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sitting.HighestOcpy)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Sitting.HighestOcpy)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Reservation.AverageDuation)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Reservation.AverageDuation)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Reservation.WayOfBooking)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Reservation.WayOfBooking)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Reservation.CancelRate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Reservation.CancelRate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Reservation.NoShowRate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Reservation.NoShowRate)
                 </dd>
             </dl>
         </div>

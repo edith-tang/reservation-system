@@ -35,7 +35,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/reservations
         [HttpGet("")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetReservations()
         {
             var reservations = await _cxt.Reservations
                 .Include(r => r.Sitting.SittingCategory)
@@ -104,6 +104,13 @@ namespace ReservationSystem.Controllers.Api
             return Ok(reservationsDTO);
         }
 
+        // GET: api/reservations/aa@a.com
+        [HttpGet("create")]
+        public async Task<ActionResult<Reservation>> CreateReservation()
+        {
+        
+            return Ok();
+        }
         #endregion
 
         public class ReservationDTO

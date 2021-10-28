@@ -33,7 +33,7 @@ namespace ReservationSystem.Data
             }
         }
         public int RemainingCapacity { get => Capacity - UsedCapacity; }
-        public decimal Occupancy { get => decimal.Round(UsedCapacity / Capacity, 2); }
+        public decimal Occupancy { get => decimal.Round((decimal)UsedCapacity / Capacity, 2); }
         public List<TimeSpan> SittingStartTimes { 
             get
             {
