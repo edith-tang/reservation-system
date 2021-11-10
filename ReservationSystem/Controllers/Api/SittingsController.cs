@@ -63,7 +63,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/sittings/1
         [HttpGet("{sittingId}")]
-        public async Task<ActionResult<Reservation>> GetReservationById(int sittingId)
+        public async Task<ActionResult<Reservation>> GetSittingById(int sittingId)
         {
             var sitting = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).FirstOrDefaultAsync(s => s.Id == sittingId);
             if (sitting == null)
@@ -86,11 +86,13 @@ namespace ReservationSystem.Controllers.Api
             return Ok(sittingDTO);
 
         }
+
+        // POST: api/sittings/1/reserve
         [HttpPost("{sittingId}/reserve")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<Reservation>> CreateReservation(int sittingId, ReservationDTO data)
+        public async Task<ActionResult<Reservation>> CreateReservationBySittingId(int sittingId, ReservationDTO data)
         {
 
             var sitting = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).FirstOrDefaultAsync(s => s.Id == sittingId);
@@ -129,7 +131,7 @@ namespace ReservationSystem.Controllers.Api
 
             await _cxt.SaveChangesAsync();
 
-            return Created(nameof(CreateReservation), data);
+            return Created(nameof(CreateReservationBySittingId), data);
 
         }
 

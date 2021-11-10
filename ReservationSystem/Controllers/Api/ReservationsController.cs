@@ -35,7 +35,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/reservations
         [HttpGet("")]
-        public async Task<IActionResult> GetReservations()
+        public async Task<IActionResult> GetAllReservations()
         {
             var reservations = await _cxt.Reservations
                 .Include(r => r.Sitting.SittingCategory)
@@ -67,9 +67,9 @@ namespace ReservationSystem.Controllers.Api
         }
 
 
-        // GET: api/reservations/aa@a.com
+        // GET: api/reservations/customer/aa@a.com
         [HttpGet("customer/{custEmail}")]
-        public async Task<ActionResult<Reservation>> GetReservationByEmail(string custEmail)
+        public async Task<ActionResult<Reservation>> GetReservationsByEmail(string custEmail)
         {
             var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == custEmail);
             if (customer == null)
