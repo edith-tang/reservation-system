@@ -37,6 +37,18 @@ namespace ReservationSystem
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddCors(options =>
+                {
+                    options.AddPolicy("MyPolicy",
+                        builder =>
+                            {
+                                builder.SetIsOriginAllowed(origin => true)
+                                        .AllowAnyMethod()
+                                        .AllowAnyHeader()
+                                        .AllowCredentials();
+                            });
+                });
+
             bool clientValidationEnabled = Configuration.GetValue<bool>("ClientValidationEnabled");
             services.AddControllersWithViews()
                 .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = clientValidationEnabled);
@@ -64,6 +76,7 @@ namespace ReservationSystem
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -108,30 +121,30 @@ namespace ReservationSystem
         {
             var cxt = serviceProvider.GetRequiredService<ApplicationDbContext>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            
-            
-                var user = userManager.FindByNameAsync("admin@a.com").Result;
-                if (user == null)
+
+
+            var user = userManager.FindByNameAsync("admin@a.com").Result;
+            if (user == null)
+            {
+
+                var admin = new IdentityUser { UserName = "admin@a.com", Email = "admin@a.com" };
+                var result = userManager.CreateAsync(admin, "Admin@123").Result;
+                if (result.Succeeded)
                 {
-
-                    var admin = new IdentityUser { UserName = "admin@a.com", Email = "admin@a.com" };
-                    var result = userManager.CreateAsync(admin, "Admin@123").Result;
-                    if (result.Succeeded)
+                    userManager.AddToRoleAsync(admin, "Admin").Wait();
+                    var emp = new Data.Employee
                     {
-                        userManager.AddToRoleAsync(admin, "Admin").Wait();
-                        var emp = new Data.Employee
-                        {
-                            EmpFName = "admin",
-                            EmpLName = "admin",
-                            EmpEmail = admin.Email,
-                            EmpPhone = null,
-                            IdentityUserId = admin.Id
-                        };
-                        cxt.Employees.Add(emp);
-                        cxt.SaveChangesAsync().Wait();
-                    }
-
+                        EmpFName = "admin",
+                        EmpLName = "admin",
+                        EmpEmail = admin.Email,
+                        EmpPhone = null,
+                        IdentityUserId = admin.Id
+                    };
+                    cxt.Employees.Add(emp);
+                    cxt.SaveChangesAsync().Wait();
                 }
+
+            }
         }
     }
 }
