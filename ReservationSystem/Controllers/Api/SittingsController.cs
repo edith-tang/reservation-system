@@ -38,7 +38,7 @@ namespace ReservationSystem.Controllers.Api
         [HttpGet("")]
         public async Task<IActionResult> GetOpenSittings()
         {
-            var sittings = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).Where(s => s.Status == Data.Enums.SittingStatus.Open).OrderBy(s => s.Date).ToListAsync();
+            var sittings = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).Where(s => s.Status == Data.Enums.SittingStatus.Open && s.Date >= DateTime.Today).OrderBy(s => s.Date).ToListAsync();
             if (sittings.Count == 0)
             {
                 return NotFound();
@@ -89,8 +89,8 @@ namespace ReservationSystem.Controllers.Api
 
         }
 
-        // POST: api/sittings/1/reserve
-        [HttpPost("{sittingId}/reserve")]
+        // POST: api/sittings/1/newreservation
+        [HttpPost("{sittingId}/newreservation")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
