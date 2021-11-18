@@ -104,20 +104,28 @@ namespace ReservationSystem.Areas.Admin.Controllers
         public async Task<ActionResult> CreateReservation()
         {
             var sittings = await GetAllFutureSittings();
-            var m = new CreateReservation
+            if (sittings != null)
             {
-                MaxDate = sittings.Max(s => s.Date).ToString("yyyy-MM-dd"),
-                MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
-                Customer = new CustomerDTO(),
-                WayOfBookings = new SelectList(
+                var m = new CreateReservation
+                {
+                    MaxDate = sittings.Max(s => s.Date).ToString("yyyy-MM-dd"),
+                    MinDate = DateTime.Today.ToString("yyyy-MM-dd"),
+                    Customer = new CustomerDTO(),
+                    WayOfBookings = new SelectList(
                     new List<SelectListItem>
                     {
                         new SelectListItem { Text = "Email", Value = "Email"},
                         new SelectListItem { Text = "Phone", Value ="Phone"},
                         new SelectListItem { Text = "Walk-in", Value ="Walk-in"},
                     }, "Value", "Text"),
-            };
-            return View(m);
+                };
+                return View(m);
+            }
+            else 
+            {
+                return NotFound();
+            }
+            
         }
 
         //admin and employee submits reservation for customer
