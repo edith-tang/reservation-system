@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 namespace ReservationSystem.Controllers.Api
 {
     [Route("api/[controller]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class SittingsController : ControllerBase
     {
@@ -36,7 +38,7 @@ namespace ReservationSystem.Controllers.Api
         [HttpGet("")]
         public async Task<IActionResult> GetOpenSittings()
         {
-            var sittings = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).Where(s => s.Status == Data.Enums.SittingStatus.Open).OrderBy(s => s.Date).ToListAsync();
+            var sittings = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).Where(s => s.Status == Data.Enums.SittingStatus.Open && s.Date >= DateTime.Today).OrderBy(s => s.Date).ToListAsync();
             if (sittings.Count == 0)
             {
                 return NotFound();
@@ -63,7 +65,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/sittings/1
         [HttpGet("{sittingId}")]
-        public async Task<ActionResult<Reservation>> GetReservationById(int sittingId)
+        public async Task<ActionResult<Reservation>> GetSittingById(int sittingId)
         {
             var sitting = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).FirstOrDefaultAsync(s => s.Id == sittingId);
             if (sitting == null)
@@ -86,11 +88,13 @@ namespace ReservationSystem.Controllers.Api
             return Ok(sittingDTO);
 
         }
-        [HttpPost("{sittingId}/reserve")]
+
+        // POST: api/sittings/1/newreservation
+        [HttpPost("{sittingId}/newreservation")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<Reservation>> CreateReservation(int sittingId, ReservationDTO data)
+        public async Task<ActionResult<Reservation>> CreateReservationBySittingId(int sittingId, ReservationDTO data)
         {
 
             var sitting = await _cxt.Sittings.Include(s => s.SittingCategory).Include(s => s.Reservations).FirstOrDefaultAsync(s => s.Id == sittingId);
@@ -129,7 +133,7 @@ namespace ReservationSystem.Controllers.Api
 
             await _cxt.SaveChangesAsync();
 
-            return Created(nameof(CreateReservation), data);
+            return Created(nameof(CreateReservationBySittingId), data);
 
         }
 

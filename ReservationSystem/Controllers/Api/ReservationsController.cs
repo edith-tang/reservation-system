@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using ReservationSystem.Services;
 namespace ReservationSystem.Controllers.Api
 {
     [Route("api/[controller]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class ReservationsController : ControllerBase
     {
@@ -35,7 +37,7 @@ namespace ReservationSystem.Controllers.Api
 
         // GET: api/reservations
         [HttpGet("")]
-        public async Task<IActionResult> GetReservations()
+        public async Task<IActionResult> GetAllReservations()
         {
             var reservations = await _cxt.Reservations
                 .Include(r => r.Sitting.SittingCategory)
@@ -67,9 +69,9 @@ namespace ReservationSystem.Controllers.Api
         }
 
 
-        // GET: api/reservations/aa@a.com
+        // GET: api/reservations/customer/aa@a.com
         [HttpGet("customer/{custEmail}")]
-        public async Task<ActionResult<Reservation>> GetReservationByEmail(string custEmail)
+        public async Task<ActionResult<Reservation>> GetReservationsByEmail(string custEmail)
         {
             var customer = await _cxt.Customers.FirstOrDefaultAsync(c => c.CustEmail == custEmail);
             if (customer == null)
