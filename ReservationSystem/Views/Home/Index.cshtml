@@ -2,8 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mt-5" >
+<div class="text-center mt-5">
     <h3>Welcome!</h3>
     <p>What would you like to do today?</p>
     <a class="btn btn-info w-25" asp-controller="Reservation" asp-action="CreateReservation">Reserve Now</a>
+    <div class="row">
+        <div class="col-8 m-auto text-left font-italic font-weight-bold">
+            <p></p>
+            <p>Reservation tips: </p>
+            <p>- Enter your contact information </p>
+            <p>- Choose a date from the calender to see if any session is available</p>
+            <p>- Choose a session from the date you have selected</p>
+            <p>- Choose your expected time to arrive and leave</p>
+            <p>- Enter the number of guests and any special needs you may have</p>
+        </div>
+    </div>
 </div>
